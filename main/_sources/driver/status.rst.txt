@@ -15,51 +15,53 @@
 .. specific language governing permissions and limitations
 .. under the License.
 
-============================================
-Driver Feature Support/Implementation Status
-============================================
+============================
+Driver Implementation Status
+============================
 
-Implementation Status
-=====================
+.. warning:: There is a known problem on macOS x86_64 when using two drivers
+             written in Go in the same process (unless working in a pure-Go
+             application), where using the second driver may crash.  For more
+             details, see `GH-1841
+             <https://github.com/apache/arrow-adbc/issues/1841>`_.
+
+.. note::
+
+   Drivers that support C/C++ can also be used from C#, GLib, Go, Python, R,
+   Ruby, and Rust, regardless of their implementation language.
+
+.. _driver-status:
+
+Driver Status
+=============
 
 **Experimental** drivers are not feature-complete and the implementation is still progressing.
 **Beta** drivers are (mostly) feature-complete but have only been available for a short time.
-**Stable** drivers are feature-complete (as much as possible for the underlying database) and have been available/tested for a while.
+**Stable** drivers are (mostly) feature-complete (as much as possible for the underlying database) and have been available/tested for a while.
 
-.. list-table::
-   :header-rows: 1
+Feature Support
+===============
 
-   * - Driver
-     - Supported Languages [#supported-languages]_
-     - Implementation Language
-     - Status
+.. adbc_driver_status_table::
 
-   * - Flight SQL (Go)
-     - C, Go
-     - Go
-     - Beta
+   ../../../csharp/src/Drivers/Apache/Hive2/README.md
+   ../../../csharp/src/Drivers/Apache/Impala/README.md
+   ../../../csharp/src/Drivers/Apache/Spark/README.md
+   ../../../csharp/src/Drivers/BigQuery/readme.md
+   ../../../csharp/src/Drivers/Databricks/readme.md
+   ../../../csharp/src/Drivers/FlightSql/README.md
+   ../../../java/driver/flight-sql/README.md
+   ../../../rust/driver/datafusion/README.md
+   ./duckdb => ../../../c/integration/duckdb/README.md [#duckdb]
+   ./flight_sql => ../../../c/driver/flightsql/README.md
+   ./jdbc => ../../../java/driver/jdbc/README.md
+   ./postgresql => ../../../c/driver/postgresql/README.md
+   ./snowflake => ../../../c/driver/snowflake/README.md
+   ./sqlite => ../../../c/driver/sqlite/README.md
 
-   * - Flight SQL (Java)
-     - Java
-     - Java
-     - Experimental
-
-   * - JDBC
-     - Java
-     - Java
-     - Experimental
-
-   * - PostgreSQL
-     - C
-     - C++
-     - Experimental
-
-   * - SQLite
-     - C
-     - C
-     - Beta
-
-.. [#supported-languages] C drivers are usable from Go, Python, and Ruby as well.
+.. [#duckdb] DuckDB is developed and provided by a third party.  See the
+             `DuckDB documentation
+             <https://duckdb.org/docs/stable/clients/adbc.html>`_ for details.
 
 Feature Support
 ===============
@@ -72,14 +74,14 @@ Bulk Ingestion
     Does the driver support :ref:`bulk ingestion of data <specification-bulk-ingestion>` (creating or appending to a database table from an Arrow table)?
 
 Database Metadata
-    Does the driver support functions like :cpp:func:`AdbcConnectionGetObjects` that get metadata about the database catalog, etc.?
+    Does the driver support functions like :c:func:`AdbcConnectionGetObjects` that get metadata about the database catalog, etc.?
 
 Parameterized Queries
     Does the driver support binding query parameters?
 
 Partitioned Data
     Being able to read individual chunks of a (generally distributed)
-    result set (:cpp:func:`AdbcStatementExecutePartitions`).
+    result set (:c:func:`AdbcStatementExecutePartitions`).
 
 Prepared Statements
     Does the driver support binding query parameters?
@@ -139,6 +141,7 @@ Update Queries
    :header-rows: 1
 
    * - Driver
+     - Incremental Queries
      - Partitioned Data
      - Parameterized Queries
      - Prepared Statements
@@ -151,8 +154,10 @@ Update Queries
      - Y
      - Y
      - Y
+     - Y
 
    * - Flight SQL (Java)
+     - N
      - Y
      - Y
      - Y
@@ -161,24 +166,33 @@ Update Queries
 
    * - JDBC
      - N/A
+     - N/A
      - Y
      - Y
      - Y
      - Y
 
    * - PostgreSQL
-     - Y
-     - Y
-     - Y
      - N/A
+     - N/A
+     - Y [#postgresql-prepared]_
+     - Y
+     - Y
      - Y
 
    * - SQLite
      - N/A
+     - N/A
      - Y
      - Y
      - Y
      - Y
+
+.. [#postgresql-prepared] The PostgreSQL driver only supports executing
+   prepared statements with parameters that do not return result sets
+   (basically, an INSERT with parameters).  Queries that return result sets
+   are difficult with prepared statements because the driver is built around
+   using COPY for best performance, which is not supported in this context.
 
 .. list-table:: Connection/database-level features
    :header-rows: 1
@@ -191,7 +205,7 @@ Update Queries
    * - Flight SQL (Go)
      - N
      - Y
-     - N
+     - Y
 
    * - Flight SQL (Java)
      - Y
@@ -206,7 +220,7 @@ Update Queries
    * - PostgreSQL
      - Y
      - Y
-     - N
+     - Y
 
    * - SQLite
      - Y

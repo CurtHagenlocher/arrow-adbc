@@ -1,26 +1,29 @@
 
 
 <!doctype html>
-<html class="no-js" lang="en">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
+        <link rel="prefetch" href="_static/logo-light.png" as="image">
+        <link rel="prefetch" href="_static/logo-dark.png" as="image">
 
-    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 --><title>Index - ADBC 0.3.0 (dev) documentation</title>
-<link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 --><title>Index - ADBC 24 (dev) documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=56d6027c" />
     
     
 
 
 <style>
   body {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
   
   }
   @media not print {
@@ -39,7 +42,7 @@
   }
 </style>
 <script>
-  const currentVersion = "0.3.0 (dev)";
+  const currentVersion = "24 (dev)";
   const versionsRoot = "..";
 </script>
 <style>
@@ -86,6 +89,24 @@
     font-weight: bold;
   }
 </style>
+
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  /* We explicitly disable cookie tracking to avoid privacy issues */
+  _paq.push(['disableCookies']);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.apache.org/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '20']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
 </head>
   <body>
     
@@ -94,7 +115,7 @@
     </script>
     
 <nav id="version-switcher">
-  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 0.3.0 (dev)</button>
+  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 24 (dev)</button>
   <div class="versions">
     <ul></ul>
   </div>
@@ -126,7 +147,7 @@
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -141,34 +162,73 @@
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
 
 
@@ -176,25 +236,23 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">ADBC 0.3.0 (dev) documentation</div></a>
+      <a href="index.html"><div class="brand">ADBC 24 (dev) documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
   </header>
@@ -202,13 +260,12 @@
     <div class="sidebar-container">
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
-  
   <div class="sidebar-logo-container">
     <img class="sidebar-logo only-light" src="_static/logo-light.png" alt="Light Logo"/>
     <img class="sidebar-logo only-dark" src="_static/logo-dark.png" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ADBC 0.3.0 (dev) documentation</span>
+  <span class="sidebar-brand-text">ADBC 24 (dev) documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -216,69 +273,93 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Specifications</span></p>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supported Environments</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="format/specification.html">ADBC API Standard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="format/versioning.html">Versioning and Compatibility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="format/comparison.html">Comparison with Other APIs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="cpp/index.html">C/C++</a><input aria-label="Toggle navigation of C/C++" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="cpp/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/driver_manager.html">Driver Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/concurrency.html">Concurrency and Thread Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/driver_example.html">Driver Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/static_linking.html">Static Linking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/api/index.html">C/C++ API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="csharp/index.html">C#/.NET</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pkg.go.dev/github.com/apache/arrow-adbc/go/adbc">Go</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="java/index.html">Java</a><input aria-label="Toggle navigation of Java" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="java/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java/driver_manager.html">Driver Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java/jni.html">JNI Driver Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java/api/index.html">Java API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="javascript/index.html">JavaScript</a><input aria-label="Toggle navigation of JavaScript" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="javascript/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javascript/driver_manager.html">Driver Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javascript/api/index.html">JavaScript API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="python/index.html">Python</a><input aria-label="Toggle navigation of Python" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="python/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python/driver_manager.html">Driver Manager</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="python/api/index.html">Python API Reference</a><input aria-label="Toggle navigation of Python API Reference" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_manager.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_manager</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_flightsql.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_flightsql</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_postgresql.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_postgresql</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_snowflake.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_snowflake</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_sqlite.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_sqlite</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="python/recipe/index.html">Python Cookbook</a><input aria-label="Toggle navigation of Python Cookbook" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="python/recipe/driver_manager.html">DBAPI/Driver Manager Recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/recipe/flight_sql.html">Flight SQL Recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/recipe/postgresql.html">PostgreSQL Recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python/recipe/sqlite.html">SQLite Recipes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="r/index.html">R</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="rust/index.html">Rust</a><input aria-label="Toggle navigation of Rust" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="rust/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rust/driver_manager.html">Driver Manager</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://docs.rs/adbc_core/latest/adbc_core/">Rust API Reference</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Drivers</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="driver/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="driver/status.html">Driver Feature Support/Implementation Status</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="driver/cpp/index.html">C/C++/Python</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="driver/cpp/postgresql.html">PostgreSQL Driver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="driver/cpp/sqlite.html">SQLite Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/status.html">Driver Implementation Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/bigquery.html">BigQuery Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/duckdb.html">DuckDB Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/flight_sql.html">Flight SQL Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/jdbc.html">JDBC Adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/postgresql.html">PostgreSQL Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/snowflake.html">Snowflake Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/sqlite.html">SQLite Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/authoring.html">Writing New Drivers</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="driver/go/index.html">Go</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="driver/go/flight_sql.html">Flight SQL Driver</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="driver/java/index.html">Java</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="driver/java/flight_sql.html">Flight SQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="driver/java/jdbc.html">JDBC Adapter</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<p class="caption" role="heading"><span class="caption-text">Specification</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="python/quickstart.html">Quickstart (Python)</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Language-Specific APIs</span></p>
-<ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="cpp/index.html">C/C++</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="cpp/driver_manager.html">Driver Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cpp/concurrency.html">Concurrency and Thread Safety</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="cpp/api/index.html">C/C++ API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="cpp/api/adbc.html"><code class="docutils literal notranslate"><span class="pre">adbc.h</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="cpp/api/adbc_driver_manager.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_manager.h</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="go/index.html">Go</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="java/index.html">Java</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="python/index.html">Python</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="python/quickstart.html">Quickstart (Python)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="python/driver_manager.html">Driver Manager</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="python/api/index.html">Python API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_manager.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_manager</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_postgresql.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_postgresql</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="python/api/adbc_driver_sqlite.html"><code class="docutils literal notranslate"><span class="pre">adbc_driver_sqlite</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="format/specification.html">ADBC API Standard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format/versioning.html">Versioning and Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format/comparison.html">Comparison with Other APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format/how_manager.html">How Drivers and the Driver Manager Work Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format/driver_manifests.html">ADBC Driver Manager and Manifests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format/connection_profiles.html">ADBC Driver Manager and Connection Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format/related_work.html">Related Work</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="development/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development/nightly.html">Nightly Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/versioning.html">Versioning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development/releasing.html">Release Management Guide</a></li>
 </ul>
 
@@ -300,42 +381,77 @@
         </a>
         <div class="content-icon-container">
           <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
           <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#W"><strong>W</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#W"><strong>W</strong></a></div>
 </section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager._lib._AdbcHandle">_AdbcHandle (class in adbc_driver_manager._lib)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi._Closeable">_Closeable (class in adbc_driver_manager.dbapi)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi._SharedDatabase">_SharedDatabase (class in adbc_driver_manager.dbapi)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="A" class="genindex-section">
   <h2>A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="cpp/api/adbc.html#c.ADBC">ADBC (C macro)</a>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType.ACCESS_TOKEN">ACCESS_TOKEN (adbc_driver_flightsql.OAuthTokenType attribute)</a>
 </li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.ACCOUNT">ACCOUNT (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_cancel">adbc_cancel() (adbc_driver_manager.dbapi.Connection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_cancel">(adbc_driver_manager.dbapi.Cursor method)</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_clone">adbc_clone() (adbc_driver_manager.dbapi.Connection method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_connection">adbc_connection (adbc_driver_manager.dbapi.Connection property)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_CONNECTION_OPTION_AUTOCOMMIT">ADBC_CONNECTION_OPTION_AUTOCOMMIT (C macro)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_current_catalog">adbc_current_catalog (adbc_driver_manager.dbapi.Connection property)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_CONNECTION_OPTION_ISOLATION_LEVEL">ADBC_CONNECTION_OPTION_ISOLATION_LEVEL (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_CONNECTION_OPTION_READ_ONLY">ADBC_CONNECTION_OPTION_READ_ONLY (C macro)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_current_db_schema">adbc_current_db_schema (adbc_driver_manager.dbapi.Connection property)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_database">adbc_database (adbc_driver_manager.dbapi.Connection property)</a>
 </li>
+        <li>
+    adbc_driver_flightsql
+
+        <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#module-adbc_driver_flightsql">module</a>
+</li>
+        </ul></li>
+        <li>
+    adbc_driver_flightsql.dbapi
+
+        <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#module-adbc_driver_flightsql.dbapi">module</a>
+</li>
+        </ul></li>
         <li>
     adbc_driver_manager
 
@@ -358,8 +474,6 @@
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.adbc_driver_manager.INGEST_OPTION_TARGET_TABLE">adbc_driver_manager.INGEST_OPTION_TARGET_TABLE (in module adbc_driver_manager)</a>
 </li>
-        <li><a href="cpp/api/adbc_driver_manager.html#c.ADBC_DRIVER_MANAGER_H">ADBC_DRIVER_MANAGER_H (C macro)</a>
-</li>
         <li>
     adbc_driver_postgresql
 
@@ -372,6 +486,20 @@
 
         <ul>
           <li><a href="python/api/adbc_driver_postgresql.html#module-adbc_driver_postgresql.dbapi">module</a>
+</li>
+        </ul></li>
+        <li>
+    adbc_driver_snowflake
+
+        <ul>
+          <li><a href="python/api/adbc_driver_snowflake.html#module-adbc_driver_snowflake">module</a>
+</li>
+        </ul></li>
+        <li>
+    adbc_driver_snowflake.dbapi
+
+        <ul>
+          <li><a href="python/api/adbc_driver_snowflake.html#module-adbc_driver_snowflake.dbapi">module</a>
 </li>
         </ul></li>
         <li>
@@ -390,281 +518,39 @@
         </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_execute_partitions">adbc_execute_partitions() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_execute_schema">adbc_execute_schema() (adbc_driver_manager.dbapi.Cursor method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_get_info">adbc_get_info() (adbc_driver_manager.dbapi.Connection method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_get_objects">adbc_get_objects() (adbc_driver_manager.dbapi.Connection method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_get_statistic_names">adbc_get_statistic_names() (adbc_driver_manager.dbapi.Connection method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_get_statistics">adbc_get_statistics() (adbc_driver_manager.dbapi.Connection method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_get_table_schema">adbc_get_table_schema() (adbc_driver_manager.dbapi.Connection method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.adbc_get_table_types">adbc_get_table_types() (adbc_driver_manager.dbapi.Connection method)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INFO_DRIVER_ARROW_VERSION">ADBC_INFO_DRIVER_ARROW_VERSION (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INFO_DRIVER_NAME">ADBC_INFO_DRIVER_NAME (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INFO_DRIVER_VERSION">ADBC_INFO_DRIVER_VERSION (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INFO_VENDOR_ARROW_VERSION">ADBC_INFO_VENDOR_ARROW_VERSION (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INFO_VENDOR_NAME">ADBC_INFO_VENDOR_NAME (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INFO_VENDOR_VERSION">ADBC_INFO_VENDOR_VERSION (C macro)</a>
-</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_ingest">adbc_ingest() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INGEST_OPTION_MODE">ADBC_INGEST_OPTION_MODE (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INGEST_OPTION_MODE_APPEND">ADBC_INGEST_OPTION_MODE_APPEND (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INGEST_OPTION_MODE_CREATE">ADBC_INGEST_OPTION_MODE_CREATE (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_INGEST_OPTION_TARGET_TABLE">ADBC_INGEST_OPTION_TARGET_TABLE (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OBJECT_DEPTH_ALL">ADBC_OBJECT_DEPTH_ALL (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OBJECT_DEPTH_CATALOGS">ADBC_OBJECT_DEPTH_CATALOGS (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OBJECT_DEPTH_COLUMNS">ADBC_OBJECT_DEPTH_COLUMNS (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OBJECT_DEPTH_DB_SCHEMAS">ADBC_OBJECT_DEPTH_DB_SCHEMAS (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OBJECT_DEPTH_TABLES">ADBC_OBJECT_DEPTH_TABLES (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_DEFAULT">ADBC_OPTION_ISOLATION_LEVEL_DEFAULT (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_LINEARIZABLE">ADBC_OPTION_ISOLATION_LEVEL_LINEARIZABLE (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_READ_COMMITTED">ADBC_OPTION_ISOLATION_LEVEL_READ_COMMITTED (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_READ_UNCOMMITTED">ADBC_OPTION_ISOLATION_LEVEL_READ_UNCOMMITTED (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_REPEATABLE_READ">ADBC_OPTION_ISOLATION_LEVEL_REPEATABLE_READ (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_SERIALIZABLE">ADBC_OPTION_ISOLATION_LEVEL_SERIALIZABLE (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_ISOLATION_LEVEL_SNAPSHOT">ADBC_OPTION_ISOLATION_LEVEL_SNAPSHOT (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_VALUE_DISABLED">ADBC_OPTION_VALUE_DISABLED (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_OPTION_VALUE_ENABLED">ADBC_OPTION_VALUE_ENABLED (C macro)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_prepare">adbc_prepare() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_read_partition">adbc_read_partition() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.adbc_statement">adbc_statement (adbc_driver_manager.dbapi.Cursor property)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_ALREADY_EXISTS">ADBC_STATUS_ALREADY_EXISTS (C macro)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection">AdbcConnection (class in adbc_driver_manager)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_CANCELLED">ADBC_STATUS_CANCELLED (C macro)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase">AdbcDatabase (class in adbc_driver_manager)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_INTEGRITY">ADBC_STATUS_INTEGRITY (C macro)</a>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.dbapi.AdbcSqliteConnection">AdbcSqliteConnection (class in adbc_driver_sqlite.dbapi)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_INTERNAL">ADBC_STATUS_INTERNAL (C macro)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement">AdbcStatement (class in adbc_driver_manager)</a>
 </li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_INVALID_ARGUMENT">ADBC_STATUS_INVALID_ARGUMENT (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_INVALID_DATA">ADBC_STATUS_INVALID_DATA (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_INVALID_STATE">ADBC_STATUS_INVALID_STATE (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_IO">ADBC_STATUS_IO (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_NOT_FOUND">ADBC_STATUS_NOT_FOUND (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_NOT_IMPLEMENTED">ADBC_STATUS_NOT_IMPLEMENTED (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_OK">ADBC_STATUS_OK (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_TIMEOUT">ADBC_STATUS_TIMEOUT (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_UNAUTHENTICATED">ADBC_STATUS_UNAUTHENTICATED (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_UNAUTHORIZED">ADBC_STATUS_UNAUTHORIZED (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_STATUS_UNKNOWN">ADBC_STATUS_UNKNOWN (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#c.ADBC_VERSION_1_0_0">ADBC_VERSION_1_0_0 (C macro)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv414AdbcConnection">AdbcConnection (C++ struct)</a>
-
-        <ul>
-          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection">(class in adbc_driver_manager)</a>
-</li>
-        </ul></li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcConnection12private_dataE">AdbcConnection::private_data (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcConnection14private_driverE">AdbcConnection::private_driver (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv420AdbcConnectionCommitP14AdbcConnectionP9AdbcError">AdbcConnectionCommit (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv421AdbcConnectionGetInfoP14AdbcConnectionP8uint32_t6size_tP16ArrowArrayStreamP9AdbcError">AdbcConnectionGetInfo (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv424AdbcConnectionGetObjectsP14AdbcConnectioniPKcPKcPKcPPKcPKcP16ArrowArrayStreamP9AdbcError">AdbcConnectionGetObjects (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv428AdbcConnectionGetTableSchemaP14AdbcConnectionPKcPKcPKcP11ArrowSchemaP9AdbcError">AdbcConnectionGetTableSchema (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv427AdbcConnectionGetTableTypesP14AdbcConnectionP16ArrowArrayStreamP9AdbcError">AdbcConnectionGetTableTypes (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv418AdbcConnectionInitP14AdbcConnectionP12AdbcDatabaseP9AdbcError">AdbcConnectionInit (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv417AdbcConnectionNewP14AdbcConnectionP9AdbcError">AdbcConnectionNew (C++ function)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="cpp/api/adbc.html#_CPPv427AdbcConnectionReadPartitionP14AdbcConnectionPK7uint8_t6size_tP16ArrowArrayStreamP9AdbcError">AdbcConnectionReadPartition (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv421AdbcConnectionReleaseP14AdbcConnectionP9AdbcError">AdbcConnectionRelease (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv422AdbcConnectionRollbackP14AdbcConnectionP9AdbcError">AdbcConnectionRollback (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv423AdbcConnectionSetOptionP14AdbcConnectionPKcPKcP9AdbcError">AdbcConnectionSetOption (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv412AdbcDatabase">AdbcDatabase (C++ struct)</a>
-
-        <ul>
-          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase">(class in adbc_driver_manager)</a>
-</li>
-        </ul></li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N12AdbcDatabase12private_dataE">AdbcDatabase::private_data (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N12AdbcDatabase14private_driverE">AdbcDatabase::private_driver (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv416AdbcDatabaseInitP12AdbcDatabaseP9AdbcError">AdbcDatabaseInit (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv415AdbcDatabaseNewP12AdbcDatabaseP9AdbcError">AdbcDatabaseNew (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv419AdbcDatabaseReleaseP12AdbcDatabaseP9AdbcError">AdbcDatabaseRelease (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv421AdbcDatabaseSetOptionP12AdbcDatabasePKcPKcP9AdbcError">AdbcDatabaseSetOption (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv410AdbcDriver">AdbcDriver (C++ struct)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver16ConnectionCommitE">AdbcDriver::ConnectionCommit (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver17ConnectionGetInfoE">AdbcDriver::ConnectionGetInfo (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver20ConnectionGetObjectsE">AdbcDriver::ConnectionGetObjects (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver24ConnectionGetTableSchemaE">AdbcDriver::ConnectionGetTableSchema (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver23ConnectionGetTableTypesE">AdbcDriver::ConnectionGetTableTypes (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver14ConnectionInitE">AdbcDriver::ConnectionInit (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver13ConnectionNewE">AdbcDriver::ConnectionNew (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver23ConnectionReadPartitionE">AdbcDriver::ConnectionReadPartition (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver17ConnectionReleaseE">AdbcDriver::ConnectionRelease (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver18ConnectionRollbackE">AdbcDriver::ConnectionRollback (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver19ConnectionSetOptionE">AdbcDriver::ConnectionSetOption (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver12DatabaseInitE">AdbcDriver::DatabaseInit (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver11DatabaseNewE">AdbcDriver::DatabaseNew (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver15DatabaseReleaseE">AdbcDriver::DatabaseRelease (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver17DatabaseSetOptionE">AdbcDriver::DatabaseSetOption (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver12private_dataE">AdbcDriver::private_data (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver15private_managerE">AdbcDriver::private_manager (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver7releaseE">AdbcDriver::release (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver13StatementBindE">AdbcDriver::StatementBind (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver19StatementBindStreamE">AdbcDriver::StatementBindStream (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver26StatementExecutePartitionsE">AdbcDriver::StatementExecutePartitions (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver21StatementExecuteQueryE">AdbcDriver::StatementExecuteQuery (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver27StatementGetParameterSchemaE">AdbcDriver::StatementGetParameterSchema (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver12StatementNewE">AdbcDriver::StatementNew (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver16StatementPrepareE">AdbcDriver::StatementPrepare (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver16StatementReleaseE">AdbcDriver::StatementRelease (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver18StatementSetOptionE">AdbcDriver::StatementSetOption (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver20StatementSetSqlQueryE">AdbcDriver::StatementSetSqlQuery (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N10AdbcDriver25StatementSetSubstraitPlanE">AdbcDriver::StatementSetSubstraitPlan (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv418AdbcDriverInitFunc">AdbcDriverInitFunc (C++ type)</a>
-</li>
-        <li><a href="cpp/api/adbc_driver_manager.html#_CPPv436AdbcDriverManagerDatabaseSetInitFuncP12AdbcDatabase18AdbcDriverInitFuncP9AdbcError">AdbcDriverManagerDatabaseSetInitFunc (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv49AdbcError">AdbcError (C++ struct)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N9AdbcError7messageE">AdbcError::message (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N9AdbcError7releaseE">AdbcError::release (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N9AdbcError8sqlstateE">AdbcError::sqlstate (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N9AdbcError11vendor_codeE">AdbcError::vendor_code (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc_driver_manager.html#_CPPv414AdbcLoadDriverPKcPKciPvP9AdbcError">AdbcLoadDriver (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc_driver_manager.html#_CPPv426AdbcLoadDriverFromInitFunc18AdbcDriverInitFunciPvP9AdbcError">AdbcLoadDriverFromInitFunc (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv414AdbcPartitions">AdbcPartitions (C++ struct)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcPartitions14num_partitionsE">AdbcPartitions::num_partitions (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcPartitions17partition_lengthsE">AdbcPartitions::partition_lengths (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcPartitions10partitionsE">AdbcPartitions::partitions (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcPartitions12private_dataE">AdbcPartitions::private_data (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N14AdbcPartitions7releaseE">AdbcPartitions::release (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv413AdbcStatement">AdbcStatement (C++ struct)</a>
-
-        <ul>
-          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement">(class in adbc_driver_manager)</a>
-</li>
-        </ul></li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N13AdbcStatement12private_dataE">AdbcStatement::private_data (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv4N13AdbcStatement14private_driverE">AdbcStatement::private_driver (C++ member)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv417AdbcStatementBindP13AdbcStatementP10ArrowArrayP11ArrowSchemaP9AdbcError">AdbcStatementBind (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv423AdbcStatementBindStreamP13AdbcStatementP16ArrowArrayStreamP9AdbcError">AdbcStatementBindStream (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv430AdbcStatementExecutePartitionsP13AdbcStatementP11ArrowSchemaP14AdbcPartitionsP7int64_tP9AdbcError">AdbcStatementExecutePartitions (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv425AdbcStatementExecuteQueryP13AdbcStatementP16ArrowArrayStreamP7int64_tP9AdbcError">AdbcStatementExecuteQuery (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv431AdbcStatementGetParameterSchemaP13AdbcStatementP11ArrowSchemaP9AdbcError">AdbcStatementGetParameterSchema (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv416AdbcStatementNewP14AdbcConnectionP13AdbcStatementP9AdbcError">AdbcStatementNew (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv420AdbcStatementPrepareP13AdbcStatementP9AdbcError">AdbcStatementPrepare (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv420AdbcStatementReleaseP13AdbcStatementP9AdbcError">AdbcStatementRelease (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv422AdbcStatementSetOptionP13AdbcStatementPKcPKcP9AdbcError">AdbcStatementSetOption (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv424AdbcStatementSetSqlQueryP13AdbcStatementPKcP9AdbcError">AdbcStatementSetSqlQuery (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv429AdbcStatementSetSubstraitPlanP13AdbcStatementPK7uint8_t6size_tP9AdbcError">AdbcStatementSetSubstraitPlan (C++ function)</a>
-</li>
-        <li><a href="cpp/api/adbc.html#_CPPv414AdbcStatusCode">AdbcStatusCode (C++ type)</a>
-
-        <ul>
-          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode">(class in adbc_driver_manager)</a>
-</li>
-        </ul></li>
-        <li><a href="cpp/api/adbc_driver_manager.html#_CPPv421AdbcStatusCodeMessage14AdbcStatusCode">AdbcStatusCodeMessage (C++ function)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode">AdbcStatusCode (class in adbc_driver_manager)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowArrayHandle.address">address (adbc_driver_manager.ArrowArrayHandle attribute)</a>
 
@@ -674,9 +560,17 @@
           <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowSchemaHandle.address">(adbc_driver_manager.ArrowSchemaHandle attribute)</a>
 </li>
         </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.GetObjectsDepth.ALL">ALL (adbc_driver_manager.GetObjectsDepth attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.ALREADY_EXISTS">ALREADY_EXISTS (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.apilevel">apilevel (in module adbc_driver_manager.dbapi)</a>
 </li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.APPLICATION_NAME">APPLICATION_NAME (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.arraysize">arraysize (adbc_driver_manager.dbapi.Cursor property)</a>
+</li>
+        <li><a href="glossary.html#term-Arrow-Flight-SQL"><strong>Arrow Flight SQL</strong></a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowArrayHandle">ArrowArrayHandle (class in adbc_driver_manager)</a>
 </li>
@@ -684,6 +578,30 @@
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowSchemaHandle">ArrowSchemaHandle (class in adbc_driver_manager)</a>
 </li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.AUTH_OKTA_URL">AUTH_OKTA_URL (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.AUTH_TOKEN">AUTH_TOKEN (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.AUTH_TYPE">AUTH_TYPE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li>
+    authentication (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-0">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.AUTHORITY">AUTHORITY (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.AUTHORIZATION_HEADER">AUTHORIZATION_HEADER (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li>
+    autocommit (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-1">PostgreSQL</a>
+</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -692,14 +610,55 @@
   <h2>B</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    batch size (recipe)
+
+        <ul>
+          <li><a href="python/recipe/sqlite.html#index-0">SQLite</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.StatementOptions.BATCH_ROWS">BATCH_ROWS (adbc_driver_sqlite.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.StatementOptions.BATCH_SIZE_HINT_BYTES">BATCH_SIZE_HINT_BYTES (adbc_driver_postgresql.StatementOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.BINARY">BINARY (in module adbc_driver_manager.dbapi)</a>
+</li>
+        <li>
+    bind parameters (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-5">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.bind">bind() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.bind">bind() (adbc_driver_manager.AdbcStatement method)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.BIND_BY_NAME">BIND_BY_NAME (adbc_driver_manager.StatementOptions attribute)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.bind_stream">bind_stream() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
+        <li>
+    bulk append (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-3">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li>
+    bulk ingestion from PyArrow Dataset (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-2">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li>
+    bulk ingestion to temporary table (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-4">PostgreSQL</a>
+</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -710,28 +669,62 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.callproc">callproc() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.cancel">cancel() (adbc_driver_manager.AdbcConnection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.cancel">(adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.CANCELLED">CANCELLED (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.GetObjectsDepth.CATALOGS">CATALOGS (adbc_driver_manager.GetObjectsDepth attribute)</a>
+</li>
+        <li><a href="glossary.html#term-client-API"><strong>client API</strong></a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthFlowType.CLIENT_CREDENTIALS">CLIENT_CREDENTIALS (adbc_driver_flightsql.OAuthFlowType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.CLIENT_IDENTITY_PROVIDER">CLIENT_IDENTITY_PROVIDER (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.CLIENT_REQUEST_MFA_TOKEN">CLIENT_REQUEST_MFA_TOKEN (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.CLIENT_STORE_TEMP_CRED">CLIENT_STORE_TEMP_CRED (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.CLIENT_TIMEOUT">CLIENT_TIMEOUT (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.close">close() (adbc_driver_manager.AdbcConnection method)</a>
 
         <ul>
           <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase.close">(adbc_driver_manager.AdbcDatabase method)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.close">(adbc_driver_manager.AdbcStatement method)</a>
 </li>
           <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.close">(adbc_driver_manager.dbapi.Connection method)</a>
 </li>
           <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.close">(adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.GetObjectsDepth.COLUMNS">COLUMNS (adbc_driver_manager.GetObjectsDepth attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.commit">commit() (adbc_driver_manager.AdbcConnection method)</a>
 
         <ul>
           <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.commit">(adbc_driver_manager.dbapi.Connection method)</a>
 </li>
         </ul></li>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.connect">connect() (in module adbc_driver_manager.dbapi)</a>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.connect">connect() (in module adbc_driver_flightsql)</a>
 
         <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.dbapi.connect">(in module adbc_driver_flightsql.dbapi)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.connect">(in module adbc_driver_manager.dbapi)</a>
+</li>
           <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.connect">(in module adbc_driver_postgresql)</a>
 </li>
           <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.dbapi.connect">(in module adbc_driver_postgresql.dbapi)</a>
+</li>
+          <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.connect">(in module adbc_driver_snowflake)</a>
+</li>
+          <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.dbapi.connect">(in module adbc_driver_snowflake.dbapi)</a>
 </li>
           <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.connect">(in module adbc_driver_sqlite)</a>
 </li>
@@ -740,9 +733,43 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.connection">connection (adbc_driver_manager.dbapi.Cursor property)</a>
+        <li>
+    connecting to Dremio (recipe)
+
+        <ul>
+          <li><a href="python/recipe/flight_sql.html#index-0">Flight SQL</a>
 </li>
+        </ul></li>
+        <li><a href="glossary.html#term-connection"><strong>connection</strong></a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.connection">(adbc_driver_manager.dbapi.Cursor property)</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection">Connection (class in adbc_driver_manager.dbapi)</a>
+</li>
+        <li>
+    connection pooling (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-10">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li><a href="glossary.html#term-connection-profile"><strong>connection profile</strong></a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions">ConnectionOptions (class in adbc_driver_flightsql)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ConnectionOptions">(class in adbc_driver_manager)</a>
+</li>
+          <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.ConnectionOptions">(class in adbc_driver_postgresql)</a>
+</li>
+          <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.ConnectionOptions">(class in adbc_driver_sqlite)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ConnectionOptions.CURRENT_CATALOG">CURRENT_CATALOG (adbc_driver_manager.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ConnectionOptions.CURRENT_DB_SCHEMA">CURRENT_DB_SCHEMA (adbc_driver_manager.ConnectionOptions attribute)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor">Cursor (class in adbc_driver_manager.dbapi)</a>
 </li>
@@ -756,20 +783,55 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="glossary.html#term-database"><strong>database</strong></a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.DATABASE">DATABASE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.DatabaseError">DatabaseError</a>
 </li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions">DatabaseOptions (class in adbc_driver_flightsql)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.DatabaseOptions">(class in adbc_driver_manager)</a>
+</li>
+          <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions">(class in adbc_driver_snowflake)</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.DataError">DataError</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Date">Date (in module adbc_driver_manager.dbapi)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.DateFromTicks">DateFromTicks() (in module adbc_driver_manager.dbapi)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.DATETIME">DATETIME (in module adbc_driver_manager.dbapi)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.GetObjectsDepth.DB_SCHEMAS">DB_SCHEMAS (adbc_driver_manager.GetObjectsDepth attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.description">description (adbc_driver_manager.dbapi.Cursor property)</a>
 </li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.DISABLE_TELEMETRY">DISABLE_TELEMETRY (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="glossary.html#term-driver"><strong>driver</strong></a>
+</li>
+        <li><a href="glossary.html#term-driver-manager"><strong>driver manager</strong></a>
+
+        <ul>
+          <li><a href="python/recipe/driver_manager.html#index-0">dynamic driver loading (recipe)</a>
+</li>
+          <li><a href="python/recipe/driver_manager.html#index-1">prepared statements (recipe)</a>
+</li>
+        </ul></li>
+        <li><a href="glossary.html#term-driver-manifest"><strong>driver manifest</strong></a>
+</li>
+        <li>
+    dynamic driver loading (recipe)
+
+        <ul>
+          <li><a href="python/recipe/driver_manager.html#index-0">driver manager</a>
+</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -778,19 +840,31 @@
   <h2>E</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.dbapi.AdbcSqliteConnection.enable_load_extension">enable_load_extension() (adbc_driver_sqlite.dbapi.AdbcSqliteConnection method)</a>
+</li>
+        <li><a href="glossary.html#term-entrypoint"><strong>entrypoint</strong></a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.Error">Error</a>
 </li>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.execute">execute() (adbc_driver_manager.dbapi.Cursor method)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.execute">execute() (adbc_driver_manager.dbapi.Connection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.execute">(adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.execute_partitions">execute_partitions() (adbc_driver_manager.AdbcStatement method)</a>
-</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.execute_partitions">execute_partitions() (adbc_driver_manager.AdbcStatement method)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.execute_query">execute_query() (adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.execute_schema">execute_schema() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.execute_update">execute_update() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.executemany">executemany() (adbc_driver_manager.dbapi.Cursor method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.executescript">executescript() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -800,20 +874,33 @@
   <h2>F</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetch_arrow">fetch_arrow() (adbc_driver_manager.dbapi.Cursor method)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetch_arrow_table">fetch_arrow_table() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetch_df">fetch_df() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetchall">fetchall() (adbc_driver_manager.dbapi.Cursor method)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetch_polars">fetch_polars() (adbc_driver_manager.dbapi.Cursor method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetch_record_batch">fetch_record_batch() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetchall">fetchall() (adbc_driver_manager.dbapi.Cursor method)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetchallarrow">fetchallarrow() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetchmany">fetchmany() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.fetchone">fetchone() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
+        <li>
+    Flight SQL
+
+        <ul>
+          <li><a href="python/recipe/flight_sql.html#index-0">connecting to Dremio (recipe)</a>
+</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -822,12 +909,64 @@
   <h2>G</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    get query result set schema (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-8">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li>
+    get table schema (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-7">PostgreSQL</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_info">get_info() (adbc_driver_manager.AdbcConnection method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_objects">get_objects() (adbc_driver_manager.AdbcConnection method)</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_option">get_option() (adbc_driver_manager.AdbcConnection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase.get_option">(adbc_driver_manager.AdbcDatabase method)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.get_option">(adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_option_bytes">get_option_bytes() (adbc_driver_manager.AdbcConnection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase.get_option_bytes">(adbc_driver_manager.AdbcDatabase method)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.get_option_bytes">(adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_option_float">get_option_float() (adbc_driver_manager.AdbcConnection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase.get_option_float">(adbc_driver_manager.AdbcDatabase method)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.get_option_float">(adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_option_int">get_option_int() (adbc_driver_manager.AdbcConnection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase.get_option_int">(adbc_driver_manager.AdbcDatabase method)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.get_option_int">(adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.get_parameter_schema">get_parameter_schema() (adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_statistic_names">get_statistic_names() (adbc_driver_manager.AdbcConnection method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_statistics">get_statistics() (adbc_driver_manager.AdbcConnection method)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_table_schema">get_table_schema() (adbc_driver_manager.AdbcConnection method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.get_table_types">get_table_types() (adbc_driver_manager.AdbcConnection method)</a>
@@ -838,17 +977,123 @@
   </tr></table>
 </section>
 
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.HOST">HOST (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="I" class="genindex-section">
   <h2>I</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.IntegrityError">IntegrityError</a>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType.ID_TOKEN">ID_TOKEN (adbc_driver_flightsql.OAuthTokenType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.INCREMENTAL">INCREMENTAL (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.INGEST_COPY_CONCURRENCY">INGEST_COPY_CONCURRENCY (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.INGEST_MODE">INGEST_MODE (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.INGEST_TARGET_CATALOG">INGEST_TARGET_CATALOG (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.INGEST_TARGET_DB_SCHEMA">INGEST_TARGET_DB_SCHEMA (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.INGEST_TARGET_FILE_SIZE">INGEST_TARGET_FILE_SIZE (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.INGEST_TARGET_TABLE">INGEST_TARGET_TABLE (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.INGEST_TEMPORARY">INGEST_TEMPORARY (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.INGEST_UPLOAD_CONCURRENCY">INGEST_UPLOAD_CONCURRENCY (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.INGEST_WRITER_CONCURRENCY">INGEST_WRITER_CONCURRENCY (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.INTEGRITY">INTEGRITY (adbc_driver_manager.AdbcStatusCode attribute)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.IntegrityError">IntegrityError</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.InterfaceError">InterfaceError</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.INTERNAL">INTERNAL (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.InternalError">InternalError</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.INVALID_ARGUMENT">INVALID_ARGUMENT (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.INVALID_DATA">INVALID_DATA (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.INVALID_STATE">INVALID_STATE (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.IO">IO (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowArrayHandle.is_valid">is_valid (adbc_driver_manager.ArrowArrayHandle attribute)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowArrayStreamHandle.is_valid">(adbc_driver_manager.ArrowArrayStreamHandle attribute)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowSchemaHandle.is_valid">(adbc_driver_manager.ArrowSchemaHandle attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ConnectionOptions.ISOLATION_LEVEL">ISOLATION_LEVEL (adbc_driver_manager.ConnectionOptions attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType.JWT">JWT (adbc_driver_flightsql.OAuthTokenType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.JWT_EXPIRE_TIMEOUT">JWT_EXPIRE_TIMEOUT (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.JWT_PRIVATE_KEY">JWT_PRIVATE_KEY (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.JWT_PRIVATE_KEY_PASSWORD">JWT_PRIVATE_KEY_PASSWORD (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.JWT_PRIVATE_KEY_VALUE">JWT_PRIVATE_KEY_VALUE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.KEEP_SESSION_ALIVE">KEEP_SESSION_ALIVE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.LAST_FLIGHT_INFO">LAST_FLIGHT_INFO (adbc_driver_flightsql.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.dbapi.AdbcSqliteConnection.load_extension">load_extension() (adbc_driver_sqlite.dbapi.AdbcSqliteConnection method)</a>
+</li>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.ConnectionOptions.LOAD_EXTENSION_ENABLED">LOAD_EXTENSION_ENABLED (adbc_driver_sqlite.ConnectionOptions attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.ConnectionOptions.LOAD_EXTENSION_ENTRYPOINT">LOAD_EXTENSION_ENTRYPOINT (adbc_driver_sqlite.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.ConnectionOptions.LOAD_EXTENSION_PATH">LOAD_EXTENSION_PATH (adbc_driver_sqlite.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.LOGIN_TIMEOUT">LOGIN_TIMEOUT (adbc_driver_snowflake.DatabaseOptions attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -862,6 +1107,10 @@
     module
 
         <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#module-adbc_driver_flightsql">adbc_driver_flightsql</a>
+</li>
+          <li><a href="python/api/adbc_driver_flightsql.html#module-adbc_driver_flightsql.dbapi">adbc_driver_flightsql.dbapi</a>
+</li>
           <li><a href="python/api/adbc_driver_manager.html#module-adbc_driver_manager">adbc_driver_manager</a>
 </li>
           <li><a href="python/api/adbc_driver_manager.html#module-adbc_driver_manager.dbapi">adbc_driver_manager.dbapi</a>
@@ -870,11 +1119,21 @@
 </li>
           <li><a href="python/api/adbc_driver_postgresql.html#module-adbc_driver_postgresql.dbapi">adbc_driver_postgresql.dbapi</a>
 </li>
+          <li><a href="python/api/adbc_driver_snowflake.html#module-adbc_driver_snowflake">adbc_driver_snowflake</a>
+</li>
+          <li><a href="python/api/adbc_driver_snowflake.html#module-adbc_driver_snowflake.dbapi">adbc_driver_snowflake.dbapi</a>
+</li>
           <li><a href="python/api/adbc_driver_sqlite.html#module-adbc_driver_sqlite">adbc_driver_sqlite</a>
 </li>
           <li><a href="python/api/adbc_driver_sqlite.html#module-adbc_driver_sqlite.dbapi">adbc_driver_sqlite.dbapi</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.MTLS_CERT_CHAIN">MTLS_CERT_CHAIN (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.MTLS_PRIVATE_KEY">MTLS_PRIVATE_KEY (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -887,8 +1146,12 @@
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.nextset">nextset() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.NOT_FOUND">NOT_FOUND (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.NOT_IMPLEMENTED">NOT_IMPLEMENTED (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.NotSupportedError">NotSupportedError</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.NUMBER">NUMBER (in module adbc_driver_manager.dbapi)</a>
@@ -901,7 +1164,57 @@
   <h2>O</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_AUTH_URI">OAUTH_AUTH_URI (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_CLIENT_ID">OAUTH_CLIENT_ID (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_CLIENT_SECRET">OAUTH_CLIENT_SECRET (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_ACTOR_TOKEN">OAUTH_EXCHANGE_ACTOR_TOKEN (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_ACTOR_TOKEN_TYPE">OAUTH_EXCHANGE_ACTOR_TOKEN_TYPE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_AUD">OAUTH_EXCHANGE_AUD (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_REQUESTED_TOKEN_TYPE">OAUTH_EXCHANGE_REQUESTED_TOKEN_TYPE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_RESOURCE">OAUTH_EXCHANGE_RESOURCE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_SCOPE">OAUTH_EXCHANGE_SCOPE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_SUBJECT_TOKEN">OAUTH_EXCHANGE_SUBJECT_TOKEN (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_EXCHANGE_SUBJECT_TOKEN_TYPE">OAUTH_EXCHANGE_SUBJECT_TOKEN_TYPE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_FLOW">OAUTH_FLOW (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_REDIRECT_URI">OAUTH_REDIRECT_URI (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_SCOPE">OAUTH_SCOPE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.OAUTH_TOKEN_URI">OAUTH_TOKEN_URI (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthFlowType">OAuthFlowType (class in adbc_driver_flightsql)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType">OAuthTokenType (class in adbc_driver_flightsql)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.OCSP_FAIL_OPEN_MODE">OCSP_FAIL_OPEN_MODE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.OK">OK (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.OperationalError">OperationalError</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.OPTION_BOOL_SESSION_OPTION_PREFIX">OPTION_BOOL_SESSION_OPTION_PREFIX (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.OPTION_ERASE_SESSION_OPTION_PREFIX">OPTION_ERASE_SESSION_OPTION_PREFIX (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.OPTION_SESSION_OPTION_PREFIX">OPTION_SESSION_OPTION_PREFIX (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.OPTION_SESSION_OPTIONS">OPTION_SESSION_OPTIONS (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.OPTION_STRING_LIST_SESSION_OPTION_PREFIX">OPTION_STRING_LIST_SESSION_OPTION_PREFIX (adbc_driver_flightsql.ConnectionOptions attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -911,13 +1224,98 @@
   <h2>P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    pandas integration (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-11">PostgreSQL</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.paramstyle">paramstyle (in module adbc_driver_manager.dbapi)</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.DatabaseOptions.PASSWORD">PASSWORD (adbc_driver_manager.DatabaseOptions attribute)</a>
+</li>
+        <li>
+    polars integration (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-12">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.PORT">PORT (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li>
+    PostgreSQL
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-0">authentication (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-1">autocommit (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-5">bind parameters (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-3">bulk append (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-2">bulk ingestion from PyArrow Dataset (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-4">bulk ingestion to temporary table (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-10">connection pooling (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-8">get query result set schema (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-7">get table schema (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-11">pandas integration (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-12">polars integration (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-9">query catalog (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-6">statement options (recipe)</a>
+</li>
+          <li><a href="python/recipe/postgresql.html#index-1">transactions (recipe)</a>
+</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.PREFETCH_CONCURRENCY">PREFETCH_CONCURRENCY (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.prepare">prepare() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
+        <li>
+    prepared statements (recipe)
+
+        <ul>
+          <li><a href="python/recipe/driver_manager.html#index-1">driver manager</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ProgrammingError">ProgrammingError</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions.PROGRESS">PROGRESS (adbc_driver_manager.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.PROTOCOL">PROTOCOL (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    query catalog (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-9">PostgreSQL</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.QUERY_TAG">QUERY_TAG (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.QUEUE_SIZE">QUEUE_SIZE (adbc_driver_flightsql.StatementOptions attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -929,20 +1327,46 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.read_partition">read_partition() (adbc_driver_manager.AdbcConnection method)</a>
 </li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType.REFRESH_TOKEN">REFRESH_TOKEN (adbc_driver_flightsql.OAuthTokenType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.REGION">REGION (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowArrayHandle.release">release() (adbc_driver_manager.ArrowArrayHandle method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowArrayStreamHandle.release">(adbc_driver_manager.ArrowArrayStreamHandle method)</a>
+</li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.ArrowSchemaHandle.release">(adbc_driver_manager.ArrowSchemaHandle method)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.REQUEST_TIMEOUT">REQUEST_TIMEOUT (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions.RESULT_QUEUE_SIZE">RESULT_QUEUE_SIZE (adbc_driver_snowflake.StatementOptions attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.ROLE">ROLE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.rollback">rollback() (adbc_driver_manager.AdbcConnection method)</a>
 
         <ul>
           <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Connection.rollback">(adbc_driver_manager.dbapi.Connection method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.rowcount">rowcount (adbc_driver_manager.dbapi.Cursor property)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.ROWID">ROWID (in module adbc_driver_manager.dbapi)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.rownumber">rownumber (adbc_driver_manager.dbapi.Cursor property)</a>
 </li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.RPC_CALL_HEADER_PREFIX">RPC_CALL_HEADER_PREFIX (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.RPC_CALL_HEADER_PREFIX">(adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.RPC_CALL_HEADER_PREFIX">(adbc_driver_flightsql.StatementOptions attribute)</a>
+</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -951,21 +1375,69 @@
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType.SAML1">SAML1 (adbc_driver_flightsql.OAuthTokenType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthTokenType.SAML2">SAML2 (adbc_driver_flightsql.OAuthTokenType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.SCHEMA">SCHEMA (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.set_autocommit">set_autocommit() (adbc_driver_manager.AdbcConnection method)</a>
 </li>
-        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.set_options">set_options() (adbc_driver_manager.AdbcStatement method)</a>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcConnection.set_options">set_options() (adbc_driver_manager.AdbcConnection method)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcDatabase.set_options">(adbc_driver_manager.AdbcDatabase method)</a>
 </li>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.set_options">(adbc_driver_manager.AdbcStatement method)</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.set_sql_query">set_sql_query() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatement.set_substrait_plan">set_substrait_plan() (adbc_driver_manager.AdbcStatement method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.setinputsizes">setinputsizes() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Cursor.setoutputsize">setoutputsize() (adbc_driver_manager.dbapi.Cursor method)</a>
 </li>
+        <li>
+    SQLite
+
+        <ul>
+          <li><a href="python/recipe/sqlite.html#index-0">batch size (recipe)</a>
+</li>
+          <li><a href="python/recipe/sqlite.html#index-0">type inference (recipe)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.SSL_SKIP_VERIFY">SSL_SKIP_VERIFY (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="glossary.html#term-statement"><strong>statement</strong></a>
+</li>
+        <li>
+    statement options (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-6">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions">StatementOptions (class in adbc_driver_flightsql)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.StatementOptions">(class in adbc_driver_manager)</a>
+</li>
+          <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.StatementOptions">(class in adbc_driver_postgresql)</a>
+</li>
+          <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.StatementOptions">(class in adbc_driver_snowflake)</a>
+</li>
+          <li><a href="python/api/adbc_driver_sqlite.html#adbc_driver_sqlite.StatementOptions">(class in adbc_driver_sqlite)</a>
+</li>
+        </ul></li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.STRING">STRING (in module adbc_driver_manager.dbapi)</a>
+</li>
+        <li><a href="glossary.html#term-Substrait"><strong>Substrait</strong></a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.SUBSTRAIT_VERSION">SUBSTRAIT_VERSION (adbc_driver_flightsql.StatementOptions attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -975,17 +1447,93 @@
   <h2>T</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.GetObjectsDepth.TABLES">TABLES (adbc_driver_manager.GetObjectsDepth attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.threadsafety">threadsafety (in module adbc_driver_manager.dbapi)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Time">Time (in module adbc_driver_manager.dbapi)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.TimeFromTicks">TimeFromTicks() (in module adbc_driver_manager.dbapi)</a>
 </li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.TIMEOUT">TIMEOUT (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.TIMEOUT_FETCH">TIMEOUT_FETCH (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.TIMEOUT_FETCH">(adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.TIMEOUT_FETCH">(adbc_driver_flightsql.StatementOptions attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.TIMEOUT_QUERY">TIMEOUT_QUERY (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.TIMEOUT_QUERY">(adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.TIMEOUT_QUERY">(adbc_driver_flightsql.StatementOptions attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.ConnectionOptions.TIMEOUT_UPDATE">TIMEOUT_UPDATE (adbc_driver_flightsql.ConnectionOptions attribute)</a>
+
+        <ul>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.TIMEOUT_UPDATE">(adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+          <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.StatementOptions.TIMEOUT_UPDATE">(adbc_driver_flightsql.StatementOptions attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.Timestamp">Timestamp (in module adbc_driver_manager.dbapi)</a>
 </li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.dbapi.TimestampFromTicks">TimestampFromTicks() (in module adbc_driver_manager.dbapi)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.TLS_OVERRIDE_HOSTNAME">TLS_OVERRIDE_HOSTNAME (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.TLS_ROOT_CERTS">TLS_ROOT_CERTS (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.TLS_SKIP_VERIFY">TLS_SKIP_VERIFY (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.OAuthFlowType.TOKEN_EXCHANGE">TOKEN_EXCHANGE (adbc_driver_flightsql.OAuthFlowType attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.ConnectionOptions.TRANSACTION_STATUS">TRANSACTION_STATUS (adbc_driver_postgresql.ConnectionOptions attribute)</a>
+</li>
+        <li>
+    transactions (recipe)
+
+        <ul>
+          <li><a href="python/recipe/postgresql.html#index-1">PostgreSQL</a>
+</li>
+        </ul></li>
+        <li>
+    type inference (recipe)
+
+        <ul>
+          <li><a href="python/recipe/sqlite.html#index-0">SQLite</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.UNAUTHENTICATED">UNAUTHENTICATED (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.UNAUTHORIZED">UNAUTHORIZED (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.AdbcStatusCode.UNKNOWN">UNKNOWN (adbc_driver_manager.AdbcStatusCode attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.DatabaseOptions.URI">URI (adbc_driver_manager.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_postgresql.html#adbc_driver_postgresql.StatementOptions.USE_COPY">USE_COPY (adbc_driver_postgresql.StatementOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.USE_HIGH_PRECISION">USE_HIGH_PRECISION (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.DatabaseOptions.USERNAME">USERNAME (adbc_driver_manager.DatabaseOptions attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -995,7 +1543,19 @@
   <h2>W</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_snowflake.html#adbc_driver_snowflake.DatabaseOptions.WAREHOUSE">WAREHOUSE (adbc_driver_snowflake.DatabaseOptions attribute)</a>
+</li>
         <li><a href="python/api/adbc_driver_manager.html#adbc_driver_manager.Warning">Warning</a>
+</li>
+        <li><a href="glossary.html#term-wire-protocol"><strong>wire protocol</strong></a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.WITH_BLOCK">WITH_BLOCK (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.WITH_COOKIE_MIDDLEWARE">WITH_COOKIE_MIDDLEWARE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
+</li>
+        <li><a href="python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.WITH_MAX_MSG_SIZE">WITH_MAX_MSG_SIZE (adbc_driver_flightsql.DatabaseOptions attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1013,7 +1573,10 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, Apache Arrow Developers
+                Copyright &#169; 2022–2025 The Apache Software Foundation.  Apache Arrow, Arrow,
+Apache, the Apache logo, and the Apache Arrow project logo are either
+registered trademarks or trademarks of The Apache Software Foundation in the
+United States and other countries.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1033,16 +1596,13 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/furo.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <script src="_static/design-tabs.js"></script>
+</div><script src="_static/documentation_options.js?v=35d75c9f"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     
 <script async defer src="../version.js"></script></body>
 </html>

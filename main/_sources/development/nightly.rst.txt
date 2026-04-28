@@ -70,6 +70,7 @@ https://gemfury.com/arrow-adbc-nightlies
 Example::
 
   pip install \
+        --pre \
         --extra-index-url https://repo.fury.io/arrow-adbc-nightlies \
         adbc-driver-manager
 
@@ -89,5 +90,5 @@ Example::
      - Yes ✅
 
    * - Windows
-     - No ✅
+     - Yes ✅
      - No ❌

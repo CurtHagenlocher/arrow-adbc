@@ -22,6 +22,9 @@ C and C++
 .. toctree::
    :maxdepth: 2
 
+   quickstart
    driver_manager
    concurrency
+   driver_example
+   static_linking
    api/index
