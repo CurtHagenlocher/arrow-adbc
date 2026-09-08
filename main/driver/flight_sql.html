@@ -13,19 +13,19 @@
 <meta property="og:image" content="https://arrow.apache.org/adbc/main/_static/banner.png" />
 <meta property="og:image:alt" content="ADBC" />
 <meta name="description" content="Language: Go Status: Stable The Flight SQL Driver provides access to any database implementing a Arrow Flight SQL compatible endpoint. Installation: C/C++ Install libadbc-driver-flightsql from cond..." />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="JDBC Adapter" href="jdbc.html"><link rel="prev" title="DuckDB Support" href="duckdb.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html">
         <link rel="prefetch" href="../_static/logo-light.png" as="image">
         <link rel="prefetch" href="../_static/logo-dark.png" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Flight SQL Driver - ADBC 24 (dev) documentation</title>
+        <title>Flight SQL Driver - ADBC 25 (dev) Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=56d6027c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0200acfe" />
+    <link rel="stylesheet" type="text/css" href="../_static/fontawesome/css/all.min.css?v=3bd1cf1d" />
     
     
 
@@ -52,7 +52,7 @@
   }
 </style>
 <script>
-  const currentVersion = "24 (dev)";
+  const currentVersion = "25 (dev)";
   const versionsRoot = "../..";
 </script>
 <style>
@@ -125,7 +125,7 @@
     </script>
     
 <nav id="version-switcher">
-  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 24 (dev)</button>
+  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 25 (dev)</button>
   <div class="versions">
     <ul></ul>
   </div>
@@ -250,7 +250,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">ADBC 24 (dev) documentation</div></a>
+      <a href="../index.html"><div class="brand">ADBC 25 (dev) Documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -275,7 +275,7 @@
     <img class="sidebar-logo only-dark" src="../_static/logo-dark.png" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ADBC 24 (dev) documentation</span>
+  <span class="sidebar-brand-text">ADBC 25 (dev) Documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -283,10 +283,16 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+  <p class="caption" role="heading"><span class="caption-text">Connect</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../client_libraries.html">Client Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Drivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations.html">Tools &amp; Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection_profiles.html">Connection Profiles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Build</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="authoring.html">Writing New Drivers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Supported Environments</span></p>
 <ul>
@@ -334,24 +340,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../r/index.html">R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ruby/index.html">Ruby</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../rust/index.html">Rust</a><input aria-label="Toggle navigation of Rust" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../rust/quickstart.html">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rust/driver_manager.html">Driver Manager</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://docs.rs/adbc_core/latest/adbc_core/">Rust API Reference</a></li>
 </ul>
 </li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Drivers</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="status.html">Driver Implementation Status</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bigquery.html">BigQuery Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="duckdb.html">DuckDB Support</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Flight SQL Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jdbc.html">JDBC Adapter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sqlite.html">SQLite Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authoring.html">Writing New Drivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Specification</span></p>
 <ul>
@@ -363,12 +359,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../format/connection_profiles.html">ADBC Driver Manager and Connection Profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../format/related_work.html">Related Work</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contribute</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../development/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development/nightly.html">Nightly Packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development/versioning.html">Versioning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development/releasing.html">Release Management Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -414,9 +416,9 @@
           <section id="flight-sql-driver">
 <h1>Flight SQL Driver<a class="headerlink" href="#flight-sql-driver" title="Link to this heading">¶</a></h1>
 <p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Language: Go</span>
-<a class="sd-sphinx-override sd-badge sd-bg-success sd-bg-text-success reference internal" href="status.html#driver-status"><span class="std std-ref">Status: Stable</span></a></p>
+<span class="sd-sphinx-override sd-badge sd-bg-success sd-bg-text-success">Status: Stable</span></p>
 <p>The Flight SQL Driver provides access to any database implementing a
-<a class="reference external" href="https://arrow.apache.org/docs/format/FlightSql.html" title="(in Apache Arrow v24.0.0)"><span>Arrow Flight SQL</span></a> compatible endpoint.</p>
+<a class="reference external" href="https://arrow.apache.org/docs/format/FlightSql.html" title="(in Apache Arrow v25.0.1)"><span>Arrow Flight SQL</span></a> compatible endpoint.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <div class="sd-tab-set docutils">
@@ -452,7 +454,7 @@ Python</label><div class="sd-tab-content docutils">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="r" for="sd-tab-item-3">
 R</label><div class="sd-tab-content docutils">
 <p>Install <a class="reference external" href="https://community.r-multiverse.org/adbcflightsql/">adbcflightsql</a> from R-multiverse:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;adbcflightsql&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">repos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://community.r-multiverse.org&quot;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">"adbcflightsql"</span><span class="p">,</span><span class="w"> </span><span class="n">repos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"https://community.r-multiverse.org"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -467,13 +469,13 @@ the <a class="reference external" href="https://arrow.apache.org/adbc/main/cpp/a
 <input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="cpp" for="sd-tab-item-4">
 C++</label><div class="sd-tab-content docutils">
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;arrow-adbc/adbc.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"arrow-adbc/adbc.h"</span>
 
 <span class="c1">// Ignoring error handling</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">AdbcDatabase</span><span class="w"> </span><span class="n">database</span><span class="p">;</span>
 <span class="n">AdbcDatabaseNew</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
-<span class="n">AdbcDatabaseSetOption</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;driver&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;adbc_driver_flightsql&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
-<span class="n">AdbcDatabaseSetOption</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uri&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;grpc://localhost:8080&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<span class="n">AdbcDatabaseSetOption</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">"driver"</span><span class="p">,</span><span class="w"> </span><span class="s">"adbc_driver_flightsql"</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<span class="n">AdbcDatabaseSetOption</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">"uri"</span><span class="p">,</span><span class="w"> </span><span class="s">"flightsql://localhost:8080?transport=tcp"</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 <span class="n">AdbcDatabaseInit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -488,15 +490,15 @@ Python</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">adbc_driver_flightsql</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">adbc_driver_flightsql.dbapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">connect</span>
 
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">}</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"foo"</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">}</span>
 
 <span class="k">with</span> <span class="n">connect</span><span class="p">(</span>
-    <span class="s2">&quot;grpc+tls://localhost:8080&quot;</span><span class="p">,</span>
+    <span class="s2">"flightsql://localhost:8080"</span><span class="p">,</span>
     <span class="n">db_kwargs</span><span class="o">=</span><span class="p">{</span>
-        <span class="n">DatabaseOptions</span><span class="o">.</span><span class="n">AUTHORIZATION_HEADER</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;Bearer &lt;token&gt;&quot;</span><span class="p">,</span>
-        <span class="n">DatabaseOptions</span><span class="o">.</span><span class="n">TLS_SKIP_VERIFY</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+        <span class="n">DatabaseOptions</span><span class="o">.</span><span class="n">AUTHORIZATION_HEADER</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">"Bearer &lt;token&gt;"</span><span class="p">,</span>
+        <span class="n">DatabaseOptions</span><span class="o">.</span><span class="n">TLS_SKIP_VERIFY</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">"true"</span><span class="p">,</span>
         <span class="o">**</span><span class="p">{</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DatabaseOptions</span><span class="o">.</span><span class="n">RPC_CALL_HEADER_PREFIX</span><span class="o">.</span><span class="n">value</span><span class="si">}{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">v</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">DatabaseOptions</span><span class="o">.</span><span class="n">RPC_CALL_HEADER_PREFIX</span><span class="o">.</span><span class="n">value</span><span class="si">}{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">v</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">},</span>
     <span class="p">}</span>
@@ -514,80 +516,80 @@ Go</label><div class="sd-tab-content docutils">
 <span class="linenos"> 22</span><span class="kn">package</span><span class="w"> </span><span class="nx">flightsql_test</span>
 <span class="linenos"> 23</span>
 <span class="linenos"> 24</span><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="linenos"> 25</span><span class="w">	</span><span class="s">&quot;context&quot;</span>
-<span class="linenos"> 26</span><span class="w">	</span><span class="s">&quot;database/sql&quot;</span>
-<span class="linenos"> 27</span><span class="w">	</span><span class="s">&quot;errors&quot;</span>
-<span class="linenos"> 28</span><span class="w">	</span><span class="s">&quot;fmt&quot;</span>
-<span class="linenos"> 29</span><span class="w">	</span><span class="s">&quot;log&quot;</span>
+<span class="linenos"> 25</span><span class="w">	</span><span class="s">"context"</span>
+<span class="linenos"> 26</span><span class="w">	</span><span class="s">"database/sql"</span>
+<span class="linenos"> 27</span><span class="w">	</span><span class="s">"errors"</span>
+<span class="linenos"> 28</span><span class="w">	</span><span class="s">"fmt"</span>
+<span class="linenos"> 29</span><span class="w">	</span><span class="s">"log"</span>
 <span class="linenos"> 30</span>
-<span class="linenos"> 31</span><span class="w">	</span><span class="s">&quot;github.com/apache/arrow-adbc/go/adbc&quot;</span>
-<span class="linenos"> 32</span><span class="w">	</span><span class="nx">drv</span><span class="w"> </span><span class="s">&quot;github.com/apache/arrow-adbc/go/adbc/driver/flightsql&quot;</span>
-<span class="linenos"> 33</span><span class="w">	</span><span class="s">&quot;github.com/apache/arrow-go/v18/arrow/array&quot;</span>
-<span class="linenos"> 34</span><span class="w">	</span><span class="s">&quot;github.com/apache/arrow-go/v18/arrow/flight&quot;</span>
-<span class="linenos"> 35</span><span class="w">	</span><span class="s">&quot;github.com/apache/arrow-go/v18/arrow/flight/flightsql&quot;</span>
-<span class="linenos"> 36</span><span class="w">	</span><span class="nx">sqlite</span><span class="w"> </span><span class="s">&quot;github.com/apache/arrow-go/v18/arrow/flight/flightsql/example&quot;</span>
-<span class="linenos"> 37</span><span class="w">	</span><span class="s">&quot;github.com/apache/arrow-go/v18/arrow/memory&quot;</span>
-<span class="linenos"> 38</span><span class="w">	</span><span class="nx">_</span><span class="w"> </span><span class="s">&quot;modernc.org/sqlite&quot;</span>
+<span class="linenos"> 31</span><span class="w">	</span><span class="s">"github.com/apache/arrow-adbc/go/adbc"</span>
+<span class="linenos"> 32</span><span class="w">	</span><span class="nx">drv</span><span class="w"> </span><span class="s">"github.com/apache/arrow-adbc/go/adbc/driver/flightsql"</span>
+<span class="linenos"> 33</span><span class="w">	</span><span class="s">"github.com/apache/arrow-go/v18/arrow/array"</span>
+<span class="linenos"> 34</span><span class="w">	</span><span class="s">"github.com/apache/arrow-go/v18/arrow/flight"</span>
+<span class="linenos"> 35</span><span class="w">	</span><span class="s">"github.com/apache/arrow-go/v18/arrow/flight/flightsql"</span>
+<span class="linenos"> 36</span><span class="w">	</span><span class="nx">sqlite</span><span class="w"> </span><span class="s">"github.com/apache/arrow-go/v18/arrow/flight/flightsql/example"</span>
+<span class="linenos"> 37</span><span class="w">	</span><span class="s">"github.com/apache/arrow-go/v18/arrow/memory"</span>
+<span class="linenos"> 38</span><span class="w">	</span><span class="nx">_</span><span class="w"> </span><span class="s">"modernc.org/sqlite"</span>
 <span class="linenos"> 39</span><span class="p">)</span>
 <span class="linenos"> 40</span>
-<span class="linenos"> 41</span><span class="kd">var</span><span class="w"> </span><span class="nx">headers</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bar&quot;</span><span class="p">}</span>
+<span class="linenos"> 41</span><span class="kd">var</span><span class="w"> </span><span class="nx">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">"foo"</span><span class="p">:</span><span class="w"> </span><span class="s">"bar"</span><span class="p">}</span>
 <span class="linenos"> 42</span>
 <span class="linenos"> 43</span><span class="kd">func</span><span class="w"> </span><span class="nx">FlightSQLExample</span><span class="p">(</span><span class="nx">uri</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="linenos"> 44</span><span class="w">	</span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">()</span>
-<span class="linenos"> 45</span><span class="w">	</span><span class="nx">options</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
+<span class="linenos"> 45</span><span class="w">	</span><span class="nx">options</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kt">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
 <span class="linenos"> 46</span><span class="w">		</span><span class="nx">adbc</span><span class="p">.</span><span class="nx">OptionKeyURI</span><span class="p">:</span><span class="w"> </span><span class="nx">uri</span><span class="p">,</span>
 <span class="linenos"> 47</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 48</span>
 <span class="linenos"> 49</span><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">headers</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 50</span><span class="w">		</span><span class="nx">options</span><span class="p">[</span><span class="nx">drv</span><span class="p">.</span><span class="nx">OptionRPCCallHeaderPrefix</span><span class="o">+</span><span class="nx">k</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">v</span>
+<span class="linenos"> 50</span><span class="w">		</span><span class="nx">options</span><span class="p">[</span><span class="nx">drv</span><span class="p">.</span><span class="nx">OptionRPCCallHeaderPrefix</span><span class="o">+</span><span class="nx">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">v</span>
 <span class="linenos"> 51</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 52</span>
 <span class="linenos"> 53</span><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">alloc</span><span class="w"> </span><span class="nx">memory</span><span class="p">.</span><span class="nx">Allocator</span>
 <span class="linenos"> 54</span><span class="w">	</span><span class="nx">drv</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">drv</span><span class="p">.</span><span class="nx">NewDriver</span><span class="p">(</span><span class="nx">alloc</span><span class="p">)</span>
 <span class="linenos"> 55</span><span class="w">	</span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">drv</span><span class="p">.</span><span class="nx">NewDatabase</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
 <span class="linenos"> 56</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 57</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to open database: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="linenos"> 57</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"failed to open database: %s\n"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
 <span class="linenos"> 58</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 59</span><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="kd">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 60</span><span class="w">		</span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">Close</span><span class="p">())</span>
+<span class="linenos"> 60</span><span class="w">		</span><span class="nx">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">Close</span><span class="p">())</span>
 <span class="linenos"> 61</span><span class="w">	</span><span class="p">}()</span>
 <span class="linenos"> 62</span>
 <span class="linenos"> 63</span><span class="w">	</span><span class="nx">cnxn</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
 <span class="linenos"> 64</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 65</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to open connection: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="linenos"> 65</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"failed to open connection: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
 <span class="linenos"> 66</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 67</span><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="kd">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 68</span><span class="w">		</span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">cnxn</span><span class="p">.</span><span class="nx">Close</span><span class="p">())</span>
+<span class="linenos"> 68</span><span class="w">		</span><span class="nx">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">cnxn</span><span class="p">.</span><span class="nx">Close</span><span class="p">())</span>
 <span class="linenos"> 69</span><span class="w">	</span><span class="p">}()</span>
 <span class="linenos"> 70</span>
 <span class="linenos"> 71</span><span class="w">	</span><span class="nx">stmt</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cnxn</span><span class="p">.</span><span class="nx">NewStatement</span><span class="p">()</span>
 <span class="linenos"> 72</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 73</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to create statement: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="linenos"> 73</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"failed to create statement: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
 <span class="linenos"> 74</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 75</span><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="kd">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 76</span><span class="w">		</span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">stmt</span><span class="p">.</span><span class="nx">Close</span><span class="p">())</span>
+<span class="linenos"> 76</span><span class="w">		</span><span class="nx">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">stmt</span><span class="p">.</span><span class="nx">Close</span><span class="p">())</span>
 <span class="linenos"> 77</span><span class="w">	</span><span class="p">}()</span>
 <span class="linenos"> 78</span>
-<span class="linenos"> 79</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">stmt</span><span class="p">.</span><span class="nx">SetSqlQuery</span><span class="p">(</span><span class="s">&quot;SELECT 1 AS theresult&quot;</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 80</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to set query: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="linenos"> 79</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stmt</span><span class="p">.</span><span class="nx">SetSqlQuery</span><span class="p">(</span><span class="s">"SELECT 1 AS theresult"</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos"> 80</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"failed to set query: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
 <span class="linenos"> 81</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 82</span>
 <span class="linenos"> 83</span><span class="w">	</span><span class="nx">reader</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">stmt</span><span class="p">.</span><span class="nx">ExecuteQuery</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
 <span class="linenos"> 84</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 85</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to execute query: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="linenos"> 85</span><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"failed to execute query: %s"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
 <span class="linenos"> 86</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos"> 87</span><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="nx">reader</span><span class="p">.</span><span class="nx">Release</span><span class="p">()</span>
 <span class="linenos"> 88</span>
 <span class="linenos"> 89</span><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">reader</span><span class="p">.</span><span class="nx">Next</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="linenos"> 90</span><span class="w">		</span><span class="nx">arr</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">reader</span><span class="p">.</span><span class="nx">RecordBatch</span><span class="p">().</span><span class="nx">Column</span><span class="p">(</span><span class="mi">0</span><span class="p">).(</span><span class="o">*</span><span class="nx">array</span><span class="p">.</span><span class="nx">Int64</span><span class="p">)</span>
-<span class="linenos"> 91</span><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 92</span><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;result data was not int64&quot;</span><span class="p">)</span>
+<span class="linenos"> 91</span><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos"> 92</span><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"result data was not int64"</span><span class="p">)</span>
 <span class="linenos"> 93</span><span class="w">		</span><span class="p">}</span>
-<span class="linenos"> 94</span><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">arr</span><span class="p">.</span><span class="nx">Len</span><span class="p">();</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos"> 94</span><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">arr</span><span class="p">.</span><span class="nx">Len</span><span class="p">();</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span>
 <span class="linenos"> 95</span><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">arr</span><span class="p">.</span><span class="nx">IsNull</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 96</span><span class="w">				</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;theresult: NULL&quot;</span><span class="p">)</span>
+<span class="linenos"> 96</span><span class="w">				</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"theresult: NULL"</span><span class="p">)</span>
 <span class="linenos"> 97</span><span class="w">			</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos"> 98</span><span class="w">				</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;theresult: %d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">arr</span><span class="p">.</span><span class="nx">Value</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span>
+<span class="linenos"> 98</span><span class="w">				</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"theresult: %d\n"</span><span class="p">,</span><span class="w"> </span><span class="nx">arr</span><span class="p">.</span><span class="nx">Value</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span>
 <span class="linenos"> 99</span><span class="w">			</span><span class="p">}</span>
 <span class="linenos">100</span><span class="w">		</span><span class="p">}</span>
 <span class="linenos">101</span><span class="w">	</span><span class="p">}</span>
@@ -598,9 +600,9 @@ Go</label><div class="sd-tab-content docutils">
 <span class="linenos">106</span><span class="kd">func</span><span class="w"> </span><span class="nx">Example</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="linenos">107</span><span class="w">	</span><span class="c1">// For this example we will spawn the Flight SQL server ourselves.</span>
 <span class="linenos">108</span>
-<span class="linenos">109</span><span class="w">	</span><span class="c1">// Create a new database that isn&#39;t tied to any other databases that</span>
+<span class="linenos">109</span><span class="w">	</span><span class="c1">// Create a new database that isn't tied to any other databases that</span>
 <span class="linenos">110</span><span class="w">	</span><span class="c1">// may be in process.</span>
-<span class="linenos">111</span><span class="w">	</span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">sql</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&quot;sqlite&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;file:example_in_memory?mode=memory&quot;</span><span class="p">)</span>
+<span class="linenos">111</span><span class="w">	</span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">sql</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">"sqlite"</span><span class="p">,</span><span class="w"> </span><span class="s">"file:example_in_memory?mode=memory"</span><span class="p">)</span>
 <span class="linenos">112</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="linenos">113</span><span class="w">		</span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
 <span class="linenos">114</span><span class="w">	</span><span class="p">}</span>
@@ -618,7 +620,7 @@ Go</label><div class="sd-tab-content docutils">
 <span class="linenos">126</span>
 <span class="linenos">127</span><span class="w">	</span><span class="nx">server</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">flight</span><span class="p">.</span><span class="nx">NewServerWithMiddleware</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
 <span class="linenos">128</span><span class="w">	</span><span class="nx">server</span><span class="p">.</span><span class="nx">RegisterFlightService</span><span class="p">(</span><span class="nx">flightsql</span><span class="p">.</span><span class="nx">NewFlightServer</span><span class="p">(</span><span class="nx">srv</span><span class="p">))</span>
-<span class="linenos">129</span><span class="w">	</span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">server</span><span class="p">.</span><span class="nx">Init</span><span class="p">(</span><span class="s">&quot;localhost:8080&quot;</span><span class="p">)</span>
+<span class="linenos">129</span><span class="w">	</span><span class="nx">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">server</span><span class="p">.</span><span class="nx">Init</span><span class="p">(</span><span class="s">"localhost:0"</span><span class="p">)</span>
 <span class="linenos">130</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="linenos">131</span><span class="w">		</span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
 <span class="linenos">132</span><span class="w">	</span><span class="p">}</span>
@@ -629,9 +631,9 @@ Go</label><div class="sd-tab-content docutils">
 <span class="linenos">137</span><span class="w">		</span><span class="p">}</span>
 <span class="linenos">138</span><span class="w">	</span><span class="p">}()</span>
 <span class="linenos">139</span>
-<span class="linenos">140</span><span class="w">	</span><span class="nx">uri</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;grpc://%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">server</span><span class="p">.</span><span class="nx">Addr</span><span class="p">().</span><span class="nx">String</span><span class="p">())</span>
+<span class="linenos">140</span><span class="w">	</span><span class="nx">uri</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">"grpc://%s"</span><span class="p">,</span><span class="w"> </span><span class="nx">server</span><span class="p">.</span><span class="nx">Addr</span><span class="p">().</span><span class="nx">String</span><span class="p">())</span>
 <span class="linenos">141</span><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">FlightSQLExample</span><span class="p">(</span><span class="nx">uri</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="linenos">142</span><span class="w">		</span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Error: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="linenos">142</span><span class="w">		</span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"Error: %s\n"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
 <span class="linenos">143</span><span class="w">	</span><span class="p">}</span>
 <span class="linenos">144</span>
 <span class="linenos">145</span><span class="w">	</span><span class="nx">server</span><span class="p">.</span><span class="nx">Shutdown</span><span class="p">()</span>
@@ -649,6 +651,57 @@ Go</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
+<section id="uri-format">
+<h3>URI Format<a class="headerlink" href="#uri-format" title="Link to this heading">¶</a></h3>
+<p>The “uri” option accepts URIs using the <code class="docutils literal notranslate"><span class="pre">flightsql://</span></code> scheme.  The
+transport is selected with the <code class="docutils literal notranslate"><span class="pre">transport</span></code> query parameter, which is
+matched case-insensitively:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">flightsql://&lt;host&gt;:&lt;port&gt;</span></code></dt><dd><p>Connect over gRPC with TLS (secure).  This is the default when no
+<code class="docutils literal notranslate"><span class="pre">transport</span></code> query parameter is given.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flightsql://&lt;host&gt;:&lt;port&gt;?transport=tls</span></code></dt><dd><p>Same as above; an explicit way to request TLS (secure).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flightsql://&lt;host&gt;:&lt;port&gt;?transport=tcp</span></code></dt><dd><p>Connect over gRPC without TLS (plaintext).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flightsql:///&lt;path/to/socket&gt;?transport=unix</span></code></dt><dd><p>Connect over gRPC via a Unix domain socket at the given path.</p>
+</dd>
+</dl>
+<p>An unrecognized <code class="docutils literal notranslate"><span class="pre">transport</span></code> value (anything other than <code class="docutils literal notranslate"><span class="pre">tls</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tcp</span></code>, or <code class="docutils literal notranslate"><span class="pre">unix</span></code>) is rejected with an error rather than silently
+falling back to a default.  Similarly, supplying a host with
+<code class="docutils literal notranslate"><span class="pre">transport=unix</span></code>, or a socket path with <code class="docutils literal notranslate"><span class="pre">transport=tcp</span></code> or the
+default TLS transport, is rejected as an invalid combination.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For backwards compatibility, the driver also still accepts
+the following legacy schemes, each equivalent to a
+<code class="docutils literal notranslate"><span class="pre">flightsql://</span></code> URI with the given <code class="docutils literal notranslate"><span class="pre">transport</span></code>:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Legacy scheme</p></th>
+<th class="head"><p>Equivalent <code class="docutils literal notranslate"><span class="pre">transport</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grpc://</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tcp</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grpc+tcp://</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tcp</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grpc+tls://</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tls</span></code> (default)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grpc+unix://</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unix</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
 </section>
 <section id="supported-features">
 <h2>Supported Features<a class="headerlink" href="#supported-features" title="Link to this heading">¶</a></h2>
@@ -741,6 +794,81 @@ is <code class="docutils literal notranslate"><span class="pre">false</span></co
 <p>Python: <a class="reference internal" href="../python/api/adbc_driver_flightsql.html#adbc_driver_flightsql.DatabaseOptions.WITH_COOKIE_MIDDLEWARE" title="adbc_driver_flightsql.DatabaseOptions.WITH_COOKIE_MIDDLEWARE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">adbc_driver_flightsql.DatabaseOptions.WITH_COOKIE_MIDDLEWARE</span></code></a></p>
 </dd>
 </dl>
+</section>
+<section id="opentelemetry-tracing">
+<h3>OpenTelemetry Tracing<a class="headerlink" href="#opentelemetry-tracing" title="Link to this heading">¶</a></h3>
+<p>The Go-based Flight SQL driver can emit OpenTelemetry traces for
+connection and statement activity.</p>
+<p>Tracing can be configured with database options or with environment
+variables.</p>
+<section id="database-options">
+<h4>Database options<a class="headerlink" href="#database-options" title="Link to this heading">¶</a></h4>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">adbc.telemetry.traces_exporter</span></code></dt><dd><p>Selects the traces exporter to use when the driver initializes its
+tracer provider.</p>
+<p>Supported values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">none</span></code>: disable driver-managed trace exporting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">otlp</span></code>: export traces via OpenTelemetry OTLP exporters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">console</span></code>: write traces to standard output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adbcfile</span></code>: write traces to rotated <code class="docutils literal notranslate"><span class="pre">.jsonl</span></code> files</p></li>
+</ul>
+<p>When this option is set, it takes precedence over the
+<code class="docutils literal notranslate"><span class="pre">OTEL_TRACES_EXPORTER</span></code> environment variable. If neither is set,
+the driver falls back to the process-global OpenTelemetry tracer
+provider.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">adbc.telemetry.traces_folder_path</span></code></dt><dd><p>Overrides the output folder used by the <code class="docutils literal notranslate"><span class="pre">adbcfile</span></code> exporter.
+This option is ignored for other exporters.</p>
+<p>If unset, the <code class="docutils literal notranslate"><span class="pre">adbcfile</span></code> exporter writes traces under a
+platform-specific directory:</p>
+<ul class="simple">
+<li><p>Windows: <code class="docutils literal notranslate"><span class="pre">%LOCALAPPDATA%\ADBC\Traces</span></code></p></li>
+<li><p>macOS: <code class="docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/ADBC/Traces</span></code></p></li>
+<li><p>Linux: <code class="docutils literal notranslate"><span class="pre">$XDG_STATE_HOME/adbc/traces</span></code> or <code class="docutils literal notranslate"><span class="pre">~/.local/state/adbc/traces</span></code>
+if <code class="docutils literal notranslate"><span class="pre">$XDG_STATE_HOME</span></code> is not set</p></li>
+</ul>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">adbc.telemetry.trace_parent</span></code></dt><dd><p>Sets the W3C Trace Context <code class="docutils literal notranslate"><span class="pre">traceparent</span></code> value used as the parent
+for spans started by the driver.</p>
+</dd>
+</dl>
+</section>
+<section id="environment-variables">
+<h4>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h4>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">OTEL_TRACES_EXPORTER</span></code></dt><dd><p>Selects the traces exporter when
+<code class="docutils literal notranslate"><span class="pre">adbc.telemetry.traces_exporter</span></code> is not set. Supported values are
+<code class="docutils literal notranslate"><span class="pre">none</span></code>, <code class="docutils literal notranslate"><span class="pre">otlp</span></code>, <code class="docutils literal notranslate"><span class="pre">console</span></code>, and <code class="docutils literal notranslate"><span class="pre">adbcfile</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">otlp</span></code> is selected, the driver follows the standard
+OpenTelemetry OTLP environment configuration for endpoints,
+headers, and related exporter settings. Common variables include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OTEL_EXPORTER_OTLP_ENDPOINT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OTEL_EXPORTER_OTLP_HEADERS</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OTEL_EXPORTER_OTLP_TRACES_HEADERS</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OTEL_EXPORTER_OTLP_PROTOCOL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OTEL_EXPORTER_OTLP_TRACES_PROTOCOL</span></code></p></li>
+</ul>
+<p>For the complete set of supported OTLP environment variables, see
+the <a class="reference external" href="https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/">OpenTelemetry exporter configuration documentation</a>.</p>
+</dd>
+</dl>
+<p>There is no dedicated environment variable for the <code class="docutils literal notranslate"><span class="pre">adbcfile</span></code> output
+folder. Use <code class="docutils literal notranslate"><span class="pre">adbc.telemetry.traces_folder_path</span></code> to override the
+default location.</p>
+</section>
+</section>
+<section id="structured-logging">
+<h3>Structured Logging<a class="headerlink" href="#structured-logging" title="Link to this heading">¶</a></h3>
+<p>The Go-based Flight SQL driver also supports structured client-side
+logging via:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ADBC_DRIVER_FLIGHTSQL_LOG_LEVEL</span></code></dt><dd><p>Supported values are <code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code>, <code class="docutils literal notranslate"><span class="pre">warn</span></code>, and <code class="docutils literal notranslate"><span class="pre">error</span></code>.</p>
+</dd>
+</dl>
+<p>The logging setting is independent from trace exporter configuration.</p>
 </section>
 <section id="custom-call-headers">
 <h3>Custom Call Headers<a class="headerlink" href="#custom-call-headers" title="Link to this heading">¶</a></h3>
@@ -954,33 +1082,15 @@ transaction-related ADBC APIs will return
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="jdbc.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">JDBC Adapter</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="duckdb.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">DuckDB Support</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022–2025 The Apache Software Foundation.  Apache Arrow, Arrow,
-Apache, the Apache logo, and the Apache Arrow project logo are either
-registered trademarks or trademarks of The Apache Software Foundation in the
+                Copyright &#169; 2022–2026 The Apache Software Foundation.
+Apache Arrow, Arrow, Apache, the Apache logo, and the Apache Arrow project logo are
+either registered trademarks or trademarks of The Apache Software Foundation in the
 United States and other countries.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -1009,11 +1119,20 @@ United States and other countries.
             <ul>
 <li><a class="reference internal" href="#">Flight SQL Driver</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#uri-format">URI Format</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#supported-features">Supported Features</a><ul>
 <li><a class="reference internal" href="#authentication">Authentication</a></li>
 <li><a class="reference internal" href="#bulk-ingestion">Bulk Ingestion</a></li>
 <li><a class="reference internal" href="#client-options">Client Options</a></li>
+<li><a class="reference internal" href="#opentelemetry-tracing">OpenTelemetry Tracing</a><ul>
+<li><a class="reference internal" href="#database-options">Database options</a></li>
+<li><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#structured-logging">Structured Logging</a></li>
 <li><a class="reference internal" href="#custom-call-headers">Custom Call Headers</a></li>
 <li><a class="reference internal" href="#oauth-2-0-options">OAuth 2.0 Options</a></li>
 <li><a class="reference internal" href="#distributed-result-sets">Distributed Result Sets</a></li>
@@ -1036,7 +1155,7 @@ United States and other countries.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=35d75c9f"></script>
+</div><script src="../_static/documentation_options.js?v=25926451"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

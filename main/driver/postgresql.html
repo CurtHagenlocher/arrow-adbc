@@ -13,19 +13,19 @@
 <meta property="og:image" content="https://arrow.apache.org/adbc/main/_static/banner.png" />
 <meta property="og:image:alt" content="ADBC" />
 <meta name="description" content="Language: C/C++ Status: Stable The PostgreSQL driver provides access to any database that supports the PostgreSQL wire format. It wraps libpq, the client library for PostgreSQL. The project owes cr..." />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="SQLite Driver" href="sqlite.html"><link rel="prev" title="JDBC Adapter" href="jdbc.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html">
         <link rel="prefetch" href="../_static/logo-light.png" as="image">
         <link rel="prefetch" href="../_static/logo-dark.png" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>PostgreSQL Driver - ADBC 24 (dev) documentation</title>
+        <title>PostgreSQL Driver - ADBC 25 (dev) Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=56d6027c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0200acfe" />
+    <link rel="stylesheet" type="text/css" href="../_static/fontawesome/css/all.min.css?v=3bd1cf1d" />
     
     
 
@@ -52,7 +52,7 @@
   }
 </style>
 <script>
-  const currentVersion = "24 (dev)";
+  const currentVersion = "25 (dev)";
   const versionsRoot = "../..";
 </script>
 <style>
@@ -125,7 +125,7 @@
     </script>
     
 <nav id="version-switcher">
-  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 24 (dev)</button>
+  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 25 (dev)</button>
   <div class="versions">
     <ul></ul>
   </div>
@@ -250,7 +250,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">ADBC 24 (dev) documentation</div></a>
+      <a href="../index.html"><div class="brand">ADBC 25 (dev) Documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -275,7 +275,7 @@
     <img class="sidebar-logo only-dark" src="../_static/logo-dark.png" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ADBC 24 (dev) documentation</span>
+  <span class="sidebar-brand-text">ADBC 25 (dev) Documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -283,10 +283,16 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+  <p class="caption" role="heading"><span class="caption-text">Connect</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../client_libraries.html">Client Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Drivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations.html">Tools &amp; Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection_profiles.html">Connection Profiles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Build</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="authoring.html">Writing New Drivers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Supported Environments</span></p>
 <ul>
@@ -334,24 +340,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../r/index.html">R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ruby/index.html">Ruby</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../rust/index.html">Rust</a><input aria-label="Toggle navigation of Rust" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../rust/quickstart.html">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rust/driver_manager.html">Driver Manager</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://docs.rs/adbc_core/latest/adbc_core/">Rust API Reference</a></li>
 </ul>
 </li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Drivers</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="status.html">Driver Implementation Status</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bigquery.html">BigQuery Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="duckdb.html">DuckDB Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flight_sql.html">Flight SQL Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jdbc.html">JDBC Adapter</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">PostgreSQL Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sqlite.html">SQLite Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authoring.html">Writing New Drivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Specification</span></p>
 <ul>
@@ -363,12 +359,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../format/connection_profiles.html">ADBC Driver Manager and Connection Profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../format/related_work.html">Related Work</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contribute</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../development/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development/nightly.html">Nightly Packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development/versioning.html">Versioning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development/releasing.html">Release Management Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -414,7 +416,7 @@
           <section id="postgresql-driver">
 <h1>PostgreSQL Driver<a class="headerlink" href="#postgresql-driver" title="Link to this heading">¶</a></h1>
 <p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Language: C/C++</span>
-<a class="sd-sphinx-override sd-badge sd-bg-success sd-bg-text-success reference internal" href="status.html#driver-status"><span class="std std-ref">Status: Stable</span></a></p>
+<span class="sd-sphinx-override sd-badge sd-bg-success sd-bg-text-success">Status: Stable</span></p>
 <p>The PostgreSQL driver provides access to any database that supports
 the PostgreSQL wire format.  It wraps <a class="reference external" href="https://www.postgresql.org/docs/current/libpq.html">libpq</a>, the client library for
 PostgreSQL.  The project owes credit to 0x0L’s <a class="reference external" href="https://github.com/0x0L/pgeon">pgeon</a> for the
@@ -425,11 +427,10 @@ overall approach.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Older versions (&lt;=1.11.0) of this driver had experimental support for
-Amazon Redshift. As Redshift does not support reading or writing COPY
-in PostgreSQL binary format, however, the optimizations that
-accelerate queries are not enabled when connecting to Redshift. There
-may also be other differences in functionality.</p>
+<p>Some older versions (&lt;=1.11.0) of this driver had experimental
+support for Amazon Redshift, but this was removed in 1.11.0.  We
+recommend using the <a class="reference external" href="https://adbc-drivers.org/drivers/redshift/">Redshift-specific driver</a> from the ADBC
+Driver Foundry (a third party).</p>
 </div>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
@@ -466,7 +467,7 @@ Python</label><div class="sd-tab-content docutils">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="r" for="sd-tab-item-3">
 R</label><div class="sd-tab-content docutils">
 <p>Install <a class="reference external" href="https://cran.r-project.org/web/packages/adbcpostgresql/index.html">adbcpostgresql</a> from CRAN:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;adbcpostgresql&quot;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">"adbcpostgresql"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -481,12 +482,12 @@ the <a class="reference external" href="https://arrow.apache.org/adbc/main/cpp/a
 <input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="cpp" for="sd-tab-item-4">
 C++</label><div class="sd-tab-content docutils">
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;arrow-adbc/adbc.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"arrow-adbc/adbc.h"</span>
 
 <span class="c1">// Ignoring error handling</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">AdbcDatabase</span><span class="w"> </span><span class="n">database</span><span class="p">;</span>
 <span class="n">AdbcDatabaseNew</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
-<span class="n">AdbcDatabaseSetOption</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uri&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;postgresql://localhost:5433&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<span class="n">AdbcDatabaseSetOption</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">"uri"</span><span class="p">,</span><span class="w"> </span><span class="s">"postgresql://localhost:5433"</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 <span class="n">AdbcDatabaseInit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -498,17 +499,17 @@ Go</label><div class="sd-tab-content docutils">
 or in the same directory as the executable when you run this. This
 requires CGO and loads the C++ ADBC postgresql driver.</p>
 <div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">   </span><span class="s">&quot;context&quot;</span>
+<span class="w">   </span><span class="s">"context"</span>
 
-<span class="w">   </span><span class="s">&quot;github.com/apache/arrow-adbc/go/adbc&quot;</span>
-<span class="w">   </span><span class="s">&quot;github.com/apache/arrow-adbc/go/adbc/drivermgr&quot;</span>
+<span class="w">   </span><span class="s">"github.com/apache/arrow-adbc/go/adbc"</span>
+<span class="w">   </span><span class="s">"github.com/apache/arrow-adbc/go/adbc/drivermgr"</span>
 <span class="p">)</span>
 
 <span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">   </span><span class="kd">var</span><span class="w"> </span><span class="nx">drv</span><span class="w"> </span><span class="nx">drivermgr</span><span class="p">.</span><span class="nx">Driver</span>
-<span class="w">   </span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">drv</span><span class="p">.</span><span class="nx">NewDatabase</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
-<span class="w">      </span><span class="s">&quot;driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;adbc_driver_postgresql&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">adbc</span><span class="p">.</span><span class="nx">OptionKeyURI</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;postgresql://user:pass@localhost:5433/postgres&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">drv</span><span class="p">.</span><span class="nx">NewDatabase</span><span class="p">(</span><span class="kt">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
+<span class="w">      </span><span class="s">"driver"</span><span class="p">:</span><span class="w"> </span><span class="s">"adbc_driver_postgresql"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">adbc</span><span class="p">.</span><span class="nx">OptionKeyURI</span><span class="p">:</span><span class="w"> </span><span class="s">"postgresql://user:pass@localhost:5433/postgres"</span><span class="p">,</span>
 <span class="w">   </span><span class="p">})</span>
 <span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="c1">// handle error</span>
@@ -529,7 +530,7 @@ requires CGO and loads the C++ ADBC postgresql driver.</p>
 Python</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">adbc_driver_postgresql.dbapi</span>
 
-<span class="n">uri</span> <span class="o">=</span> <span class="s2">&quot;postgresql://user:pass@localhost:5433/postgres&quot;</span>
+<span class="n">uri</span> <span class="o">=</span> <span class="s2">"postgresql://user:pass@localhost:5433/postgres"</span>
 <span class="k">with</span> <span class="n">adbc_driver_postgresql</span><span class="o">.</span><span class="n">dbapi</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
@@ -542,7 +543,7 @@ R</label><div class="sd-tab-content docutils">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">adbcdrivermanager</span><span class="p">)</span>
 
 <span class="c1"># Use the driver manager to connect to a database</span>
-<span class="n">uri</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;ADBC_POSTGRESQL_TEST_URI&quot;</span><span class="p">)</span>
+<span class="n">uri</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">"ADBC_POSTGRESQL_TEST_URI"</span><span class="p">)</span>
 <span class="n">db</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">adbc_database_init</span><span class="p">(</span><span class="n">adbcpostgresql</span><span class="o">::</span><span class="nf">adbcpostgresql</span><span class="p">(),</span><span class="w"> </span><span class="n">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uri</span><span class="p">)</span>
 <span class="n">con</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">adbc_connection_init</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
 </pre></div>
@@ -700,10 +701,10 @@ being read or written.</p>
 <td><p>month_day_nano_interval</p></td>
 </tr>
 <tr class="row-odd"><td><p>JSON</p></td>
-<td><p>utf8</p></td>
+<td><p>utf8 (extension&lt;arrow.json&gt;)</p></td>
 </tr>
 <tr class="row-even"><td><p>JSONB</p></td>
-<td><p>utf8</p></td>
+<td><p>utf8 (extension&lt;arrow.json&gt;)</p></td>
 </tr>
 <tr class="row-odd"><td><p>NUMERIC</p></td>
 <td><p>utf8 <a class="footnote-reference brackets" href="#numeric-utf8" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></td>
@@ -758,7 +759,7 @@ the case.</p>
 <p>Types without direct Arrow equivalents can still be returned by the driver.
 In this case, the Arrow type will be binary, and the contents will be the raw
 bytes as provided by the PostgreSQL wire protocol.</p>
-<p>For Arrow implementations that support the <a class="reference external" href="https://arrow.apache.org/docs/format/CanonicalExtensions.html" title="(in Apache Arrow v24.0.0)"><span class="xref std std-doc">Opaque canonical
+<p>For Arrow implementations that support the <a class="reference external" href="https://arrow.apache.org/docs/format/CanonicalExtensions.html" title="(in Apache Arrow v25.0.1)"><span class="xref std std-doc">Opaque canonical
 extension type</span></a>, the extension type metadata is
 also always present.  This helps differentiate when the driver intentionally
 returned a binary column from when it returned a binary column as a fallback.</p>
@@ -775,7 +776,7 @@ and you should not rely on this key continuing to exist.</p>
 <section id="software-versions">
 <h2>Software Versions<a class="headerlink" href="#software-versions" title="Link to this heading">¶</a></h2>
 <p>For Python wheels, the shipped version of the PostgreSQL client libraries is
-16.9.  For conda-forge packages, the version of libpq is the same as the
+18.4.  For conda-forge packages, the version of libpq is the same as the
 version of libpq in your Conda environment.</p>
 <p>The PostgreSQL driver is tested against PostgreSQL versions 14 through 18.</p>
 </section>
@@ -786,33 +787,15 @@ version of libpq in your Conda environment.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="sqlite.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">SQLite Driver</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="jdbc.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">JDBC Adapter</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022–2025 The Apache Software Foundation.  Apache Arrow, Arrow,
-Apache, the Apache logo, and the Apache Arrow project logo are either
-registered trademarks or trademarks of The Apache Software Foundation in the
+                Copyright &#169; 2022–2026 The Apache Software Foundation.
+Apache Arrow, Arrow, Apache, the Apache logo, and the Apache Arrow project logo are
+either registered trademarks or trademarks of The Apache Software Foundation in the
 United States and other countries.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -865,7 +848,7 @@ United States and other countries.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=35d75c9f"></script>
+</div><script src="../_static/documentation_options.js?v=25926451"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

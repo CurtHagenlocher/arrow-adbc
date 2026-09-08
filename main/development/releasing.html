@@ -13,19 +13,19 @@
 <meta property="og:image" content="https://arrow.apache.org/adbc/main/_static/banner.png" />
 <meta property="og:image:alt" content="ADBC" />
 <meta name="description" content="This page provides detailed information on the steps followed to perform a release. It can be used both as a guide to learn the ADBC release process and as a comprehensive checklist for the Release..." />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="prev" title="Versioning" href="versioning.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Frequently Asked Questions (FAQ)" href="../faq.html"><link rel="prev" title="Versioning" href="versioning.html">
         <link rel="prefetch" href="../_static/logo-light.png" as="image">
         <link rel="prefetch" href="../_static/logo-dark.png" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Release Management Guide - ADBC 24 (dev) documentation</title>
+        <title>Release Management Guide - ADBC 25 (dev) Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=56d6027c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0200acfe" />
+    <link rel="stylesheet" type="text/css" href="../_static/fontawesome/css/all.min.css?v=3bd1cf1d" />
     
     
 
@@ -52,7 +52,7 @@
   }
 </style>
 <script>
-  const currentVersion = "24 (dev)";
+  const currentVersion = "25 (dev)";
   const versionsRoot = "../..";
 </script>
 <style>
@@ -125,7 +125,7 @@
     </script>
     
 <nav id="version-switcher">
-  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 24 (dev)</button>
+  <button type="button" onclick="document.getElementById('version-switcher').classList.toggle('open')">Version: 25 (dev)</button>
   <div class="versions">
     <ul></ul>
   </div>
@@ -250,7 +250,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">ADBC 24 (dev) documentation</div></a>
+      <a href="../index.html"><div class="brand">ADBC 25 (dev) Documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -275,7 +275,7 @@
     <img class="sidebar-logo only-dark" src="../_static/logo-dark.png" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ADBC 24 (dev) documentation</span>
+  <span class="sidebar-brand-text">ADBC 25 (dev) Documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -283,10 +283,16 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+  <p class="caption" role="heading"><span class="caption-text">Connect</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../client_libraries.html">Client Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver/index.html">Drivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations.html">Tools &amp; Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection_profiles.html">Connection Profiles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Build</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../driver/authoring.html">Writing New Drivers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Supported Environments</span></p>
 <ul>
@@ -334,24 +340,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../r/index.html">R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ruby/index.html">Ruby</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../rust/index.html">Rust</a><input aria-label="Toggle navigation of Rust" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../rust/quickstart.html">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rust/driver_manager.html">Driver Manager</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://docs.rs/adbc_core/latest/adbc_core/">Rust API Reference</a></li>
 </ul>
 </li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Drivers</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../driver/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/status.html">Driver Implementation Status</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/bigquery.html">BigQuery Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/duckdb.html">DuckDB Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/flight_sql.html">Flight SQL Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/jdbc.html">JDBC Adapter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/postgresql.html">PostgreSQL Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/sqlite.html">SQLite Driver</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../driver/authoring.html">Writing New Drivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Specification</span></p>
 <ul>
@@ -363,12 +359,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../format/connection_profiles.html">ADBC Driver Manager and Connection Profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../format/related_work.html">Related Work</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contribute</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nightly.html">Nightly Packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versioning.html">Versioning</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Release Management Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -453,7 +455,7 @@ performing a release.</p>
 <section id="before-creating-a-release-candidate">
 <h2>Before creating a Release Candidate<a class="headerlink" href="#before-creating-a-release-candidate" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
-<li><p>Regenerate the LICENSE.txt (see CONTRIBUTING.md) and create a pull request if any changes were needed.</p></li>
+<li><p>Regenerate the LICENSE.txt (see CONTRIBUTING.md and ci/licenses/README.md) and create a pull request if any changes were needed. Generally, only the license for Go-based drivers will need to be regenerated.</p></li>
 <li><p>Set up your shell environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup gpg agent for signing artifacts</span>
 <span class="n">source</span> <span class="n">dev</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">gpg</span><span class="o">-</span><span class="n">agent</span><span class="o">.</span><span class="n">sh</span>
@@ -465,6 +467,15 @@ performing a release.</p>
 </li>
 <li><p>Ensure merged pull requests and closed issues have their milestone set appropriately:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">dev</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="n">assign</span><span class="o">-</span><span class="n">milestone</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a fresh clone of the latest apache/arrow repo, which is used by several steps below.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Make sure an up-to-date clone is used, so that the Linux packaging scripts in particular are in sync, else there is the possibility of corrupting the shared Linux package repositories.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">apache</span><span class="o">/</span><span class="n">arrow</span>
 </pre></div>
 </div>
 </li>
@@ -530,6 +541,7 @@ Follow up Release Candidates</label><div class="sd-tab-content docutils">
 <span class="c1"># &lt;rc-number&gt; starts at 0 and increments every time the Release Candidate is burned</span>
 <span class="c1"># so for the first RC this would be: dev/release/01-prepare.sh 1.0.0 0</span>
 
+<span class="c1"># make sure &lt;arrow-dir&gt; is up-to-date with apache/arrow:main</span>
 <span class="n">dev</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="mi">01</span><span class="o">-</span><span class="n">prepare</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">arrow</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rc</span><span class="o">-</span><span class="n">number</span><span class="o">&gt;</span>
 
 <span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">apache</span> <span class="n">apache</span><span class="o">-</span><span class="n">arrow</span><span class="o">-</span><span class="n">adbc</span><span class="o">-&lt;</span><span class="n">release</span><span class="o">&gt;-</span><span class="n">rc</span><span class="o">&lt;</span><span class="n">rc</span><span class="o">-</span><span class="n">number</span><span class="o">&gt;</span> <span class="n">maint</span><span class="o">-&lt;</span><span class="n">release</span><span class="o">&gt;</span>
@@ -541,9 +553,9 @@ Follow up Release Candidates</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download the produced source and binaries, sign them, and add the</span>
 <span class="c1"># signatures to the GitHub release</span>
 <span class="c1">#</span>
-<span class="c1"># On macOS the only way I could get this to work was running &quot;echo</span>
-<span class="c1"># &quot;UPDATESTARTUPTTY&quot; | gpg-connect-agent&quot; before running this</span>
-<span class="c1"># comment otherwise I got errors referencing &quot;ioctl&quot; errors.</span>
+<span class="c1"># On macOS the only way I could get this to work was running "echo</span>
+<span class="c1"># "UPDATESTARTUPTTY" | gpg-connect-agent" before running this</span>
+<span class="c1"># comment otherwise I got errors referencing "ioctl" errors.</span>
 <span class="n">dev</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="mi">02</span><span class="o">-</span><span class="n">sign</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">rc</span><span class="o">-</span><span class="n">number</span><span class="o">&gt;</span>
 
 <span class="c1"># Upload the source release tarball and signs to</span>
@@ -552,7 +564,7 @@ Follow up Release Candidates</label><div class="sd-tab-content docutils">
 
 <span class="c1"># Upload the Java artifacts</span>
 <span class="c1">#</span>
-<span class="c1"># Note that you need to press the &quot;Close&quot; button manually in the Web</span>
+<span class="c1"># Note that you need to press the "Close" button manually in the Web</span>
 <span class="c1"># interface after you complete the script:</span>
 <span class="c1">#   https://repository.apache.org/#stagingRepositories</span>
 <span class="n">dev</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="mi">04</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="n">upload</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">rc</span><span class="o">-</span><span class="n">number</span><span class="o">&gt;</span>
@@ -561,6 +573,8 @@ Follow up Release Candidates</label><div class="sd-tab-content docutils">
 <span class="c1">#</span>
 <span class="c1"># This reuses release scripts in apache/arrow. So you need to</span>
 <span class="c1"># specify cloned apache/arrow directory.</span>
+
+<span class="c1"># make sure &lt;arrow-dir&gt; is up-to-date with apache/arrow:main</span>
 <span class="n">dev</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="mi">05</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">upload</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">arrow</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rc</span><span class="o">-</span><span class="n">number</span><span class="o">&gt;</span>
 
 <span class="c1"># Start verifications for binaries and wheels</span>
@@ -579,6 +593,8 @@ Follow up Release Candidates</label><div class="sd-tab-content docutils">
 Approval requires a net of 3 +1 votes from PMC members. A release cannot be vetoed.</p>
 <section id="how-to-verify-release-candidates">
 <h3>How to Verify Release Candidates<a class="headerlink" href="#how-to-verify-release-candidates" title="Link to this heading">¶</a></h3>
+<section id="linux-macos">
+<h4>Linux/macOS<a class="headerlink" href="#linux-macos" title="Link to this heading">¶</a></h4>
 <ol class="arabic">
 <li><p>Install dependencies.  At minimum, you will need:</p>
 <ul class="simple">
@@ -631,7 +647,7 @@ See the environment variables below.</p>
 <li><p>Run the verification script:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd arrow-adbc
 # Pass the release and the RC number
-$ ./dev/release/verify-release-candidate.sh 0.1.0 6
+$ ./dev/release/verify-release-candidate.sh 24 2
 </pre></div>
 </div>
 <p>These environment variables may be helpful:</p>
@@ -648,6 +664,45 @@ In this case, fewer dependencies are required from the system.
 <li><p>Once finished and once the script passes, reply to the mailing list
 vote thread with a +1 or a -1.</p></li>
 </ol>
+</section>
+<section id="windows">
+<h4>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h4>
+<ol class="arabic">
+<li><p>Install dependencies. At minimum, you will need:</p>
+<ul class="simple">
+<li><p>PowerShell (built into Windows)</p></li>
+<li><p><a class="reference external" href="https://github.com/conda-forge/miniforge">Mamba/miniforge</a> (the script currently assumes it can use conda/mamba to construct environments)</p></li>
+<li><p>Python 3</p></li>
+<li><p>Java 11+ (with JDK)</p></li>
+<li><p>Maven</p></li>
+</ul>
+</li>
+<li><p>Allow PowerShell to run unsigned scripts</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">$</span> <span class="nb">Set-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+</pre></div>
+</div>
+</li>
+<li><p>Clone the project:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">$</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">://</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">apache</span><span class="p">/</span><span class="n">arrow-adbc</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run the verification script:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">$</span> <span class="nb">cd </span><span class="n">arrow-adbc</span>
+<span class="c"># Pass the release and the RC number</span>
+<span class="p">$</span> <span class="p">.\</span><span class="n">dev</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">verify-release-candidate</span><span class="p">.</span><span class="n">ps1</span> <span class="n">24</span> <span class="n">2</span>
+</pre></div>
+</div>
+<p>These environment variables may be helpful:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$env:ARROW_TMPDIR</span> <span class="pre">=</span> <span class="pre">C:\path\to\directory</span></code> to specify the temporary
+directory used.  Using a fixed directory can help avoid repeating
+the same setup and build steps if the script has to be run
+multiple times.</p></li>
+</ul>
+</li>
+</ol>
+</section>
 </section>
 </section>
 <section id="post-release-tasks">
@@ -727,6 +782,8 @@ dev/release/post-04-go.sh
 <span class="c1"># specify cloned apache/arrow directory.</span>
 <span class="c1">#</span>
 <span class="c1"># dev/release/post-05-linux.sh ../arrow 0</span>
+
+<span class="c1"># make sure &lt;arrow-dir&gt; is up-to-date with apache/arrow:main</span>
 dev/release/post-05-linux.sh<span class="w"> </span>&lt;arrow-dir&gt;<span class="w"> </span>&lt;rc-number&gt;
 </pre></div>
 </div>
@@ -832,6 +889,8 @@ brew<span class="w"> </span>bump-formula-pr<span class="w"> </span>--version<spa
 <span class="sd-summary-text">Bump versions</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">First, update the version numbers in <code class="docutils literal notranslate"><span class="pre">dev/release/versions.env</span></code>.  Then, run this script to apply those version numbers to the versions embedded in files and filenames.  The script will also update the changelog to the newly released changelog.</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># dev/release/post-12-bump-versions.sh ../arrow</span>
+
+<span class="c1"># make sure &lt;arrow-dir&gt; is up-to-date with apache/arrow:main</span>
 dev/release/post-12-bump-versions.sh<span class="w"> </span>&lt;arrow-dir&gt;
 </pre></div>
 </div>
@@ -869,7 +928,15 @@ e-mail address to be accepted.</p>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="../faq.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Frequently Asked Questions (FAQ)</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="versioning.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -885,9 +952,9 @@ e-mail address to be accepted.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022–2025 The Apache Software Foundation.  Apache Arrow, Arrow,
-Apache, the Apache logo, and the Apache Arrow project logo are either
-registered trademarks or trademarks of The Apache Software Foundation in the
+                Copyright &#169; 2022–2026 The Apache Software Foundation.
+Apache Arrow, Arrow, Apache, the Apache logo, and the Apache Arrow project logo are
+either registered trademarks or trademarks of The Apache Software Foundation in the
 United States and other countries.
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -929,7 +996,11 @@ United States and other countries.
 </ul>
 </li>
 <li><a class="reference internal" href="#voting-and-approval">Voting and approval</a><ul>
-<li><a class="reference internal" href="#how-to-verify-release-candidates">How to Verify Release Candidates</a></li>
+<li><a class="reference internal" href="#how-to-verify-release-candidates">How to Verify Release Candidates</a><ul>
+<li><a class="reference internal" href="#linux-macos">Linux/macOS</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#post-release-tasks">Post-release tasks</a></li>
@@ -944,7 +1015,7 @@ United States and other countries.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=35d75c9f"></script>
+</div><script src="../_static/documentation_options.js?v=25926451"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
