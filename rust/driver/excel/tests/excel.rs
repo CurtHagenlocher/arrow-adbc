@@ -537,3 +537,29 @@ fn loads_through_a_manifest() {
         Status::NotImplemented
     );
 }
+
+#[test]
+fn typed_options_at_1_2() {
+    // Regression: the driver manager's typed option paths matched ADBC 1.1
+    // exactly, so an integer option on a driver negotiated at 1.2 hit
+    // unreachable!().
+    let f = fixture();
+    let (_db, mut connection) = open(f.path.to_str().unwrap());
+    let mut statement = connection.new_statement().unwrap();
+    statement
+        .set_option(OptionStatement::Other(OPTION_TARGET.into()), "Orders".into())
+        .unwrap();
+    statement
+        .set_option(
+            OptionStatement::Other(OPTION_LIMIT.into()),
+            adbc_core::options::OptionValue::Int(1),
+        )
+        .unwrap();
+    assert_eq!(
+        statement
+            .get_option_int(OptionStatement::Other(OPTION_LIMIT.into()))
+            .unwrap(),
+        1
+    );
+    assert_eq!(collect(statement.execute().unwrap()).num_rows(), 1);
+}

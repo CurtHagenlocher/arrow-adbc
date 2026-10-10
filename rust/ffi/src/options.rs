@@ -67,7 +67,7 @@ pub fn set_option_database(
             let method = driver_method!(driver, DatabaseSetOption);
             unsafe { method(database, key.as_ptr(), value.as_ptr(), &mut error) }
         }
-        (AdbcVersion::V110, OptionValue::Bytes(value)) => {
+        (version, OptionValue::Bytes(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, DatabaseSetOptionBytes);
             unsafe {
                 method(
@@ -79,11 +79,11 @@ pub fn set_option_database(
                 )
             }
         }
-        (AdbcVersion::V110, OptionValue::Int(value)) => {
+        (version, OptionValue::Int(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, DatabaseSetOptionInt);
             unsafe { method(database, key.as_ptr(), value, &mut error) }
         }
-        (AdbcVersion::V110, OptionValue::Double(value)) => {
+        (version, OptionValue::Double(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, DatabaseSetOptionDouble);
             unsafe { method(database, key.as_ptr(), value, &mut error) }
         }
@@ -178,7 +178,7 @@ pub fn set_option_connection(
             let method = driver_method!(driver, ConnectionSetOption);
             unsafe { method(connection, key.as_ptr(), value.as_ptr(), &mut error) }
         }
-        (AdbcVersion::V110, OptionValue::Bytes(value)) => {
+        (version, OptionValue::Bytes(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, ConnectionSetOptionBytes);
             unsafe {
                 method(
@@ -190,11 +190,11 @@ pub fn set_option_connection(
                 )
             }
         }
-        (AdbcVersion::V110, OptionValue::Int(value)) => {
+        (version, OptionValue::Int(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, ConnectionSetOptionInt);
             unsafe { method(connection, key.as_ptr(), value, &mut error) }
         }
-        (AdbcVersion::V110, OptionValue::Double(value)) => {
+        (version, OptionValue::Double(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, ConnectionSetOptionDouble);
             unsafe { method(connection, key.as_ptr(), value, &mut error) }
         }
@@ -224,7 +224,7 @@ pub fn set_option_statement(
             let method = driver_method!(driver, StatementSetOption);
             unsafe { method(statement, key.as_ptr(), value.as_ptr(), &mut error) }
         }
-        (AdbcVersion::V110, OptionValue::Bytes(value)) => {
+        (version, OptionValue::Bytes(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, StatementSetOptionBytes);
             unsafe {
                 method(
@@ -236,11 +236,11 @@ pub fn set_option_statement(
                 )
             }
         }
-        (AdbcVersion::V110, OptionValue::Int(value)) => {
+        (version, OptionValue::Int(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, StatementSetOptionInt);
             unsafe { method(statement, key.as_ptr(), value, &mut error) }
         }
-        (AdbcVersion::V110, OptionValue::Double(value)) => {
+        (version, OptionValue::Double(value)) if version >= AdbcVersion::V110 => {
             let method = driver_method!(driver, StatementSetOptionDouble);
             unsafe { method(statement, key.as_ptr(), value, &mut error) }
         }
