@@ -547,7 +547,10 @@ fn typed_options_at_1_2() {
     let (_db, mut connection) = open(f.path.to_str().unwrap());
     let mut statement = connection.new_statement().unwrap();
     statement
-        .set_option(OptionStatement::Other(OPTION_TARGET.into()), "Orders".into())
+        .set_option(
+            OptionStatement::Other(OPTION_TARGET.into()),
+            "Orders".into(),
+        )
         .unwrap();
     statement
         .set_option(

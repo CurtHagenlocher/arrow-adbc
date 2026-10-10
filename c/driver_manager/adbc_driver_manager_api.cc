@@ -21,6 +21,7 @@
 #include <cassert>
 #include <cerrno>
 #include <cstring>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -415,6 +416,98 @@ AdbcStatusCode StatementSetSubstraitPlan(struct AdbcStatement*, const uint8_t*, 
   SetError(error, "AdbcStatementSetSubstraitPlan not implemented");
   return ADBC_STATUS_NOT_IMPLEMENTED;
 }
+
+// ADBC 1.2.0
+int ErrorGetVendorCode(const struct AdbcError* error) { return 0; }
+
+AdbcStatusCode DriverGetOptionsList(uint32_t, struct ArrowArrayStream*,
+                                    struct AdbcError* error) {
+  SetError(error, "AdbcDriverGetOptionsList not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode MultiResultSetNext(struct AdbcMultiResultSet*, struct ArrowArrayStream*,
+                                  int64_t*, struct AdbcError* error) {
+  SetError(error, "AdbcMultiResultSetNext not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode MultiResultSetNextPartitions(struct AdbcMultiResultSet*,
+                                            struct ArrowSchema*, struct AdbcPartitions*,
+                                            int64_t*, struct AdbcError* error) {
+  SetError(error, "AdbcMultiResultSetNextPartitions not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode MultiResultSetRelease(struct AdbcMultiResultSet*,
+                                     struct AdbcError* error) {
+  SetError(error, "AdbcMultiResultSetRelease not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode ConnectionSetWarningHandler(struct AdbcConnection*, AdbcWarningHandler,
+                                           void*, struct AdbcError* error) {
+  SetError(error, "AdbcConnectionSetWarningHandler not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode StatementExecuteSchemaMulti(struct AdbcStatement*,
+                                           struct AdbcMultiResultSet*,
+                                           struct AdbcError* error) {
+  SetError(error, "AdbcStatementExecuteSchemaMulti not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode StatementExecuteMulti(struct AdbcStatement*, struct AdbcMultiResultSet*,
+                                     struct AdbcError* error) {
+  SetError(error, "AdbcStatementExecuteMulti not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode StatementRequestSchema(struct AdbcStatement*, struct ArrowSchema*,
+                                      struct AdbcError* error) {
+  SetError(error, "AdbcStatementRequestSchema not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+// PROTOTYPE (file-driver proposal)
+AdbcStatusCode DriverGetInfo(const uint32_t*, size_t, struct ArrowArrayStream*,
+                             struct AdbcError* error) {
+  SetError(error, "AdbcDriverGetInfo not implemented");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode DatabaseSetFileSystem(struct AdbcDatabase*, struct AdbcFileSystem*,
+                                     struct AdbcError* error) {
+  SetError(error, "This driver does not accept a file system");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+AdbcStatusCode ConnectionSetFileSystem(struct AdbcConnection*, struct AdbcFileSystem*,
+                                       struct AdbcError* error) {
+  SetError(error, "This driver does not accept a file system");
+  return ADBC_STATUS_NOT_IMPLEMENTED;
+}
+
+/// Fill the ADBC 1.2.0 members a driver left NULL. Only valid for a table of
+/// the full 1.2.0 size.
+void FillDefaults120(struct AdbcDriver* driver) {
+#define FILL_DEFAULT_120(STUB) \
+  if (!driver->STUB) driver->STUB = &STUB;
+  FILL_DEFAULT_120(ErrorGetVendorCode);
+  FILL_DEFAULT_120(DriverGetOptionsList);
+  FILL_DEFAULT_120(MultiResultSetNext);
+  FILL_DEFAULT_120(MultiResultSetNextPartitions);
+  FILL_DEFAULT_120(MultiResultSetRelease);
+  FILL_DEFAULT_120(ConnectionSetWarningHandler);
+  FILL_DEFAULT_120(StatementExecuteSchemaMulti);
+  FILL_DEFAULT_120(StatementExecuteMulti);
+  FILL_DEFAULT_120(StatementRequestSchema);
+  FILL_DEFAULT_120(DriverGetInfo);
+  FILL_DEFAULT_120(DatabaseSetFileSystem);
+  FILL_DEFAULT_120(ConnectionSetFileSystem);
+#undef FILL_DEFAULT_120
+}
 }  // namespace
 
 // =============================================================================
@@ -664,6 +757,12 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
     return status;
   }
 
+  // Kept for file drivers: the uri resolves a default file system.
+  std::optional<std::string> uri;
+  if (auto it = args->options.find("uri"); it != args->options.end()) {
+    uri = it->second;
+  }
+
   // Allocate the underlying driver
   database->private_driver = new AdbcDriver;
   std::memset(database->private_driver, 0, sizeof(AdbcDriver));
@@ -673,7 +772,7 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
   database->private_data = nullptr;
 
   if (args->init_func) {
-    status = AdbcLoadDriverFromInitFunc(args->init_func, ADBC_VERSION_1_1_0,
+    status = AdbcLoadDriverFromInitFunc(args->init_func, ADBC_VERSION_1_2_0,
                                         database->private_driver, error);
   } else {
     const char* entrypoint =
@@ -683,7 +782,7 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
             ? nullptr
             : args->additional_manifest_search_path_list.c_str();
 
-    status = AdbcFindLoadDriver(args->driver.c_str(), entrypoint, ADBC_VERSION_1_1_0,
+    status = AdbcFindLoadDriver(args->driver.c_str(), entrypoint, ADBC_VERSION_1_2_0,
                                 args->load_flags, additional_paths,
                                 database->private_driver, error);
   }
@@ -698,6 +797,9 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
     database->private_driver = nullptr;
     return status;
   }
+  // The table is full-size, so the 1.2.0 members are safe to default even if
+  // the driver negotiated an older version.
+  FillDefaults120(database->private_driver);
 
   // Errors that occur during AdbcDatabaseXXX() refer to the driver via
   // the private_driver member; however, after we return we have released
@@ -719,6 +821,7 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
   auto bytes_options = std::move(args->bytes_options);
   auto int_options = std::move(args->int_options);
   auto double_options = std::move(args->double_options);
+  OwnedFileSystem file_system = std::move(args->file_system);
   delete args;
 
   INIT_ERROR(error, database);
@@ -744,6 +847,13 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
         database, option.first.c_str(), option.second, &driver_error.error);
     if (status != ADBC_STATUS_OK) break;
   }
+  const bool has_file_system = static_cast<bool>(file_system);
+  if (status == ADBC_STATUS_OK && file_system) {
+    // Ownership moves to the driver on success; otherwise it is released
+    // when file_system goes out of scope.
+    status = database->private_driver->DatabaseSetFileSystem(database, file_system.get(),
+                                                             &driver_error.error);
+  }
 
   if (status != ADBC_STATUS_OK) {
     // Release the database
@@ -760,7 +870,13 @@ AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError*
     return status;
   }
 
-  return database->private_driver->DatabaseInit(database, error);
+  status = database->private_driver->DatabaseInit(database, error);
+  if (status == ADBC_STATUS_OK) {
+    InternalAdbcRecordFileDriverState(
+        database->private_driver, std::move(uri), has_file_system,
+        InternalAdbcProbeAcceptsFileSystem(database->private_driver));
+  }
+  return status;
 }
 
 AdbcStatusCode AdbcDatabaseRelease(struct AdbcDatabase* database,
@@ -776,6 +892,7 @@ AdbcStatusCode AdbcDatabaseRelease(struct AdbcDatabase* database,
     return ADBC_STATUS_INVALID_STATE;
   }
   INIT_ERROR(error, database);
+  InternalAdbcForgetFileDriverState(database->private_driver);
   auto status = database->private_driver->DatabaseRelease(database, error);
   if (database->private_driver->release) {
     database->private_driver->release(database->private_driver, error);
@@ -1008,6 +1125,7 @@ AdbcStatusCode AdbcConnectionInit(struct AdbcConnection* connection,
   std::unordered_map<std::string, int64_t> int_options = std::move(args->int_options);
   std::unordered_map<std::string, double> double_options =
       std::move(args->double_options);
+  OwnedFileSystem file_system = std::move(args->file_system);
   delete args;
 
   auto status = database->private_driver->ConnectionNew(connection, error);
@@ -1036,8 +1154,61 @@ AdbcStatusCode AdbcConnectionInit(struct AdbcConnection* connection,
         connection, option.first.c_str(), option.second, error);
     if (status != ADBC_STATUS_OK) return status;
   }
+  if (!file_system) {
+    // A file driver whose connection and database have no file system gets
+    // one resolved from the database uri.
+    struct AdbcFileSystem resolved = {};
+    bool provided = false;
+    status = InternalAdbcDefaultConnectionFileSystem(database->private_driver, &resolved,
+                                                     &provided, error);
+    if (status != ADBC_STATUS_OK) return status;
+    if (provided) file_system = TakeFileSystem(&resolved);
+  }
+  if (file_system) {
+    // Ownership moves to the driver on success.
+    status = database->private_driver->ConnectionSetFileSystem(connection,
+                                                               file_system.get(), error);
+    if (status != ADBC_STATUS_OK) return status;
+  }
   INIT_ERROR(error, connection);
   return connection->private_driver->ConnectionInit(connection, database, error);
+}
+
+AdbcStatusCode AdbcDatabaseSetFileSystem(struct AdbcDatabase* database,
+                                         struct AdbcFileSystem* file_system,
+                                         struct AdbcError* error) {
+  if (database->private_driver) {
+    SetError(error, "AdbcDatabaseSetFileSystem: must be called before AdbcDatabaseInit");
+    return ADBC_STATUS_INVALID_STATE;
+  } else if (!database->private_data) {
+    SetError(error, "AdbcDatabaseSetFileSystem: must call AdbcDatabaseNew first");
+    return ADBC_STATUS_INVALID_STATE;
+  } else if (!file_system || !file_system->release) {
+    SetError(error, "AdbcDatabaseSetFileSystem: file system is NULL or released");
+    return ADBC_STATUS_INVALID_ARGUMENT;
+  }
+  auto* args = reinterpret_cast<TempDatabase*>(database->private_data);
+  args->file_system = TakeFileSystem(file_system);
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode AdbcConnectionSetFileSystem(struct AdbcConnection* connection,
+                                           struct AdbcFileSystem* file_system,
+                                           struct AdbcError* error) {
+  if (connection->private_driver) {
+    SetError(error,
+             "AdbcConnectionSetFileSystem: must be called before AdbcConnectionInit");
+    return ADBC_STATUS_INVALID_STATE;
+  } else if (!connection->private_data) {
+    SetError(error, "AdbcConnectionSetFileSystem: must call AdbcConnectionNew first");
+    return ADBC_STATUS_INVALID_STATE;
+  } else if (!file_system || !file_system->release) {
+    SetError(error, "AdbcConnectionSetFileSystem: file system is NULL or released");
+    return ADBC_STATUS_INVALID_ARGUMENT;
+  }
+  auto* args = reinterpret_cast<TempConnection*>(connection->private_data);
+  args->file_system = TakeFileSystem(file_system);
+  return ADBC_STATUS_OK;
 }
 
 AdbcStatusCode AdbcConnectionNew(struct AdbcConnection* connection,
@@ -1427,6 +1598,143 @@ const char* AdbcStatusCodeMessage(AdbcStatusCode code) {
 }
 
 // =============================================================================
+// Driver introspection (PROTOTYPE, file-driver proposal)
+// =============================================================================
+
+namespace {
+/// A result stream that keeps a temporarily loaded driver alive until the
+/// stream is released, so no callback points into an unloaded library.
+struct TempDriverStream {
+  struct ArrowArrayStream inner;
+  struct AdbcDriver* driver;
+};
+
+int TempDriverStreamGetSchema(struct ArrowArrayStream* stream, struct ArrowSchema* out) {
+  auto* data = static_cast<TempDriverStream*>(stream->private_data);
+  return data->inner.get_schema(&data->inner, out);
+}
+
+int TempDriverStreamGetNext(struct ArrowArrayStream* stream, struct ArrowArray* out) {
+  auto* data = static_cast<TempDriverStream*>(stream->private_data);
+  return data->inner.get_next(&data->inner, out);
+}
+
+const char* TempDriverStreamGetLastError(struct ArrowArrayStream* stream) {
+  auto* data = static_cast<TempDriverStream*>(stream->private_data);
+  return data->inner.get_last_error(&data->inner);
+}
+
+void ReleaseTempDriver(struct AdbcDriver* driver) {
+  if (driver->release) driver->release(driver, nullptr);
+  delete driver;
+}
+
+void TempDriverStreamRelease(struct ArrowArrayStream* stream) {
+  if (!stream->private_data) return;
+  auto* data = static_cast<TempDriverStream*>(stream->private_data);
+  if (data->inner.release) data->inner.release(&data->inner);
+  ReleaseTempDriver(data->driver);
+  delete data;
+  std::memset(stream, 0, sizeof(*stream));
+}
+
+/// Run `call` against the database's driver; before init, load the driver
+/// named by the database's options just for this call.
+template <typename Call>
+AdbcStatusCode CallDriverLevel(struct AdbcDatabase* database, Call&& call,
+                               struct ArrowArrayStream* out, struct AdbcError* error) {
+  if (!out) {
+    SetError(error, "[Driver Manager] out must not be NULL");
+    return ADBC_STATUS_INVALID_ARGUMENT;
+  }
+  if (database->private_driver) {
+    return call(database->private_driver, out, error);
+  }
+  if (!database->private_data) {
+    SetError(error, "[Driver Manager] must call AdbcDatabaseNew first");
+    return ADBC_STATUS_INVALID_STATE;
+  }
+  // Resolve the driver from a copy of the pending options, so that the
+  // database itself is left exactly as it was.
+  auto* args = reinterpret_cast<TempDatabase*>(database->private_data);
+  TempDatabase copy;
+  copy.options = args->options;
+  copy.bytes_options = args->bytes_options;
+  copy.int_options = args->int_options;
+  copy.double_options = args->double_options;
+  copy.driver = args->driver;
+  copy.entrypoint = args->entrypoint;
+  copy.init_func = args->init_func;
+  copy.load_flags = args->load_flags;
+  copy.additional_manifest_search_path_list = args->additional_manifest_search_path_list;
+  copy.additional_profile_search_path_list = args->additional_profile_search_path_list;
+  copy.profile_provider = args->profile_provider;
+  CHECK_STATUS(InternalAdbcParseOptions(&copy, error));
+
+  auto* driver = new AdbcDriver;
+  std::memset(driver, 0, sizeof(AdbcDriver));
+  AdbcStatusCode status;
+  if (copy.init_func) {
+    status =
+        AdbcLoadDriverFromInitFunc(copy.init_func, ADBC_VERSION_1_2_0, driver, error);
+  } else {
+    status = AdbcFindLoadDriver(
+        copy.driver.c_str(), copy.entrypoint.empty() ? nullptr : copy.entrypoint.c_str(),
+        ADBC_VERSION_1_2_0, copy.load_flags,
+        copy.additional_manifest_search_path_list.empty()
+            ? nullptr
+            : copy.additional_manifest_search_path_list.c_str(),
+        driver, error);
+  }
+  if (status != ADBC_STATUS_OK) {
+    ReleaseTempDriver(driver);
+    return status;
+  }
+  FillDefaults120(driver);
+
+  auto* data = new TempDriverStream{{}, driver};
+  status = call(driver, &data->inner, error);
+  if (status != ADBC_STATUS_OK || !data->inner.release) {
+    ReleaseTempDriver(driver);
+    delete data;
+    return status;
+  }
+  out->get_schema = TempDriverStreamGetSchema;
+  out->get_next = TempDriverStreamGetNext;
+  out->get_last_error = TempDriverStreamGetLastError;
+  out->release = TempDriverStreamRelease;
+  out->private_data = data;
+  return ADBC_STATUS_OK;
+}
+}  // namespace
+
+AdbcStatusCode AdbcDriverManagerDatabaseGetDriverInfo(struct AdbcDatabase* database,
+                                                      const uint32_t* info_codes,
+                                                      size_t info_codes_length,
+                                                      struct ArrowArrayStream* out,
+                                                      struct AdbcError* error) {
+  return CallDriverLevel(
+      database,
+      [&](struct AdbcDriver* driver, struct ArrowArrayStream* stream,
+          struct AdbcError* err) {
+        return driver->DriverGetInfo(info_codes, info_codes_length, stream, err);
+      },
+      out, error);
+}
+
+AdbcStatusCode AdbcDriverManagerDatabaseGetDriverOptionsList(
+    struct AdbcDatabase* database, uint32_t level, struct ArrowArrayStream* out,
+    struct AdbcError* error) {
+  return CallDriverLevel(
+      database,
+      [&](struct AdbcDriver* driver, struct ArrowArrayStream* stream,
+          struct AdbcError* err) {
+        return driver->DriverGetOptionsList(level, stream, err);
+      },
+      out, error);
+}
+
+// =============================================================================
 // Driver loading functions
 // =============================================================================
 
@@ -1442,7 +1750,8 @@ AdbcStatusCode AdbcLoadDriver(const char* driver_name, const char* entrypoint,
 
 AdbcStatusCode AdbcLoadDriverFromInitFunc(AdbcDriverInitFunc init_func, int version,
                                           void* raw_driver, struct AdbcError* error) {
-  constexpr std::array<int, 2> kSupportedVersions = {
+  constexpr std::array<int, 3> kSupportedVersions = {
+      ADBC_VERSION_1_2_0,
       ADBC_VERSION_1_1_0,
       ADBC_VERSION_1_0_0,
   };
@@ -1455,9 +1764,10 @@ AdbcStatusCode AdbcLoadDriverFromInitFunc(AdbcDriverInitFunc init_func, int vers
   switch (version) {
     case ADBC_VERSION_1_0_0:
     case ADBC_VERSION_1_1_0:
+    case ADBC_VERSION_1_2_0:
       break;
     default:
-      SetError(error, "Only ADBC 1.0.0 and 1.1.0 are supported");
+      SetError(error, "Only ADBC 1.0.0, 1.1.0, and 1.2.0 are supported");
       return ADBC_STATUS_NOT_IMPLEMENTED;
   }
 
@@ -1549,6 +1859,9 @@ AdbcStatusCode AdbcLoadDriverFromInitFunc(AdbcDriverInitFunc init_func, int vers
     FILL_DEFAULT(driver, StatementSetOptionBytes);
     FILL_DEFAULT(driver, StatementSetOptionDouble);
     FILL_DEFAULT(driver, StatementSetOptionInt);
+  }
+  if (version >= ADBC_VERSION_1_2_0) {
+    FillDefaults120(reinterpret_cast<struct AdbcDriver*>(raw_driver));
   }
 
   return ADBC_STATUS_OK;

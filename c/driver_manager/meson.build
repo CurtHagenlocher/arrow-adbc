@@ -28,6 +28,7 @@ adbc_driver_manager_lib = library(
     [
         'adbc_driver_manager.cc',
         'adbc_driver_manager_driver_loading.cc',
+        'adbc_driver_manager_filesystem.cc',
         'adbc_driver_manager_profiles.cc',
         'adbc_driver_manager_api.cc',
     ],

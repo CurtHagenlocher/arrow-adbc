@@ -48,6 +48,7 @@ add_arrow_lib(adbc_driver_manager
               adbc_driver_manager.cc
               adbc_driver_manager_api.cc
               adbc_driver_manager_driver_loading.cc
+              adbc_driver_manager_filesystem.cc
               adbc_driver_manager_profiles.cc
               OUTPUTS
               ADBC_LIBRARIES
@@ -106,6 +107,7 @@ if(ADBC_BUILD_TESTS)
                 adbc_driver_manager_test.cc
                 EXTRA_LINK_LIBS
                 adbc_driver_common
+                adbc_driver_framework
                 adbc_validation
                 ${TEST_LINK_LIBS})
   target_compile_features(adbc-driver-manager-test PRIVATE cxx_std_20)

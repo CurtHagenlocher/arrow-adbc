@@ -135,6 +135,16 @@ Status MakeGetInfoAppendString(ArrowArray* array, uint32_t info_code,
   return status::Ok();
 }
 
+Status MakeGetInfoAppendBool(ArrowArray* array, uint32_t info_code, bool info_value) {
+  UNWRAP_ERRNO(Internal, ArrowArrayAppendUInt(array->children[0], info_code));
+  // Append to type variant
+  UNWRAP_ERRNO(Internal,
+               ArrowArrayAppendInt(array->children[1]->children[1], info_value ? 1 : 0));
+  // Append type code/offset
+  UNWRAP_ERRNO(Internal, ArrowArrayFinishUnionElement(array->children[1], /*type_id=*/1));
+  return status::Ok();
+}
+
 Status MakeGetInfoAppendInt(ArrowArray* array, uint32_t info_code, int64_t info_value) {
   UNWRAP_ERRNO(Internal, ArrowArrayAppendUInt(array->children[0], info_code));
   // Append to type variant
@@ -160,6 +170,8 @@ Status MakeGetInfoStream(const std::vector<InfoValue>& infos, ArrowArrayStream* 
             return MakeGetInfoAppendString(array.get(), info.code, value);
           } else if constexpr (std::is_same_v<T, int64_t>) {
             return MakeGetInfoAppendInt(array.get(), info.code, value);
+          } else if constexpr (std::is_same_v<T, bool>) {
+            return MakeGetInfoAppendBool(array.get(), info.code, value);
           } else {
             static_assert(!sizeof(T), "info value type not implemented");
           }

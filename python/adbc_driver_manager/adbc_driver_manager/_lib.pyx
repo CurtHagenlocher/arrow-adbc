@@ -650,6 +650,37 @@ cdef class AdbcDatabase(_AdbcHandle):
             status = AdbcDatabaseInit(&self.database, &c_error)
         check_error(status, &c_error)
 
+    def get_driver_info(self, info_codes=None) -> ArrowArrayStreamHandle:
+        """
+        Get metadata about the driver itself (DriverGetInfo, ADBC 1.2).
+
+        PROTOTYPE (file-driver proposal). The result has the same schema as
+        :meth:`AdbcConnection.get_info`; only driver-level codes apply.
+        """
+        cdef CAdbcError c_error = empty_error()
+        cdef CAdbcStatusCode status
+        cdef ArrowArrayStreamHandle stream = ArrowArrayStreamHandle()
+        cdef c_vector[uint32_t] c_info_codes
+        cdef const uint32_t* c_codes = NULL
+
+        if info_codes:
+            for info_code in info_codes:
+                if isinstance(info_code, int):
+                    c_info_codes.push_back(info_code)
+                else:
+                    c_info_codes.push_back(info_code.value)
+            c_codes = c_info_codes.data()
+
+        # DriverGetInfo must be cheap and do no I/O, so the GIL is kept.
+        status = AdbcDriverManagerDatabaseGetDriverInfo(
+            &self.database,
+            c_codes,
+            c_info_codes.size(),
+            &stream.stream,
+            &c_error)
+        check_error(status, &c_error)
+        return stream
+
     def close(self) -> None:
         """Release the handle to the database."""
         cdef CAdbcError c_error = empty_error()

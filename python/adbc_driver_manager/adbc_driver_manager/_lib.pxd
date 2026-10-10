@@ -302,3 +302,10 @@ cdef extern from "arrow-adbc/adbc_driver_manager.h":
         CAdbcDatabase* database,
         const char* path_list,
         CAdbcError* error)
+    # PROTOTYPE (file-driver proposal)
+    CAdbcStatusCode AdbcDriverManagerDatabaseGetDriverInfo(
+        CAdbcDatabase* database,
+        const uint32_t* info_codes,
+        size_t info_codes_length,
+        CArrowArrayStream* out,
+        CAdbcError* error)

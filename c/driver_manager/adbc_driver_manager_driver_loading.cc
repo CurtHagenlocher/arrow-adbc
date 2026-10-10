@@ -20,6 +20,9 @@
 #if defined(_WIN32)
 #define NOMINMAX
 #include <windows.h>  // Must come first
+#include <array>
+#include <optional>
+#include <string_view>
 
 #ifndef NTDDI_VERSION
 #define NTDDI_VERSION 0x0A00000C  // For SHGetKnownFolderPath in ShlObj_core.h in ShlObj.h
@@ -189,6 +192,51 @@ AdbcStatusCode LoadDriverManifest(const std::filesystem::path& driver_manifest,
   info.entrypoint = config.at_path("Driver.entrypoint").value_or(""s);
   info.version = config["version"].value_or(""s);
   info.source = config["source"].value_or(""s);
+
+  // [ADBC] version / min_version (PROTOTYPE, file-driver proposal). Parsed
+  // leniently: a leading 'v' is accepted and an unreadable value is ignored,
+  // so existing manifests keep loading.
+  constexpr std::array<int, 3> kMaxSupported = {1, 2, 0};
+  auto parse_version = [](std::string_view text) -> std::optional<std::array<int, 3>> {
+    if (!text.empty() && (text[0] == 'v' || text[0] == 'V')) text.remove_prefix(1);
+    std::array<int, 3> parts = {0, 0, 0};
+    size_t index = 0;
+    while (!text.empty()) {
+      if (index == parts.size()) return std::nullopt;
+      size_t dot = text.find('.');
+      std::string_view part = text.substr(0, dot);
+      if (part.empty() || !std::all_of(part.begin(), part.end(),
+                                       [](char c) { return c >= '0' && c <= '9'; })) {
+        return std::nullopt;
+      }
+      parts[index++] = std::stoi(std::string(part));
+      if (dot == std::string_view::npos) break;
+      text.remove_prefix(dot + 1);
+    }
+    if (index == 0) return std::nullopt;
+    return parts;
+  };
+  if (auto min_version =
+          parse_version(config.at_path("ADBC.min_version").value_or(""s))) {
+    if (*min_version > kMaxSupported) {
+      SetError(error, "Driver manifest '" + driver_manifest.string() +
+                          "' requires ADBC " + std::to_string((*min_version)[0]) + "." +
+                          std::to_string((*min_version)[1]) + "." +
+                          std::to_string((*min_version)[2]) +
+                          ", but this driver manager supports at most ADBC 1.2.0");
+      return ADBC_STATUS_NOT_IMPLEMENTED;
+    }
+  }
+  if (auto max_version = parse_version(config.at_path("ADBC.version").value_or(""s))) {
+    const std::array<int, 3> v120 = {1, 2, 0}, v110 = {1, 1, 0}, v100 = {1, 0, 0};
+    if (*max_version >= v120) {
+      info.max_adbc_version = ADBC_VERSION_1_2_0;
+    } else if (*max_version >= v110) {
+      info.max_adbc_version = ADBC_VERSION_1_1_0;
+    } else if (*max_version >= v100) {
+      info.max_adbc_version = ADBC_VERSION_1_0_0;
+    }
+  }
 
   auto entrypoint = config.at_path("Driver.entrypoint");
   if (entrypoint) {

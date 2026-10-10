@@ -718,9 +718,10 @@ AdbcStatusCode AdbcFindLoadDriver(const char* driver_name, const char* entrypoin
   switch (version) {
     case ADBC_VERSION_1_0_0:
     case ADBC_VERSION_1_1_0:
+    case ADBC_VERSION_1_2_0:
       break;
     default:
-      SetError(error, "Only ADBC 1.0.0 and 1.1.0 are supported");
+      SetError(error, "Only ADBC 1.0.0, 1.1.0, and 1.2.0 are supported");
       return ADBC_STATUS_NOT_IMPLEMENTED;
   }
 
@@ -771,7 +772,11 @@ AdbcStatusCode AdbcFindLoadDriver(const char* driver_name, const char* entrypoin
   }
   init_func = reinterpret_cast<AdbcDriverInitFunc>(load_handle);
 
-  status = AdbcLoadDriverFromInitFunc(init_func, version, driver, error);
+  // A manifest's [ADBC] version caps negotiation (advisory; the driver's
+  // answer at init is authoritative).
+  const int load_version =
+      info.max_adbc_version ? (std::min)(version, *info.max_adbc_version) : version;
+  status = AdbcLoadDriverFromInitFunc(init_func, load_version, driver, error);
   if (status == ADBC_STATUS_OK) {
     ManagerDriverState* state = new ManagerDriverState;
     state->driver_release = driver->release;

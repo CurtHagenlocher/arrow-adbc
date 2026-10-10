@@ -22,7 +22,9 @@
 #include <windows.h>  // Must come first
 #endif                // defined(_WIN32)
 
+#include <cstring>
 #include <filesystem>
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -32,6 +34,7 @@
 
 #include "arrow-adbc/adbc.h"
 #include "arrow-adbc/adbc_driver_manager.h"
+#include "arrow-adbc/adbc_filesystem.h"
 
 // Forward declarations and shared utilities for driver manager implementation
 
@@ -72,6 +75,9 @@ struct DriverInfo {
   std::string entrypoint;
   std::string version;
   std::string source;
+  /// `[ADBC] version` from the manifest, as an ADBC_VERSION_* code: the
+  /// newest version the driver supports, which caps negotiation.
+  std::optional<int> max_adbc_version;
 };
 
 struct OwnedError {
@@ -193,6 +199,23 @@ AdbcStatusCode ProcessProfileValue(std::string_view key, std::string_view value,
                                    std::string& out, struct AdbcError* error);
 
 // Initialization
+
+/// Releases a file system the driver manager holds until init (PROTOTYPE).
+struct FileSystemDeleter {
+  void operator()(struct AdbcFileSystem* fs) const {
+    if (fs->release) fs->release(fs);
+    delete fs;
+  }
+};
+using OwnedFileSystem = std::unique_ptr<struct AdbcFileSystem, FileSystemDeleter>;
+
+/// Take ownership of a caller's file system, zeroing the caller's struct.
+inline OwnedFileSystem TakeFileSystem(struct AdbcFileSystem* fs) {
+  OwnedFileSystem owned(new AdbcFileSystem(*fs));
+  std::memset(fs, 0, sizeof(*fs));
+  return owned;
+}
+
 /// Temporary state while the database is being configured.
 struct TempDatabase {
   std::unordered_map<std::string, std::string> options;
@@ -206,6 +229,8 @@ struct TempDatabase {
   std::string additional_manifest_search_path_list;
   std::string additional_profile_search_path_list;
   AdbcConnectionProfileProvider profile_provider = nullptr;
+  /// A file system set before init (PROTOTYPE, file-driver proposal).
+  OwnedFileSystem file_system;
 };
 
 // Parse and validate options like uri/profile, with the result being that
@@ -221,6 +246,8 @@ struct TempConnection {
   std::unordered_map<std::string, int64_t> int_options;
   std::unordered_map<std::string, double> double_options;
   AdbcConnectionProfile* connection_profile = nullptr;
+  /// A file system set before init (PROTOTYPE, file-driver proposal).
+  OwnedFileSystem file_system;
 };
 
 AdbcStatusCode InternalInitializeProfile(TempDatabase* args,
@@ -234,6 +261,25 @@ AdbcStatusCode AdbcFindLoadDriver(const char* driver_name, const char* entrypoin
                                   void* raw_driver, struct AdbcError* error);
 // ReleaseDriver is implemented in adbc_driver_manager.cc but used by API implementations
 AdbcStatusCode ReleaseDriver(struct AdbcDriver* driver, struct AdbcError* error);
+
+// File drivers (PROTOTYPE): implemented in adbc_driver_manager_filesystem.cc
+
+/// Ask a loaded driver whether it accepts a file system (via DriverGetInfo).
+bool InternalAdbcProbeAcceptsFileSystem(struct AdbcDriver* driver);
+/// Remember what the manager needs to give a file driver's connections a
+/// default file system.
+void InternalAdbcRecordFileDriverState(const struct AdbcDriver* driver,
+                                       std::optional<std::string> uri,
+                                       bool database_has_file_system,
+                                       bool accepts_file_system);
+void InternalAdbcForgetFileDriverState(const struct AdbcDriver* driver);
+/// The file system a new connection gets when none was set on it: none if
+/// the driver is not a file driver or its database has one, else the local
+/// provider for a file location. Sets *provided if `out` was filled.
+AdbcStatusCode InternalAdbcDefaultConnectionFileSystem(const struct AdbcDriver* driver,
+                                                       struct AdbcFileSystem* out,
+                                                       bool* provided,
+                                                       struct AdbcError* error);
 
 #define INIT_ERROR(ERROR, SOURCE)                                    \
   if ((ERROR) != nullptr &&                                          \

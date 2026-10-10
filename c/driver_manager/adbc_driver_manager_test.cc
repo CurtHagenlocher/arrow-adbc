@@ -20,10 +20,17 @@
 #endif
 
 #include <algorithm>
+#include <chrono>
+#include <condition_variable>
 #include <cstdlib>
 #include <filesystem>  // NOLINT [build/c++17]
+#include <fstream>
 #include <iostream>
+#include <memory>
+#include <mutex>
 #include <string>
+#include <thread>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -35,6 +42,7 @@
 #include "arrow-adbc/adbc.h"
 #include "arrow-adbc/adbc_driver_manager.h"
 #include "current_arch.h"
+#include "driver/framework/utility.h"
 #include "validation/adbc_validation.h"
 #include "validation/adbc_validation_util.h"
 
@@ -2487,5 +2495,577 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<DriverUriProfileTest::ParamType>& info) {
       return info.param.name;
     });
+
+// =============================================================================
+// File drivers (PROTOTYPE, file-driver proposal)
+// =============================================================================
+
+namespace file_driver {
+
+// A minimal ADBC 1.2 file driver written against the C table. Its
+// connections read the first five bytes of the database uri through the
+// file system they were given, and report them as "test.first_bytes".
+
+struct Database {
+  std::string uri;
+  struct AdbcFileSystem fs = {};
+};
+
+struct Connection {
+  struct AdbcFileSystem fs = {};
+  std::string first_bytes;
+};
+
+void ReleaseFs(struct AdbcFileSystem* fs) {
+  if (fs->release) fs->release(fs);
+}
+
+void TakeFs(struct AdbcFileSystem* dst, struct AdbcFileSystem* src) {
+  ReleaseFs(dst);
+  *dst = *src;
+  std::memset(src, 0, sizeof(*src));
+}
+
+AdbcStatusCode Fail(struct AdbcError* error, AdbcStatusCode status,
+                    const std::string& message) {
+  if (error) {
+    if (error->release) error->release(error);
+    error->message = new char[message.size() + 1];
+    std::memcpy(error->message, message.c_str(), message.size() + 1);
+    error->release = [](struct AdbcError* e) {
+      delete[] e->message;
+      e->message = nullptr;
+      e->release = nullptr;
+    };
+  }
+  return status;
+}
+
+AdbcStatusCode DriverRelease(struct AdbcDriver* driver, struct AdbcError*) {
+  driver->release = nullptr;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode DatabaseNew(struct AdbcDatabase* database, struct AdbcError*) {
+  database->private_data = new Database;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode DatabaseSetOption(struct AdbcDatabase* database, const char* key,
+                                 const char* value, struct AdbcError* error) {
+  if (std::string_view(key) != "uri") {
+    return Fail(error, ADBC_STATUS_NOT_IMPLEMENTED, "unknown option");
+  }
+  static_cast<Database*>(database->private_data)->uri = value;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode DatabaseInit(struct AdbcDatabase*, struct AdbcError*) {
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode DatabaseRelease(struct AdbcDatabase* database, struct AdbcError*) {
+  auto* db = static_cast<Database*>(database->private_data);
+  ReleaseFs(&db->fs);
+  delete db;
+  database->private_data = nullptr;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode DatabaseSetFileSystem(struct AdbcDatabase* database,
+                                     struct AdbcFileSystem* fs, struct AdbcError*) {
+  TakeFs(&static_cast<Database*>(database->private_data)->fs, fs);
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode ConnectionNew(struct AdbcConnection* connection, struct AdbcError*) {
+  connection->private_data = new Connection;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode ConnectionSetFileSystem(struct AdbcConnection* connection,
+                                       struct AdbcFileSystem* fs, struct AdbcError*) {
+  TakeFs(&static_cast<Connection*>(connection->private_data)->fs, fs);
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode ConnectionInit(struct AdbcConnection* connection,
+                              struct AdbcDatabase* database, struct AdbcError* error) {
+  auto* conn = static_cast<Connection*>(connection->private_data);
+  auto* db = static_cast<Database*>(database->private_data);
+  // The connection's own file system, else a clone of the database's.
+  if (!conn->fs.release && db->fs.release) {
+    AdbcStatusCode status = db->fs.clone(&db->fs, &conn->fs, error);
+    if (status != ADBC_STATUS_OK) return status;
+  }
+  if (!conn->fs.release) {
+    return Fail(error, ADBC_STATUS_FILESYSTEM_REQUIRED, "no file system");
+  }
+  // A file:/// uri names a local path (as adbc_core's Location parses it).
+  std::string name = db->uri;
+  if (name.rfind("file:///", 0) == 0) {
+    name = name.substr(7);
+    if (name.size() > 2 && name[2] == ':') name = name.substr(1);  // /C:/x -> C:/x
+  }
+  struct AdbcFile* file = nullptr;
+  AdbcStatusCode status =
+      conn->fs.open(&conn->fs, name.data(), name.size(), 0, &file, error);
+  if (status != ADBC_STATUS_OK) return status;
+  char buffer[5] = {};
+  struct AdbcFileRange range = {0, 5, buffer, 0, 0};
+  status = file->read_ranges(file, &range, 1, error);
+  file->close(file);
+  if (status != ADBC_STATUS_OK) return status;
+  conn->first_bytes.assign(buffer, 5);
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode ConnectionGetOption(struct AdbcConnection* connection, const char* key,
+                                   char* value, size_t* length, struct AdbcError* error) {
+  if (std::string_view(key) != "test.first_bytes") {
+    return Fail(error, ADBC_STATUS_NOT_FOUND, "unknown option");
+  }
+  const std::string& bytes =
+      static_cast<Connection*>(connection->private_data)->first_bytes;
+  if (*length >= bytes.size() + 1) std::memcpy(value, bytes.c_str(), bytes.size() + 1);
+  *length = bytes.size() + 1;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode ConnectionRelease(struct AdbcConnection* connection, struct AdbcError*) {
+  auto* conn = static_cast<Connection*>(connection->private_data);
+  ReleaseFs(&conn->fs);
+  delete conn;
+  connection->private_data = nullptr;
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode StatementNew(struct AdbcConnection*, struct AdbcStatement*,
+                            struct AdbcError* error) {
+  return Fail(error, ADBC_STATUS_NOT_IMPLEMENTED, "no statements");
+}
+
+AdbcStatusCode StatementExecuteQuery(struct AdbcStatement*, struct ArrowArrayStream*,
+                                     int64_t*, struct AdbcError* error) {
+  return Fail(error, ADBC_STATUS_NOT_IMPLEMENTED, "no statements");
+}
+
+AdbcStatusCode StatementRelease(struct AdbcStatement*, struct AdbcError*) {
+  return ADBC_STATUS_OK;
+}
+
+AdbcStatusCode DriverGetInfo(const uint32_t* codes, size_t length,
+                             struct ArrowArrayStream* out, struct AdbcError* error) {
+  std::vector<adbc::driver::InfoValue> all = {
+      {ADBC_INFO_DRIVER_NAME, "test file driver"},
+      {ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM, true},
+      {ADBC_INFO_DRIVER_REQUIRES_FILESYSTEM, true},
+  };
+  std::vector<adbc::driver::InfoValue> rows;
+  for (const auto& info : all) {
+    if (!codes || std::find(codes, codes + length, info.code) != codes + length) {
+      rows.push_back(info);
+    }
+  }
+  return adbc::driver::MakeGetInfoStream(rows, out).ToAdbc(error);
+}
+
+int init_calls = 0;
+
+/// Refuses every version below 1.2.0, as a file driver must.
+AdbcStatusCode Init(int version, void* raw_driver, struct AdbcError*) {
+  init_calls++;
+  if (version < ADBC_VERSION_1_2_0) return ADBC_STATUS_NOT_IMPLEMENTED;
+  auto* driver = static_cast<struct AdbcDriver*>(raw_driver);
+  std::memset(driver, 0, ADBC_DRIVER_1_2_0_SIZE);
+  driver->release = DriverRelease;
+  driver->DatabaseNew = DatabaseNew;
+  driver->DatabaseSetOption = DatabaseSetOption;
+  driver->DatabaseInit = DatabaseInit;
+  driver->DatabaseRelease = DatabaseRelease;
+  driver->ConnectionNew = ConnectionNew;
+  driver->ConnectionInit = ConnectionInit;
+  driver->ConnectionGetOption = ConnectionGetOption;
+  driver->ConnectionRelease = ConnectionRelease;
+  driver->StatementNew = StatementNew;
+  driver->StatementExecuteQuery = StatementExecuteQuery;
+  driver->StatementRelease = StatementRelease;
+  driver->DriverGetInfo = DriverGetInfo;
+  driver->DatabaseSetFileSystem = DatabaseSetFileSystem;
+  driver->ConnectionSetFileSystem = ConnectionSetFileSystem;
+  return ADBC_STATUS_OK;
+}
+
+/// The same driver without file-system support: not a file driver.
+AdbcStatusCode InitNotAFileDriver(int version, void* raw_driver,
+                                  struct AdbcError* error) {
+  AdbcStatusCode status = Init(version, raw_driver, error);
+  if (status != ADBC_STATUS_OK) return status;
+  auto* driver = static_cast<struct AdbcDriver*>(raw_driver);
+  driver->DriverGetInfo = nullptr;
+  driver->DatabaseSetFileSystem = nullptr;
+  driver->ConnectionSetFileSystem = nullptr;
+  return ADBC_STATUS_OK;
+}
+
+/// Wraps the local file system and counts opens.
+struct Counting {
+  struct AdbcFileSystem inner;
+  std::shared_ptr<int> opens;
+};
+
+void InitCounting(struct AdbcFileSystem* out, std::shared_ptr<int> opens);
+
+AdbcStatusCode CountingOpen(struct AdbcFileSystem* self, const char* name, size_t len,
+                            uint32_t hints, struct AdbcFile** out,
+                            struct AdbcError* error) {
+  auto* counting = static_cast<Counting*>(self->private_data);
+  (*counting->opens)++;
+  return counting->inner.open(&counting->inner, name, len, hints, out, error);
+}
+
+AdbcStatusCode CountingClone(struct AdbcFileSystem* self, struct AdbcFileSystem* out,
+                             struct AdbcError*) {
+  InitCounting(out, static_cast<Counting*>(self->private_data)->opens);
+  return ADBC_STATUS_OK;
+}
+
+void CountingRelease(struct AdbcFileSystem* self) {
+  auto* counting = static_cast<Counting*>(self->private_data);
+  ReleaseFs(&counting->inner);
+  delete counting;
+  self->release = nullptr;
+}
+
+void InitCounting(struct AdbcFileSystem* out, std::shared_ptr<int> opens) {
+  auto* counting = new Counting{{}, std::move(opens)};
+  ASSERT_EQ(AdbcDriverManagerLocalFileSystemInit(&counting->inner, nullptr),
+            ADBC_STATUS_OK);
+  std::memset(out, 0, sizeof(*out));
+  out->struct_size = sizeof(*out);
+  out->version = ADBC_FILESYSTEM_VERSION_1;
+  out->private_data = counting;
+  out->open = CountingOpen;
+  out->stat = counting->inner.stat;
+  out->clone = CountingClone;
+  out->release = CountingRelease;
+}
+
+}  // namespace file_driver
+
+class FileDriverTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    dir_ = std::filesystem::temp_directory_path() /
+           ("adbc_file_driver_" +
+            std::to_string(::testing::UnitTest::GetInstance()->random_seed()) + "_" +
+            ::testing::UnitTest::GetInstance()->current_test_info()->name());
+    std::filesystem::create_directories(dir_);
+    path_ = (dir_ / "data.txt").string();
+    std::ofstream(path_, std::ios::binary) << "hello, file drivers";
+  }
+
+  void TearDown() override {
+    std::error_code ec;
+    std::filesystem::remove_all(dir_, ec);
+  }
+
+  /// A database for the test file driver, not yet initialized.
+  void NewDatabase(struct AdbcDatabase* database,
+                   AdbcDriverInitFunc init = file_driver::Init) {
+    ASSERT_THAT(AdbcDatabaseNew(database, &error), IsOkStatus(&error));
+    ASSERT_THAT(AdbcDriverManagerDatabaseSetInitFunc(database, init, &error),
+                IsOkStatus(&error));
+  }
+
+  std::string FirstBytes(struct AdbcConnection* connection) {
+    char value[64];
+    size_t length = sizeof(value);
+    EXPECT_THAT(
+        AdbcConnectionGetOption(connection, "test.first_bytes", value, &length, &error),
+        IsOkStatus(&error));
+    return std::string(value);
+  }
+
+  std::filesystem::path dir_;
+  std::string path_;
+  struct AdbcError error = ADBC_ERROR_INIT;
+};
+
+TEST_F(FileDriverTest, NegotiatesOneTwo) {
+  struct AdbcDriver driver = {};
+  file_driver::init_calls = 0;
+  // A 1.1 request cannot reach 1.2: the driver refuses 1.1 and 1.0.
+  ASSERT_THAT(
+      AdbcLoadDriverFromInitFunc(file_driver::Init, ADBC_VERSION_1_1_0, &driver, &error),
+      IsStatus(ADBC_STATUS_NOT_IMPLEMENTED, &error));
+  ASSERT_EQ(file_driver::init_calls, 2);
+
+  ASSERT_THAT(
+      AdbcLoadDriverFromInitFunc(file_driver::Init, ADBC_VERSION_1_2_0, &driver, &error),
+      IsOkStatus(&error));
+  // 1.2 members the driver left NULL are defaulted.
+  ASSERT_NE(driver.MultiResultSetNext, nullptr);
+  ASSERT_NE(driver.StatementRequestSchema, nullptr);
+  ASSERT_EQ(driver.DriverGetInfo, file_driver::DriverGetInfo);
+  driver.release(&driver, &error);
+}
+
+TEST_F(FileDriverTest, InjectsLocalFileSystemFromUri) {
+  for (const std::string& uri :
+       {path_, "file:///" + std::filesystem::path(path_).generic_string()}) {
+    Handle<struct AdbcDatabase> database;
+    NewDatabase(&database.value);
+    ASSERT_THAT(AdbcDatabaseSetOption(&database.value, "uri", uri.c_str(), &error),
+                IsOkStatus(&error));
+    ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+    Handle<struct AdbcConnection> connection;
+    ASSERT_THAT(AdbcConnectionNew(&connection.value, &error), IsOkStatus(&error));
+    ASSERT_THAT(AdbcConnectionInit(&connection.value, &database.value, &error),
+                IsOkStatus(&error));
+    ASSERT_EQ(FirstBytes(&connection.value), "hello");
+  }
+}
+
+TEST_F(FileDriverTest, NoUriMeansFileSystemRequired) {
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value);
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+  Handle<struct AdbcConnection> connection;
+  ASSERT_THAT(AdbcConnectionNew(&connection.value, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcConnectionInit(&connection.value, &database.value, &error),
+              IsStatus(ADBC_STATUS_FILESYSTEM_REQUIRED, &error));
+}
+
+TEST_F(FileDriverTest, UnknownSchemeIsNotFound) {
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value);
+  ASSERT_THAT(
+      AdbcDatabaseSetOption(&database.value, "uri", "s3://bucket/data.txt", &error),
+      IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+  Handle<struct AdbcConnection> connection;
+  ASSERT_THAT(AdbcConnectionNew(&connection.value, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcConnectionInit(&connection.value, &database.value, &error),
+              IsStatus(ADBC_STATUS_NOT_FOUND, &error));
+  ASSERT_THAT(error.message, ::testing::HasSubstr("'s3'"));
+}
+
+TEST_F(FileDriverTest, ExplicitConnectionFileSystem) {
+  auto opens = std::make_shared<int>(0);
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value);
+  ASSERT_THAT(AdbcDatabaseSetOption(&database.value, "uri", path_.c_str(), &error),
+              IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+
+  struct AdbcFileSystem fs;
+  file_driver::InitCounting(&fs, opens);
+  Handle<struct AdbcConnection> connection;
+  ASSERT_THAT(AdbcConnectionNew(&connection.value, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcConnectionSetFileSystem(&connection.value, &fs, &error),
+              IsOkStatus(&error));
+  ASSERT_EQ(fs.release, nullptr) << "the manager must take ownership";
+  ASSERT_THAT(AdbcConnectionInit(&connection.value, &database.value, &error),
+              IsOkStatus(&error));
+  ASSERT_EQ(FirstBytes(&connection.value), "hello");
+  ASSERT_EQ(*opens, 1) << "the driver did not read through the given file system";
+}
+
+TEST_F(FileDriverTest, DatabaseFileSystemIsInherited) {
+  auto opens = std::make_shared<int>(0);
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value);
+  ASSERT_THAT(AdbcDatabaseSetOption(&database.value, "uri", path_.c_str(), &error),
+              IsOkStatus(&error));
+  struct AdbcFileSystem fs;
+  file_driver::InitCounting(&fs, opens);
+  ASSERT_THAT(AdbcDatabaseSetFileSystem(&database.value, &fs, &error),
+              IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+  // The manager must not inject its own: both connections use the
+  // database's (cloned) provider.
+  for (int i = 0; i < 2; i++) {
+    Handle<struct AdbcConnection> connection;
+    ASSERT_THAT(AdbcConnectionNew(&connection.value, &error), IsOkStatus(&error));
+    ASSERT_THAT(AdbcConnectionInit(&connection.value, &database.value, &error),
+                IsOkStatus(&error));
+    ASSERT_EQ(FirstBytes(&connection.value), "hello");
+  }
+  ASSERT_EQ(*opens, 2);
+
+  // Too late now.
+  struct AdbcFileSystem late;
+  ASSERT_THAT(AdbcDriverManagerLocalFileSystemInit(&late, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseSetFileSystem(&database.value, &late, &error),
+              IsStatus(ADBC_STATUS_INVALID_STATE, &error));
+  late.release(&late);
+}
+
+TEST_F(FileDriverTest, NonFileDriverRejectsAFileSystem) {
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value, file_driver::InitNotAFileDriver);
+  struct AdbcFileSystem fs;
+  ASSERT_THAT(AdbcDriverManagerLocalFileSystemInit(&fs, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseSetFileSystem(&database.value, &fs, &error),
+              IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error),
+              IsStatus(ADBC_STATUS_NOT_IMPLEMENTED, &error));
+}
+
+int64_t CountRows(struct ArrowArrayStream* stream) {
+  int64_t rows = 0;
+  struct ArrowArray array;
+  while (stream->get_next(stream, &array) == 0 && array.release) {
+    rows += array.length;
+    array.release(&array);
+  }
+  stream->release(stream);
+  return rows;
+}
+
+TEST_F(FileDriverTest, DriverInfoBeforeAndAfterInit) {
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value);
+
+  // Before init: the manager loads the driver just to answer.
+  struct ArrowArrayStream stream = {};
+  ASSERT_THAT(AdbcDriverManagerDatabaseGetDriverInfo(&database.value, nullptr, 0, &stream,
+                                                     &error),
+              IsOkStatus(&error));
+  ASSERT_EQ(CountRows(&stream), 3);
+  uint32_t code = ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM;
+  ASSERT_THAT(
+      AdbcDriverManagerDatabaseGetDriverInfo(&database.value, &code, 1, &stream, &error),
+      IsOkStatus(&error));
+  ASSERT_EQ(CountRows(&stream), 1);
+
+  // Not implemented by this driver.
+  ASSERT_THAT(AdbcDriverManagerDatabaseGetDriverOptionsList(
+                  &database.value, ADBC_OPTION_LEVEL_ALL, &stream, &error),
+              IsStatus(ADBC_STATUS_NOT_IMPLEMENTED, &error));
+
+  // The database is unaffected and initializes normally; info still works.
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcDriverManagerDatabaseGetDriverInfo(&database.value, nullptr, 0, &stream,
+                                                     &error),
+              IsOkStatus(&error));
+  ASSERT_EQ(CountRows(&stream), 3);
+}
+
+TEST_F(FileDriverTest, ManifestVersionRules) {
+  auto write = [&](const std::string& adbc) {
+    auto path = dir_ / "test_file_driver.toml";
+    std::ofstream(path) << "manifest_version = 1\n"
+                        << adbc
+                        << "\n[Driver]\nshared = 'adbc_no_such_library_for_tests'\n";
+    return path.string();
+  };
+  struct AdbcDriver driver = {};
+  // A minimum this manager cannot meet fails before any library is loaded.
+  ASSERT_THAT(AdbcFindLoadDriver(write("[ADBC]\nmin_version = 'v1.3.0'").c_str(), nullptr,
+                                 ADBC_VERSION_1_2_0, 0, nullptr, &driver, &error),
+              IsStatus(ADBC_STATUS_NOT_IMPLEMENTED, &error));
+  ASSERT_THAT(error.message, ::testing::HasSubstr("requires ADBC 1.3.0"));
+  if (error.release) error.release(&error);
+  // A satisfiable minimum, or an unreadable version, gets as far as loading
+  // the (missing) library.
+  for (const char* adbc :
+       {"[ADBC]\nmin_version = '1.2.0'", "[ADBC]\nversion = 'latest'"}) {
+    ASSERT_THAT(AdbcFindLoadDriver(write(adbc).c_str(), nullptr, ADBC_VERSION_1_2_0, 0,
+                                   nullptr, &driver, &error),
+                IsStatus(ADBC_STATUS_NOT_FOUND, &error))
+        << adbc;
+    if (error.release) error.release(&error);
+  }
+}
+
+TEST_F(FileDriverTest, LocalFileSystemReads) {
+  struct AdbcFileSystem fs;
+  ASSERT_THAT(AdbcDriverManagerLocalFileSystemInit(&fs, &error), IsOkStatus(&error));
+  struct AdbcFile* file = nullptr;
+  ASSERT_THAT(fs.open(&fs, path_.data(), path_.size(), 0, &file, &error),
+              IsOkStatus(&error));
+  struct AdbcFileInfo info = {};
+  info.struct_size = sizeof(info);
+  ASSERT_EQ(file->info(file, &info), ADBC_STATUS_OK);
+  ASSERT_EQ(info.size, 19u);
+
+  char suffix[6] = {};
+  char past_end[10] = {};
+  struct AdbcFileRange ranges[] = {
+      {0, 5, suffix, ADBC_FILE_RANGE_SUFFIX, 1},
+      {15, 10, past_end, ADBC_FILE_RANGE_UP_TO, 2},
+  };
+  ASSERT_THAT(file->read_ranges(file, ranges, 2, &error), IsOkStatus(&error));
+  ASSERT_EQ(std::string(suffix), "ivers");
+  ASSERT_EQ(std::string(past_end), "vers");
+  struct AdbcFileRange exact_past_end = {15, 10, past_end, 0, 3};
+  ASSERT_THAT(file->read_ranges(file, &exact_past_end, 1, &error),
+              IsStatus(ADBC_STATUS_INVALID_ARGUMENT, &error));
+  if (error.release) error.release(&error);
+
+  // Async: each range completes once, never on this thread.
+  struct State {
+    std::mutex mutex;
+    std::condition_variable changed;
+    std::vector<std::tuple<uint64_t, AdbcStatusCode, uint64_t>> done;
+    bool inline_completion = false;
+    std::thread::id caller = std::this_thread::get_id();
+  };
+  AdbcFileReadCallback record = [](void* context, uint64_t user_data,
+                                   AdbcStatusCode status, uint64_t bytes,
+                                   const struct AdbcError*) {
+    auto* s = static_cast<State*>(context);
+    std::lock_guard<std::mutex> lock(s->mutex);
+    if (std::this_thread::get_id() == s->caller) s->inline_completion = true;
+    s->done.emplace_back(user_data, status, bytes);
+    s->changed.notify_all();
+  };
+  {
+    State state;
+    char a[5] = {}, b[5] = {};
+    struct AdbcFileRange async_ranges[] = {{0, 5, a, 0, 10}, {7, 4, b, 0, 11}};
+    ASSERT_THAT(file->submit_reads(file, async_ranges, 2, record, &state, &error),
+                IsOkStatus(&error));
+    std::unique_lock<std::mutex> lock(state.mutex);
+    ASSERT_TRUE(state.changed.wait_for(lock, std::chrono::seconds(30),
+                                       [&] { return state.done.size() == 2; }));
+    ASSERT_FALSE(state.inline_completion);
+    std::sort(state.done.begin(), state.done.end());
+    using Done = std::tuple<uint64_t, AdbcStatusCode, uint64_t>;
+    ASSERT_EQ(state.done, (std::vector<Done>{Done{10, ADBC_STATUS_OK, 5},
+                                             Done{11, ADBC_STATUS_OK, 4}}));
+    ASSERT_EQ(std::string(a, 5), "hello");
+    ASSERT_EQ(std::string(b, 4), "file");
+  }
+  {
+    // Closing at once cancels what has not started, but close returns only
+    // after every callback has: each read still completes exactly once.
+    State state;
+    char buffers[8][4] = {};
+    std::vector<struct AdbcFileRange> async_ranges;
+    for (uint64_t i = 0; i < 8; i++) {
+      async_ranges.push_back({i, 4, buffers[i], 0, 100 + i});
+    }
+    ASSERT_THAT(file->submit_reads(file, async_ranges.data(), async_ranges.size(), record,
+                                   &state, &error),
+                IsOkStatus(&error));
+    ASSERT_EQ(file->close(file), ADBC_STATUS_OK);
+    std::lock_guard<std::mutex> lock(state.mutex);
+    ASSERT_EQ(state.done.size(), 8u);
+    for (const auto& [user_data, status, bytes] : state.done) {
+      ASSERT_TRUE(status == ADBC_STATUS_OK || status == ADBC_STATUS_CANCELLED)
+          << user_data << ": " << static_cast<int>(status);
+    }
+  }
+
+  struct AdbcFile* missing = nullptr;
+  std::string nope = (dir_ / "missing.txt").string();
+  ASSERT_THAT(fs.open(&fs, nope.data(), nope.size(), 0, &missing, &error),
+              IsStatus(ADBC_STATUS_NOT_FOUND, &error));
+  if (error.release) error.release(&error);
+  fs.release(&fs);
+}
 
 }  // namespace adbc

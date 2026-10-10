@@ -355,6 +355,50 @@ AdbcStatusCode AdbcProfileProviderFilesystem(const char* profile_name,
 
 /// @}
 
+/// \defgroup adbc-driver-manager-file-drivers File Drivers and Introspection
+///
+/// PROTOTYPE (file-driver proposal): names and shapes may change.
+///
+/// @{
+
+/// \brief Get driver-level metadata (DriverGetInfo) for the driver a database
+///   uses.
+///
+/// May be called before or after AdbcDatabaseInit. Before init, the driver
+/// named by the database's options is loaded just to answer; it stays
+/// loaded until the returned stream is released.
+///
+/// \param[in] database A database from AdbcDatabaseNew.
+/// \param[in] info_codes The codes to fetch, or NULL for all.
+/// \param[in] info_codes_length The length of info_codes.
+/// \param[out] out The result, with the same schema as AdbcConnectionGetInfo.
+/// \param[out] error Error details, if an error occurs.
+ADBC_EXPORT
+AdbcStatusCode AdbcDriverManagerDatabaseGetDriverInfo(struct AdbcDatabase* database,
+                                                      const uint32_t* info_codes,
+                                                      size_t info_codes_length,
+                                                      struct ArrowArrayStream* out,
+                                                      struct AdbcError* error);
+
+/// \brief List the options supported by the driver a database uses
+///   (DriverGetOptionsList). Like AdbcDriverManagerDatabaseGetDriverInfo,
+///   this may be called before or after AdbcDatabaseInit.
+ADBC_EXPORT
+AdbcStatusCode AdbcDriverManagerDatabaseGetDriverOptionsList(
+    struct AdbcDatabase* database, uint32_t level, struct ArrowArrayStream* out,
+    struct AdbcError* error);
+
+/// \brief Initialize the driver manager's built-in local file system.
+///
+/// Names are local paths (UTF-8, absolute or relative to the working
+/// directory). The caller owns the result and must release it, or hand it
+/// to AdbcDatabaseSetFileSystem / AdbcConnectionSetFileSystem.
+ADBC_EXPORT
+AdbcStatusCode AdbcDriverManagerLocalFileSystemInit(struct AdbcFileSystem* out,
+                                                    struct AdbcError* error);
+
+/// @}
+
 #endif  // ADBC_DRIVER_MANAGER_H
 
 #ifdef __cplusplus

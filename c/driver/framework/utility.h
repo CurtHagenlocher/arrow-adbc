@@ -57,9 +57,9 @@ Status MakeTableTypesStream(const std::vector<std::string>& table_types,
 /// \ingroup adbc-framework-catalog
 struct InfoValue {
   uint32_t code;
-  std::variant<std::string, int64_t> value;
+  std::variant<std::string, int64_t, bool> value;
 
-  InfoValue(uint32_t code, std::variant<std::string, int64_t> value)
+  InfoValue(uint32_t code, std::variant<std::string, int64_t, bool> value)
       : code(code), value(std::move(value)) {}
   InfoValue(uint32_t code, const char* value) : InfoValue(code, std::string(value)) {}
 };

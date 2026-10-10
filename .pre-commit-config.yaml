@@ -114,7 +114,7 @@ repos:
       name: Ensure CGO adbc_driver_manager*.cc is syncd
       language: script
       pass_filenames: true
-      files: '^c/driver_manager/adbc_driver_manager(|_api|_profiles|_driver_loading)\.cc$'
+      files: '^c/driver_manager/adbc_driver_manager(|_api|_profiles|_driver_loading|_filesystem)\.cc$'
       entry: "./ci/scripts/run_cgo_drivermgr_check.sh"
     - id: check-cgo-adbc-impl-headers
       name: Ensure CGO adbc_driver_manager headers are syncd

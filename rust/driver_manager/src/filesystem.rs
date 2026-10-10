@@ -387,7 +387,10 @@ mod tests {
         let block = 4096u64;
         let offset = |i: u64| (i * 7919 * block) % (data.len() as u64 - block);
 
-        for (label, fs) in [("rust", Arc::new(fs) as Arc<dyn FileSystem>), ("via C", through_c)] {
+        for (label, fs) in [
+            ("rust", Arc::new(fs) as Arc<dyn FileSystem>),
+            ("via C", through_c),
+        ] {
             let file = fs.open("data.bin", 0).unwrap();
             let mut buf = vec![0u8; block as usize];
 

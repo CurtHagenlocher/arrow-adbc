@@ -154,8 +154,7 @@ struct AdbcFileSystem {
   /// \return ADBC_STATUS_NOT_FOUND if the file does not exist (this may
   ///   instead be reported by the first read if open is lazy).
   AdbcStatusCode (*open)(struct AdbcFileSystem* self, const char* name, size_t name_len,
-                         uint32_t hints, struct AdbcFile** out,
-                         struct AdbcError* error);
+                         uint32_t hints, struct AdbcFile** out, struct AdbcError* error);
 
   /// \brief Get metadata about a file without opening it.  Blocking.
   AdbcStatusCode (*stat)(struct AdbcFileSystem* self, const char* name, size_t name_len,
