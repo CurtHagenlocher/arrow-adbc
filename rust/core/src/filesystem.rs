@@ -243,6 +243,11 @@ pub trait FileSystem: Send + Sync {
 ///   empty authority, path with forward slashes.
 /// - `file:///C:/data/x.xlsx`, `file:///data/x.xlsx`: the same.
 /// - `s3://bucket/a/b.zip`: scheme `s3`, authority `bucket`, path `a/b.zip`.
+/// - `zip:file:///C:/data/a.zip!/orders/x.csv`: a store *inside* another
+///   location (here an archive). Scheme `zip`, authority the inner location
+///   `file:///C:/data/a.zip`, path `orders/x.csv`. The path follows the
+///   *last* `!/`, so archives nest: `zip:zip:file:///a.zip!/b.zip!/c.csv`.
+///   Without `!/` the path is empty (the root of the inner store).
 /// - Anything else without a scheme is a relative local path.
 ///
 /// Percent-decoding is not done (prototype).
@@ -269,6 +274,9 @@ impl Location {
         };
         if has_drive_letter(uri) {
             return Ok(local(uri));
+        }
+        if let Some(nested) = Self::parse_nested(uri) {
+            return Ok(nested);
         }
         let Some((scheme, rest)) = uri.split_once("://") else {
             return Ok(local(uri));
@@ -303,6 +311,33 @@ impl Location {
             scheme,
             authority: authority.to_string(),
             path,
+        })
+    }
+}
+
+impl Location {
+    /// `scheme:<inner location>!/<path>`, where the inner location is not
+    /// `//`-style (that is the ordinary `scheme://authority/path` form).
+    fn parse_nested(uri: &str) -> Option<Location> {
+        let (scheme, rest) = uri.split_once(':')?;
+        if scheme.is_empty()
+            || !scheme.starts_with(|c: char| c.is_ascii_alphabetic())
+            || !scheme
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || "+-.".contains(c))
+            || rest.starts_with("//")
+            || rest.is_empty()
+        {
+            return None;
+        }
+        let (inner, path) = match rest.rfind("!/") {
+            Some(i) => (&rest[..i], &rest[i + 2..]),
+            None => (rest.strip_suffix('!').unwrap_or(rest), ""),
+        };
+        Some(Location {
+            scheme: scheme.to_ascii_lowercase(),
+            authority: inner.to_string(),
+            path: path.trim_start_matches('/').to_string(),
         })
     }
 }
@@ -619,6 +654,28 @@ mod tests {
         );
         assert!(Location::parse("").is_err());
         assert!(Location::parse("b@d://x").is_err());
+
+        // Stores inside other locations (archives).
+        assert_eq!(
+            loc("zip:file:///C:/data/a.zip!/orders/x.csv"),
+            Location {
+                scheme: "zip".into(),
+                authority: "file:///C:/data/a.zip".into(),
+                path: "orders/x.csv".into()
+            }
+        );
+        assert_eq!(
+            loc("zip:C:/data/a.zip"),
+            Location {
+                scheme: "zip".into(),
+                authority: "C:/data/a.zip".into(),
+                path: "".into()
+            }
+        );
+        let nested = loc("zip:zip:s3://bucket/a.zip!/b.zip!/c.csv");
+        assert_eq!(nested.authority, "zip:s3://bucket/a.zip!/b.zip");
+        assert_eq!(nested.path, "c.csv");
+        assert_eq!(loc(&nested.authority).authority, "s3://bucket/a.zip");
     }
 
     #[test]

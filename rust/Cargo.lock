@@ -78,6 +78,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "adbc_filesystem_zip"
+version = "0.25.0"
+dependencies = [
+ "adbc_core",
+ "adbc_driver_manager",
+ "adbc_ffi",
+ "arrow-array",
+ "arrow-schema",
+ "tempfile",
+ "zip",
+]
+
+[[package]]
 name = "ahash"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
