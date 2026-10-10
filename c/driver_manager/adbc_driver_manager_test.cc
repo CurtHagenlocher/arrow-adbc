@@ -2851,6 +2851,21 @@ TEST_F(FileDriverTest, UnknownSchemeIsNotFound) {
   ASSERT_THAT(error.message, ::testing::HasSubstr("'s3'"));
 }
 
+TEST_F(FileDriverTest, NestedSchemeIsNotFound) {
+  // An archive location parses, but this manager has no zip provider.
+  Handle<struct AdbcDatabase> database;
+  NewDatabase(&database.value);
+  std::string uri = "zip:" + std::filesystem::path(path_).generic_string() + "!/a.csv";
+  ASSERT_THAT(AdbcDatabaseSetOption(&database.value, "uri", uri.c_str(), &error),
+              IsOkStatus(&error));
+  ASSERT_THAT(AdbcDatabaseInit(&database.value, &error), IsOkStatus(&error));
+  Handle<struct AdbcConnection> connection;
+  ASSERT_THAT(AdbcConnectionNew(&connection.value, &error), IsOkStatus(&error));
+  ASSERT_THAT(AdbcConnectionInit(&connection.value, &database.value, &error),
+              IsStatus(ADBC_STATUS_NOT_FOUND, &error));
+  ASSERT_THAT(error.message, ::testing::HasSubstr("'zip'"));
+}
+
 TEST_F(FileDriverTest, ExplicitConnectionFileSystem) {
   auto opens = std::make_shared<int>(0);
   Handle<struct AdbcDatabase> database;

@@ -19,10 +19,12 @@
 #include <cstring>
 
 #include <arrow-adbc/adbc.h>
+#include <arrow-adbc/adbc_filesystem.h>
 #include "driver/framework/base_driver.h"
 #include "driver/framework/connection.h"
 #include "driver/framework/database.h"
 #include "driver/framework/statement.h"
+#include "driver/framework/utility.h"
 
 // Self-contained version of the Handle
 static inline void clean_up(AdbcDriver* ptr) { ptr->release(ptr, nullptr); }
@@ -234,4 +236,60 @@ TEST(TestDriverBase, TestVoidDriverMethods) {
   EXPECT_EQ(driver.StatementBindStream(&statement, nullptr, nullptr),
             ADBC_STATUS_INVALID_ARGUMENT);
   EXPECT_EQ(driver.StatementCancel(&statement, nullptr), ADBC_STATUS_NOT_IMPLEMENTED);
+}
+
+// ADBC 1.2 opt-ins (PROTOTYPE, file-driver proposal)
+
+namespace {
+class FileVoidDatabase : public adbc::driver::BaseDatabase<FileVoidDatabase> {
+ public:
+  [[maybe_unused]] constexpr static std::string_view kErrorPrefix = "[file]";
+  constexpr static int kMinimumAdbcVersion = ADBC_VERSION_1_2_0;
+
+  static adbc::driver::Status DriverInfo(const std::vector<uint32_t>& codes,
+                                         ArrowArrayStream* out) {
+    return adbc::driver::MakeGetInfoStream({{ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM, true}},
+                                           out);
+  }
+
+  adbc::driver::Status SetFileSystem(AdbcFileSystem* fs) {
+    if (fs->release) fs->release(fs);
+    return adbc::driver::status::Ok();
+  }
+};
+
+using FileVoidDriver =
+    adbc::driver::Driver<FileVoidDatabase, BaseVoidConnection, BaseVoidStatement>;
+}  // namespace
+
+TEST(TestDriverBase, PlainDriversStayAtOneOne) {
+  // A driver that uses no 1.2 feature refuses 1.2, so a driver manager
+  // falls back to 1.1 exactly as before.
+  AdbcDriver driver = {};
+  ASSERT_EQ(BaseVoidDriver::Init(ADBC_VERSION_1_2_0, &driver, nullptr),
+            ADBC_STATUS_NOT_IMPLEMENTED);
+  ASSERT_EQ(BaseVoidDriver::Init(ADBC_VERSION_1_1_0, &driver, nullptr), ADBC_STATUS_OK);
+  driver.release(&driver, nullptr);
+}
+
+TEST(TestDriverBase, FileDriverOptsIntoOneTwo) {
+  AdbcDriver driver = {};
+  // kMinimumAdbcVersion refuses older versions.
+  ASSERT_EQ(FileVoidDriver::Init(ADBC_VERSION_1_1_0, &driver, nullptr),
+            ADBC_STATUS_NOT_IMPLEMENTED);
+  ASSERT_EQ(FileVoidDriver::Init(ADBC_VERSION_1_2_0, &driver, nullptr), ADBC_STATUS_OK);
+  Handle<AdbcDriver> driver_handle(&driver);
+  ASSERT_NE(driver.DriverGetInfo, nullptr);
+  ASSERT_NE(driver.DatabaseSetFileSystem, nullptr);
+  // The connection type does not accept a file system: the slot stays NULL.
+  ASSERT_EQ(driver.ConnectionSetFileSystem, nullptr);
+  ASSERT_EQ(driver.StatementExecuteMulti, nullptr);
+
+  ArrowArrayStream stream = {};
+  ASSERT_EQ(driver.DriverGetInfo(nullptr, 0, &stream, nullptr), ADBC_STATUS_OK);
+  ArrowArray array;
+  ASSERT_EQ(stream.get_next(&stream, &array), 0);
+  ASSERT_EQ(array.length, 1);
+  array.release(&array);
+  stream.release(&stream);
 }

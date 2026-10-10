@@ -360,6 +360,39 @@ template <typename DatabaseT, typename ConnectionT, typename StatementT, typenam
 using ResolveObjectT =
     typename ResolveObjectTImpl<DatabaseT, ConnectionT, StatementT, T>::type;
 
+// ADBC 1.2 opt-ins, detected at compile time (C++17, since some builds of
+// the framework are not C++20). A driver that does not declare them is
+// unchanged: the corresponding 1.2 table entries stay NULL.
+// PROTOTYPE (file-driver proposal).
+
+/// `static Status DatabaseT::DriverInfo(const std::vector<uint32_t>& codes,
+/// ArrowArrayStream* out)`: driver-level info (an empty `codes` means all).
+template <typename T, typename = void>
+struct HasDriverInfo : std::false_type {};
+template <typename T>
+struct HasDriverInfo<
+    T, std::void_t<decltype(T::DriverInfo(std::declval<const std::vector<uint32_t>&>(),
+                                          std::declval<ArrowArrayStream*>()))>>
+    : std::true_type {};
+
+/// `Status T::SetFileSystem(AdbcFileSystem*)`: accept a file system (on the
+/// database and/or connection). On success the object owns it and must
+/// zero the caller's struct.
+template <typename T, typename = void>
+struct HasSetFileSystem : std::false_type {};
+template <typename T>
+struct HasSetFileSystem<T, std::void_t<decltype(std::declval<T&>().SetFileSystem(
+                               std::declval<struct AdbcFileSystem*>()))>>
+    : std::true_type {};
+
+/// `static constexpr int DatabaseT::kMinimumAdbcVersion`: refuse older
+/// versions (a file driver needs 1.2.0).
+template <typename T, typename = void>
+struct HasMinimumAdbcVersion : std::false_type {};
+template <typename T>
+struct HasMinimumAdbcVersion<T, std::void_t<decltype(T::kMinimumAdbcVersion)>>
+    : std::true_type {};
+
 // Driver authors can declare a template specialization of the Driver class
 // and use it to provide their driver init function. It is possible, but
 // rarely useful, to subclass a driver.
@@ -367,13 +400,27 @@ template <typename DatabaseT, typename ConnectionT, typename StatementT>
 class Driver {
  public:
   static AdbcStatusCode Init(int version, void* raw_driver, AdbcError* error) {
-    if (version != ADBC_VERSION_1_0_0 && version != ADBC_VERSION_1_1_0) {
+    // ADBC 1.2 is opt-in: only drivers that use a 1.2 feature accept it, so
+    // existing drivers keep negotiating 1.1 exactly as before.
+    constexpr bool kSupports120 =
+        HasDriverInfo<DatabaseT>::value || HasSetFileSystem<DatabaseT>::value ||
+        HasSetFileSystem<ConnectionT>::value || HasMinimumAdbcVersion<DatabaseT>::value;
+    if (version != ADBC_VERSION_1_0_0 && version != ADBC_VERSION_1_1_0 &&
+        !(kSupports120 && version == ADBC_VERSION_1_2_0)) {
       return ADBC_STATUS_NOT_IMPLEMENTED;
+    }
+    if constexpr (HasMinimumAdbcVersion<DatabaseT>::value) {
+      if (version < DatabaseT::kMinimumAdbcVersion) {
+        return ADBC_STATUS_NOT_IMPLEMENTED;
+      }
     }
 
     auto* driver = reinterpret_cast<AdbcDriver*>(raw_driver);
     if (version >= ADBC_VERSION_1_1_0) {
-      std::memset(driver, 0, ADBC_DRIVER_1_1_0_SIZE);
+      // Only the part of the table that belongs to this version.
+      std::memset(driver, 0,
+                  version >= ADBC_VERSION_1_2_0 ? ADBC_DRIVER_1_2_0_SIZE
+                                                : ADBC_DRIVER_1_1_0_SIZE);
 
       driver->ErrorGetDetailCount = &CErrorGetDetailCount;
       driver->ErrorGetDetail = &CErrorGetDetail;
@@ -406,6 +453,18 @@ class Driver {
       driver->StatementSetOptionBytes = &CSetOptionBytes<AdbcStatement>;
       driver->StatementSetOptionInt = &CSetOptionInt<AdbcStatement>;
       driver->StatementSetOptionDouble = &CSetOptionDouble<AdbcStatement>;
+
+      if (version >= ADBC_VERSION_1_2_0) {
+        if constexpr (HasDriverInfo<DatabaseT>::value) {
+          driver->DriverGetInfo = &CDriverGetInfo;
+        }
+        if constexpr (HasSetFileSystem<DatabaseT>::value) {
+          driver->DatabaseSetFileSystem = &CDatabaseSetFileSystem;
+        }
+        if constexpr (HasSetFileSystem<ConnectionT>::value) {
+          driver->ConnectionSetFileSystem = &CConnectionSetFileSystem;
+        }
+      }
     } else {
       std::memset(driver, 0, ADBC_DRIVER_1_0_0_SIZE);
     }
@@ -446,6 +505,47 @@ class Driver {
   }
 
   // Driver trampolines
+  static AdbcStatusCode CDriverGetInfo(const uint32_t* info_codes,
+                                       size_t info_codes_length, ArrowArrayStream* out,
+                                       AdbcError* error) {
+    if constexpr (HasDriverInfo<DatabaseT>::value) {
+      if (!out) return status::InvalidArgument("out must not be NULL").ToAdbc(error);
+      std::vector<uint32_t> codes;
+      if (info_codes) codes.assign(info_codes, info_codes + info_codes_length);
+      return DatabaseT::DriverInfo(codes, out).ToAdbc(error);
+    } else {
+      return ADBC_STATUS_NOT_IMPLEMENTED;
+    }
+  }
+
+  static AdbcStatusCode CDatabaseSetFileSystem(AdbcDatabase* database,
+                                               struct AdbcFileSystem* file_system,
+                                               AdbcError* error) {
+    if constexpr (HasSetFileSystem<DatabaseT>::value) {
+      if (!database || !database->private_data) {
+        return status::InvalidState("Database is uninitialized").ToAdbc(error);
+      }
+      auto private_data = reinterpret_cast<DatabaseT*>(database->private_data);
+      return private_data->SetFileSystem(file_system).ToAdbc(error);
+    } else {
+      return ADBC_STATUS_NOT_IMPLEMENTED;
+    }
+  }
+
+  static AdbcStatusCode CConnectionSetFileSystem(AdbcConnection* connection,
+                                                 struct AdbcFileSystem* file_system,
+                                                 AdbcError* error) {
+    if constexpr (HasSetFileSystem<ConnectionT>::value) {
+      if (!connection || !connection->private_data) {
+        return status::InvalidState("Connection is uninitialized").ToAdbc(error);
+      }
+      auto private_data = reinterpret_cast<ConnectionT*>(connection->private_data);
+      return private_data->SetFileSystem(file_system).ToAdbc(error);
+    } else {
+      return ADBC_STATUS_NOT_IMPLEMENTED;
+    }
+  }
+
   static AdbcStatusCode CDriverRelease(AdbcDriver* driver, AdbcError* error) {
     auto driver_private = reinterpret_cast<Driver*>(driver->private_data);
     delete driver_private;

@@ -83,6 +83,10 @@ if(ADBC_DRIVER_POSTGRESQL)
   add_subdirectory(driver/postgresql)
 endif()
 
+if(ADBC_DRIVER_CSV)
+  add_subdirectory(driver/csv)
+endif()
+
 if(ADBC_DRIVER_SQLITE)
   install(FILES "${REPOSITORY_ROOT}/c/include/arrow-adbc/driver/sqlite.h"
           DESTINATION include/arrow-adbc/driver)

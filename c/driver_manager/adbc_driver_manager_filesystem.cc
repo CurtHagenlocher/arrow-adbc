@@ -412,6 +412,30 @@ std::optional<Location> ParseLocation(std::string_view uri) {
   };
   if (uri.empty()) return std::nullopt;
   if (HasDriveLetter(uri)) return local(uri);
+  // scheme:<inner location>!/<path>: a store inside another location
+  // (e.g. zip:file:///C:/a.zip!/x.csv); the path follows the last "!/".
+  if (auto colon = uri.find(':'); colon != std::string_view::npos && colon > 0 &&
+                                  std::isalpha(static_cast<unsigned char>(uri[0])) &&
+                                  uri.substr(colon + 1, 2) != "//" &&
+                                  colon + 1 < uri.size()) {
+    std::string scheme(uri.substr(0, colon));
+    bool valid = std::all_of(scheme.begin(), scheme.end(), [](char c) {
+      return std::isalnum(static_cast<unsigned char>(c)) || c == '+' || c == '-' ||
+             c == '.';
+    });
+    if (valid) {
+      std::transform(scheme.begin(), scheme.end(), scheme.begin(), [](char c) {
+        return static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+      });
+      std::string_view rest = uri.substr(colon + 1);
+      auto bang = rest.rfind("!/");
+      std::string_view inner =
+          bang == std::string_view::npos ? rest : rest.substr(0, bang);
+      std::string path =
+          bang == std::string_view::npos ? "" : std::string(rest.substr(bang + 2));
+      return Location{scheme, std::string(inner), path};
+    }
+  }
   auto sep = uri.find("://");
   if (sep == std::string_view::npos) return local(uri);
   std::string scheme(uri.substr(0, sep));
