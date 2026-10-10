@@ -445,7 +445,9 @@ pub fn check_buffer(range: &ReadRange, buffer_len: usize) -> Result<()> {
 /// libraries that expect a stream (calamine, zip, ...).
 ///
 /// Reads are served from a read-ahead window, so small sequential reads
-/// do not each cost a round trip to the provider.
+/// do not each cost a round trip to the provider. Clones share the file
+/// but have their own position and window.
+#[derive(Clone)]
 pub struct FileReader {
     file: Arc<dyn File>,
     size: u64,
