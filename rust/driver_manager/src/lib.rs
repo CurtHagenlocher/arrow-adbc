@@ -101,6 +101,7 @@
 // would prevent any parallelism between driver calls, which is not desirable.
 
 pub mod error;
+pub mod filesystem;
 pub mod profile;
 pub mod search;
 
@@ -122,11 +123,14 @@ use arrow_array::ffi_stream::{ArrowArrayStreamReader, FFI_ArrowArrayStream};
 use arrow_array::{Array, RecordBatch, RecordBatchReader, StructArray};
 
 use adbc_core::{
-    Connection, Database, Driver, LoadFlags, Optionable, PartitionedResult, Statement,
+    Connection, Database, Driver, LoadFlags, Optionable, PartitionedResult, Statement, constants,
     error::{Error, Result, Status},
+    filesystem::{FileSystem, Location},
+    info::{InfoValue, read_info},
     options::{self, AdbcVersion, InfoCode, OptionDatabase, OptionValue},
 };
 use adbc_ffi::driver_method;
+use adbc_ffi::filesystem::{FFI_AdbcFileSystem, export_file_system};
 
 use self::search::{DriverLibrary, DriverLocator, parse_driver_uri};
 use crate::profile::{
@@ -140,7 +144,9 @@ const ERR_STATISTICS_UNSUPPORTED: &str = "Statistics are not supported with ADBC
 #[derive(Debug)]
 struct ManagedDriverInner {
     driver: adbc_ffi::FFI_AdbcDriver,
-    version: AdbcVersion, // Driver version
+    version: AdbcVersion, // Negotiated ADBC version
+    /// Whether the driver reports ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM (1.2+).
+    accepts_file_system: bool,
     // The dynamic library must be kept loaded for the entire lifetime of the driver.
     // To avoid complex lifetimes we prefer to store it as part of this struct.
     // Besides, the `library` field must always appear after `driver` because of drop order:
@@ -168,10 +174,12 @@ impl ManagedDriver {
         init: &adbc_ffi::FFI_AdbcDriverInitFunc,
         version: AdbcVersion,
     ) -> Result<Self> {
-        let driver = DriverLibrary::from_static_init(init).init_driver(version)?;
+        let (driver, version) = DriverLibrary::from_static_init(init).init_driver(version)?;
+        let accepts_file_system = probe_accepts_file_system(&driver, version);
         let inner = Arc::pin(ManagedDriverInner {
             driver,
             version,
+            accepts_file_system,
             _library: None,
         });
         Ok(ManagedDriver { inner })
@@ -206,6 +214,11 @@ impl ManagedDriver {
         let search_hit = DriverLibrary::search(name, load_flags, additional_search_paths)?;
 
         let entrypoint = search_hit.resolve_entrypoint(entrypoint).to_vec();
+        // The manifest's `[ADBC] version` caps negotiation (advisory; the
+        // driver's answer at init is authoritative).
+        let version = search_hit
+            .max_adbc_version
+            .map_or(version, |max| max.min(version));
         Self::load_from_library(search_hit.library, entrypoint.as_ref(), version)
     }
 
@@ -234,11 +247,13 @@ impl ManagedDriver {
         entrypoint: &[u8],
         version: AdbcVersion,
     ) -> Result<ManagedDriver> {
-        let driver =
+        let (driver, version) =
             DriverLibrary::try_from_dynamic_library(&library, entrypoint)?.init_driver(version)?;
+        let accepts_file_system = probe_accepts_file_system(&driver, version);
         let inner = Arc::pin(ManagedDriverInner {
             driver,
             version,
+            accepts_file_system,
             _library: Some(library),
         });
         Ok(ManagedDriver { inner })
@@ -260,6 +275,48 @@ impl ManagedDriver {
         let entrypoint = DriverLibrary::derive_entrypoint_from_name(entrypoint, name.as_ref());
         let library = DriverLibrary::load_library_from_name(name.as_ref())?;
         Self::load_from_library(library, entrypoint.as_ref(), version)
+    }
+
+    /// Whether this is a file driver: one that reads through a file system
+    /// handed to it by the host (PROTOTYPE, ADBC 1.2).
+    pub fn accepts_file_system(&self) -> bool {
+        self.inner.accepts_file_system
+    }
+
+    /// Get metadata about the driver itself, without a database or
+    /// connection (`DriverGetInfo`, PROTOTYPE, ADBC 1.2).
+    pub fn get_info(
+        &self,
+        codes: Option<HashSet<InfoCode>>,
+    ) -> Result<Box<dyn RecordBatchReader + Send + 'static>> {
+        if self.inner.version < AdbcVersion::V120 {
+            return Err(Error::with_message_and_status(
+                "DriverGetInfo requires a driver loaded at ADBC 1.2.0",
+                Status::NotImplemented,
+            ));
+        }
+        driver_get_info(&self.inner.driver, codes)
+    }
+
+    /// List the options the driver supports at the given levels, a bitmask
+    /// of `ADBC_OPTION_LEVEL_*` (`DriverGetOptionsList`, ADBC 1.2).
+    pub fn get_options_list(
+        &self,
+        level: u32,
+    ) -> Result<Box<dyn RecordBatchReader + Send + 'static>> {
+        if self.inner.version < AdbcVersion::V120 {
+            return Err(Error::with_message_and_status(
+                "DriverGetOptionsList requires a driver loaded at ADBC 1.2.0",
+                Status::NotImplemented,
+            ));
+        }
+        let driver = &self.inner.driver;
+        let mut stream = FFI_ArrowArrayStream::empty();
+        let mut error = adbc_ffi::FFI_AdbcError::with_driver(driver);
+        let method = driver_method!(driver, DriverGetOptionsList);
+        let status = unsafe { method(level, &mut stream, &mut error) };
+        check_status(status, error)?;
+        Ok(Box::new(ArrowArrayStreamReader::try_new(stream)?))
     }
 
     fn inner_ffi_driver(&self) -> &adbc_ffi::FFI_AdbcDriver {
@@ -304,43 +361,133 @@ impl Driver for ManagedDriver {
     type DatabaseType = ManagedDatabase;
 
     fn new_database(&mut self) -> Result<Self::DatabaseType> {
-        // Construct a new database.
-        let database = self.database_new()?;
-        // Initialize the database.
-        let database = self.database_init(database)?;
-        let inner = Arc::new(ManagedDatabaseInner {
-            database: Mutex::new(database),
-            driver: self.inner.clone(),
-        });
-        Ok(Self::DatabaseType { inner })
+        self.new_database_with_opts(std::iter::empty())
     }
 
     fn new_database_with_opts(
         &mut self,
         opts: impl IntoIterator<Item = (<Self::DatabaseType as Optionable>::Option, OptionValue)>,
     ) -> Result<Self::DatabaseType> {
+        self.create_database(opts, None)
+    }
+
+    fn new_database_with_file_system(
+        &mut self,
+        opts: impl IntoIterator<Item = (OptionDatabase, OptionValue)>,
+        file_system: Arc<dyn FileSystem>,
+    ) -> Result<Self::DatabaseType> {
+        self.create_database(opts, Some(file_system))
+    }
+}
+
+impl ManagedDriver {
+    fn create_database(
+        &mut self,
+        opts: impl IntoIterator<Item = (OptionDatabase, OptionValue)>,
+        file_system: Option<Arc<dyn FileSystem>>,
+    ) -> Result<ManagedDatabase> {
         // Construct a new database.
         let mut database = self.database_new()?;
+        let mut uri = None;
         // Set the options.
         {
             let driver = self.inner_ffi_driver();
             for (key, value) in opts {
+                if let (OptionDatabase::Uri, OptionValue::String(value)) = (&key, &value) {
+                    uri = Some(value.clone());
+                }
                 set_option_database(driver, &mut database, self.inner.version, key, value)?;
             }
+        }
+        let has_file_system = file_system.is_some();
+        if let Some(file_system) = file_system {
+            let driver = self.inner_ffi_driver();
+            set_file_system(
+                driver,
+                self.inner.version,
+                file_system,
+                |fs, error| unsafe {
+                    driver_method!(driver, DatabaseSetFileSystem)(&mut database, fs, error)
+                },
+            )?;
         }
         // Initialize the database.
         let database = self.database_init(database)?;
         let inner = Arc::new(ManagedDatabaseInner {
             database: Mutex::new(database),
             driver: self.inner.clone(),
+            uri,
+            has_file_system,
         });
-        Ok(Self::DatabaseType { inner })
+        Ok(ManagedDatabase { inner })
     }
+}
+
+/// Hand a file system to a driver through one of its setters. Ownership
+/// moves to the driver only on success; otherwise it is released here.
+fn set_file_system(
+    driver: &adbc_ffi::FFI_AdbcDriver,
+    version: AdbcVersion,
+    file_system: Arc<dyn FileSystem>,
+    setter: impl FnOnce(*mut FFI_AdbcFileSystem, *mut adbc_ffi::FFI_AdbcError) -> u8,
+) -> Result<()> {
+    if version < AdbcVersion::V120 {
+        return Err(Error::with_message_and_status(
+            "Setting a file system requires a driver loaded at ADBC 1.2.0",
+            Status::NotImplemented,
+        ));
+    }
+    let mut raw = export_file_system(file_system);
+    let mut error = adbc_ffi::FFI_AdbcError::with_driver(driver);
+    let status = setter(&mut raw, &mut error);
+    if status != constants::ADBC_STATUS_OK {
+        if let Some(release) = raw.release {
+            unsafe { release(&mut raw) };
+        }
+    }
+    check_status(status, error)
+}
+
+fn driver_get_info(
+    driver: &adbc_ffi::FFI_AdbcDriver,
+    codes: Option<HashSet<InfoCode>>,
+) -> Result<Box<dyn RecordBatchReader + Send + 'static>> {
+    let codes: Option<Vec<u32>> = codes.map(|c| c.iter().map(u32::from).collect());
+    let (ptr, len) = match &codes {
+        Some(c) => (c.as_ptr(), c.len()),
+        None => (null(), 0),
+    };
+    let mut stream = FFI_ArrowArrayStream::empty();
+    let mut error = adbc_ffi::FFI_AdbcError::with_driver(driver);
+    let method = driver_method!(driver, DriverGetInfo);
+    let status = unsafe { method(ptr, len, &mut stream, &mut error) };
+    check_status(status, error)?;
+    Ok(Box::new(ArrowArrayStreamReader::try_new(stream)?))
+}
+
+/// Ask a freshly loaded driver whether it is a file driver. Any failure
+/// (including a driver that does not implement DriverGetInfo) means no.
+fn probe_accepts_file_system(driver: &adbc_ffi::FFI_AdbcDriver, version: AdbcVersion) -> bool {
+    if version < AdbcVersion::V120 {
+        return false;
+    }
+    let code = InfoCode::from(constants::ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM);
+    driver_get_info(driver, Some([code].into()))
+        .and_then(read_info)
+        .map(|rows| {
+            rows.iter()
+                .any(|(c, v)| *c == code && *v == InfoValue::Bool(true))
+        })
+        .unwrap_or(false)
 }
 
 struct ManagedDatabaseInner {
     database: Mutex<adbc_ffi::FFI_AdbcDatabase>,
     driver: Pin<Arc<ManagedDriverInner>>,
+    /// The `uri` option, used to resolve a default file system.
+    uri: Option<String>,
+    /// Whether a file system was set on the database itself.
+    has_file_system: bool,
 }
 
 impl Drop for ManagedDatabaseInner {
@@ -753,23 +900,51 @@ impl Database for ManagedDatabase {
     type ConnectionType = ManagedConnection;
 
     fn new_connection(&self) -> Result<Self::ConnectionType> {
-        // Construct a new connection.
-        let connection = self.connection_new()?;
-        // Initialize the connection.
-        let connection = self.connection_init(connection)?;
-        let inner = ManagedConnectionInner {
-            connection: Mutex::new(connection),
-            database: self.inner.clone(),
-        };
-        Ok(Self::ConnectionType {
-            inner: Arc::new(inner),
-        })
+        self.new_connection_with_opts(std::iter::empty())
     }
 
     fn new_connection_with_opts(
         &self,
         opts: impl IntoIterator<Item = (<Self::ConnectionType as Optionable>::Option, OptionValue)>,
     ) -> Result<Self::ConnectionType> {
+        self.create_connection(opts, None)
+    }
+
+    fn new_connection_with_file_system(
+        &self,
+        opts: impl IntoIterator<Item = (options::OptionConnection, OptionValue)>,
+        file_system: Arc<dyn FileSystem>,
+    ) -> Result<Self::ConnectionType> {
+        self.create_connection(opts, Some(file_system))
+    }
+}
+
+impl ManagedDatabase {
+    /// The file system a new connection of a file driver gets: the one given,
+    /// else none if the database has its own (the driver inherits it), else
+    /// one resolved from the database `uri` through the registry.
+    fn connection_file_system(
+        &self,
+        explicit: Option<Arc<dyn FileSystem>>,
+    ) -> Result<Option<Arc<dyn FileSystem>>> {
+        if explicit.is_some() {
+            return Ok(explicit);
+        }
+        if !self.inner.driver.accepts_file_system || self.inner.has_file_system {
+            return Ok(None);
+        }
+        match &self.inner.uri {
+            Some(uri) => filesystem::resolve(&Location::parse(uri)?).map(Some),
+            // The driver reports FILESYSTEM_REQUIRED if it needs one.
+            None => Ok(None),
+        }
+    }
+
+    fn create_connection(
+        &self,
+        opts: impl IntoIterator<Item = (options::OptionConnection, OptionValue)>,
+        file_system: Option<Arc<dyn FileSystem>>,
+    ) -> Result<ManagedConnection> {
         // Construct a new connection.
         let mut connection = self.connection_new()?;
         // Set the options.
@@ -779,13 +954,24 @@ impl Database for ManagedDatabase {
                 set_option_connection(driver, &mut connection, self.driver_version(), key, value)?;
             }
         }
+        if let Some(file_system) = self.connection_file_system(file_system)? {
+            let driver = self.ffi_driver();
+            set_file_system(
+                driver,
+                self.driver_version(),
+                file_system,
+                |fs, error| unsafe {
+                    driver_method!(driver, ConnectionSetFileSystem)(&mut connection, fs, error)
+                },
+            )?;
+        }
         // Initialize the connection.
         let connection = self.connection_init(connection)?;
         let inner = ManagedConnectionInner {
             connection: Mutex::new(connection),
             database: self.inner.clone(),
         };
-        Ok(Self::ConnectionType {
+        Ok(ManagedConnection {
             inner: Arc::new(inner),
         })
     }

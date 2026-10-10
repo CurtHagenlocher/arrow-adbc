@@ -41,10 +41,49 @@ use crate::error::libloading_error_to_adbc_error;
 
 const ERR_DETAIL_DRIVER_LOAD_TRACE: &str = "adbc.drivermanager.driver_load_trace";
 
+/// The newest ADBC API version this driver manager can negotiate.
+const MAX_SUPPORTED_VERSION: (u32, u32, u32) = (1, 2, 0);
+
+/// Parse an ADBC version from a manifest (`"1.1.0"` or `"v1.1.0"`).
+///
+/// Returns `None` for anything unparseable. Real manifests disagree on the
+/// leading `v`, and an unreadable version must not stop a driver loading.
+fn parse_manifest_version(value: &str) -> Option<(u32, u32, u32)> {
+    let value = value.trim();
+    let value = value.strip_prefix(['v', 'V']).unwrap_or(value);
+    let mut parts = value.split('.').map(|p| p.parse::<u32>().ok());
+    let major = parts.next()??;
+    let minor = parts.next().unwrap_or(Some(0))?;
+    let patch = parts.next().unwrap_or(Some(0))?;
+    if parts.next().is_some() {
+        return None;
+    }
+    Some((major, minor, patch))
+}
+
+/// The newest known [AdbcVersion] that is not newer than `version`.
+fn known_version_at_most(version: (u32, u32, u32)) -> Option<AdbcVersion> {
+    [
+        ((1, 2, 0), AdbcVersion::V120),
+        ((1, 1, 0), AdbcVersion::V110),
+        ((1, 0, 0), AdbcVersion::V100),
+    ]
+    .into_iter()
+    .find(|(v, _)| *v <= version)
+    .map(|(_, known)| known)
+}
+
+fn format_version((major, minor, patch): (u32, u32, u32)) -> String {
+    format!("{major}.{minor}.{patch}")
+}
+
 #[derive(Debug, Default)]
 struct DriverInfo {
     lib_path: PathBuf,
     entrypoint: Option<Vec<u8>>,
+    /// `[ADBC] version`: the newest ADBC version the driver supports, which
+    /// caps negotiation. Advisory: init-time negotiation stays authoritative.
+    max_adbc_version: Option<AdbcVersion>,
     // TODO: until we add more logging these are unused so we'll leave
     // them out until such time that we do so.
     // driver_name: String,
@@ -142,9 +181,38 @@ impl DriverInfo {
             })
             .transpose()?;
 
+        let adbc = manifest
+            .get_ref()
+            .get("ADBC")
+            .and_then(|v| v.get_ref().as_table());
+        let adbc_version = |key: &str| {
+            adbc.and_then(|t| t.get(key))
+                .and_then(|v| v.get_ref().as_str())
+                .and_then(parse_manifest_version)
+        };
+
+        // `[ADBC] min_version` above what we can negotiate fails before the
+        // library is loaded, with a message naming both versions.
+        if let Some(min_version) = adbc_version("min_version") {
+            if min_version > MAX_SUPPORTED_VERSION {
+                return Err(Error::with_message_and_status(
+                    format!(
+                        "Driver manifest '{}' requires ADBC {}, but this driver manager \
+                         supports at most ADBC {}",
+                        manifest_file.display(),
+                        format_version(min_version),
+                        format_version(MAX_SUPPORTED_VERSION),
+                    ),
+                    Status::NotImplemented,
+                ));
+            }
+        }
+        let max_adbc_version = adbc_version("version").and_then(known_version_at_most);
+
         Ok(DriverInfo {
             lib_path,
             entrypoint,
+            max_adbc_version,
         })
     }
 
@@ -178,6 +246,7 @@ impl DriverInfo {
         Ok(DriverInfo {
             lib_path: PathBuf::from(drivers_key.get_string("driver").unwrap_or_default()),
             entrypoint,
+            max_adbc_version: None,
         })
     }
 }
@@ -192,6 +261,9 @@ pub struct SearchHit {
     /// Must have priority over a specified entrypoint or the one derived
     /// from the library name.
     pub entrypoint: Option<Vec<u8>>,
+    /// The newest ADBC version the manifest says the driver supports, if it
+    /// says. Used to cap version negotiation.
+    pub max_adbc_version: Option<AdbcVersion>,
 }
 
 impl SearchHit {
@@ -204,7 +276,13 @@ impl SearchHit {
             lib_path,
             library,
             entrypoint,
+            max_adbc_version: None,
         }
+    }
+
+    fn with_max_adbc_version(mut self, version: Option<AdbcVersion>) -> Self {
+        self.max_adbc_version = version;
+        self
     }
 
     pub fn resolve_entrypoint<'a>(&'a self, entrypoint: Option<&'a [u8]>) -> Cow<'a, [u8]> {
@@ -263,18 +341,35 @@ impl<'a> DriverLibrary<'a> {
     }
 
     /// Initialize the driver via the library's entrypoint.
-    pub fn init_driver(&self, version: AdbcVersion) -> Result<FFI_AdbcDriver> {
-        let mut error = FFI_AdbcError::default();
-        let mut driver = FFI_AdbcDriver::default();
-        let status = unsafe {
-            (self.init)(
-                version.into(),
-                &mut driver as *mut FFI_AdbcDriver as *mut c_void,
-                &mut error,
+    ///
+    /// Tries `version` first, then each older version for which the driver
+    /// returns `NOT_IMPLEMENTED`, and returns the version that was accepted.
+    pub fn init_driver(&self, version: AdbcVersion) -> Result<(FFI_AdbcDriver, AdbcVersion)> {
+        const VERSIONS: [AdbcVersion; 3] =
+            [AdbcVersion::V120, AdbcVersion::V110, AdbcVersion::V100];
+        let mut last_error = None;
+        for candidate in VERSIONS.into_iter().filter(|v| *v <= version) {
+            let mut error = FFI_AdbcError::default();
+            let mut driver = FFI_AdbcDriver::default();
+            let status = unsafe {
+                (self.init)(
+                    candidate.into(),
+                    &mut driver as *mut FFI_AdbcDriver as *mut c_void,
+                    &mut error,
+                )
+            };
+            match check_status(status, error) {
+                Ok(()) => return Ok((driver, candidate)),
+                Err(e) if e.status == Status::NotImplemented => last_error = Some(e),
+                Err(e) => return Err(e),
+            }
+        }
+        Err(last_error.unwrap_or_else(|| {
+            Error::with_message_and_status(
+                format!("No ADBC version at or below {version:?} to try"),
+                Status::InvalidArguments,
             )
-        };
-        check_status(status, error)?;
-        Ok(driver)
+        }))
     }
 
     pub fn load_library(filename: impl AsRef<OsStr>) -> Result<libloading::Library> {
@@ -343,7 +438,8 @@ impl<'a> DriverLibrary<'a> {
     fn load_library_from_manifest(manifest_file: &Path) -> Result<SearchHit> {
         let info = DriverInfo::load_driver_manifest(manifest_file)?;
         let library = Self::load_library(&info.lib_path)?;
-        Ok(SearchHit::new(info.lib_path, library, info.entrypoint))
+        Ok(SearchHit::new(info.lib_path, library, info.entrypoint)
+            .with_max_adbc_version(info.max_adbc_version))
     }
 
     pub(crate) fn derive_entrypoint(
@@ -1032,6 +1128,86 @@ pub(crate) fn parse_driver_uri(uri: &'_ str) -> Result<DriverLocator<'_>> {
 
 #[cfg(test)]
 mod tests {
+    use std::path::{Path, PathBuf};
+
+    use adbc_core::error::Status;
+
+    use super::DriverInfo;
+
+    #[test]
+    fn manifest_versions() {
+        assert_eq!(super::parse_manifest_version("1.1.0"), Some((1, 1, 0)));
+        assert_eq!(super::parse_manifest_version("v1.2.0"), Some((1, 2, 0)));
+        assert_eq!(super::parse_manifest_version(" 1.2 "), Some((1, 2, 0)));
+        assert_eq!(super::parse_manifest_version("1.2.0.1"), None);
+        assert_eq!(super::parse_manifest_version("one"), None);
+        assert_eq!(
+            super::known_version_at_most((1, 1, 0)),
+            Some(AdbcVersion::V110)
+        );
+        assert_eq!(
+            super::known_version_at_most((1, 3, 0)),
+            Some(AdbcVersion::V120)
+        );
+        assert_eq!(super::known_version_at_most((0, 9, 0)), None);
+    }
+
+    fn write_manifest(dir: &Path, adbc: &str) -> PathBuf {
+        let path = dir.join("test_driver.toml");
+        std::fs::write(
+            &path,
+            format!("manifest_version = 1\n\n{adbc}\n\n[Driver]\nshared = 'not_loaded.dll'\n"),
+        )
+        .unwrap();
+        path
+    }
+
+    #[test]
+    fn manifest_adbc_section() {
+        let dir = tempfile::TempDir::new().unwrap();
+
+        // Missing section: loads, no cap.
+        let info = DriverInfo::load_driver_manifest(&write_manifest(dir.path(), "")).unwrap();
+        assert_eq!(info.max_adbc_version, None);
+
+        // A leading 'v', as real manifests have.
+        let info = DriverInfo::load_driver_manifest(&write_manifest(
+            dir.path(),
+            "[ADBC]\nversion = 'v1.1.0'",
+        ))
+        .unwrap();
+        assert_eq!(info.max_adbc_version, Some(AdbcVersion::V110));
+
+        // An unreadable version is ignored, not an error.
+        let info = DriverInfo::load_driver_manifest(&write_manifest(
+            dir.path(),
+            "[ADBC]\nversion = 'latest'\nmin_version = '?'",
+        ))
+        .unwrap();
+        assert_eq!(info.max_adbc_version, None);
+
+        // A satisfiable minimum loads.
+        DriverInfo::load_driver_manifest(&write_manifest(
+            dir.path(),
+            "[ADBC]\nversion = '1.2.0'\nmin_version = '1.2.0'",
+        ))
+        .unwrap();
+
+        // A minimum we cannot negotiate fails before anything is loaded
+        // (the library named in the manifest does not exist).
+        let err = DriverInfo::load_driver_manifest(&write_manifest(
+            dir.path(),
+            "[ADBC]\nmin_version = '1.3.0'",
+        ))
+        .unwrap_err();
+        assert_eq!(err.status, Status::NotImplemented);
+        assert!(
+            err.message.contains("requires ADBC 1.3.0"),
+            "{}",
+            err.message
+        );
+    }
+
     use std::env;
 
     use adbc_core::{LOAD_FLAG_ALLOW_RELATIVE_PATHS, options::AdbcVersion};

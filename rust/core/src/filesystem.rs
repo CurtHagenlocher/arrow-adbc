@@ -232,6 +232,86 @@ pub trait FileSystem: Send + Sync {
     }
 }
 
+/// Where a file driver's data lives: a store, identified by a scheme and an
+/// authority, and a path within it.
+///
+/// The driver manager uses the store to pick a provider from its registry.
+/// The driver passes [Location::path] to [FileSystem::open]. Both parse the
+/// same `uri` option with this one rule, so they agree on the name.
+///
+/// - `C:\data\x.xlsx`, `C:/data/x.xlsx`, `/data/x.xlsx`: scheme `file`,
+///   empty authority, path with forward slashes.
+/// - `file:///C:/data/x.xlsx`, `file:///data/x.xlsx`: the same.
+/// - `s3://bucket/a/b.zip`: scheme `s3`, authority `bucket`, path `a/b.zip`.
+/// - Anything else without a scheme is a relative local path.
+///
+/// Percent-decoding is not done (prototype).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Location {
+    pub scheme: String,
+    pub authority: String,
+    pub path: String,
+}
+
+impl Location {
+    pub fn parse(uri: &str) -> Result<Self> {
+        let uri = uri.trim();
+        if uri.is_empty() {
+            return Err(Error::with_message_and_status(
+                "empty location",
+                Status::InvalidArguments,
+            ));
+        }
+        let local = |path: &str| Location {
+            scheme: "file".to_string(),
+            authority: String::new(),
+            path: path.replace('\\', "/"),
+        };
+        if has_drive_letter(uri) {
+            return Ok(local(uri));
+        }
+        let Some((scheme, rest)) = uri.split_once("://") else {
+            return Ok(local(uri));
+        };
+        let scheme = scheme.to_ascii_lowercase();
+        if scheme.is_empty()
+            || !scheme
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || "+-.".contains(c))
+        {
+            return Err(Error::with_message_and_status(
+                format!("invalid scheme in location '{uri}'"),
+                Status::InvalidArguments,
+            ));
+        }
+        let (authority, path) = match rest.find('/') {
+            Some(i) => (&rest[..i], &rest[i..]),
+            None => (rest, ""),
+        };
+        let path = if scheme == "file" {
+            // file:///C:/x has path "/C:/x"; drop the slash before a drive.
+            let trimmed = path.strip_prefix('/').unwrap_or(path);
+            if has_drive_letter(trimmed) {
+                trimmed.to_string()
+            } else {
+                path.to_string()
+            }
+        } else {
+            path.strip_prefix('/').unwrap_or(path).to_string()
+        };
+        Ok(Location {
+            scheme,
+            authority: authority.to_string(),
+            path,
+        })
+    }
+}
+
+fn has_drive_letter(s: &str) -> bool {
+    let b = s.as_bytes();
+    b.len() >= 3 && b[0].is_ascii_alphabetic() && b[1] == b':' && (b[2] == b'/' || b[2] == b'\\')
+}
+
 /// The schema of [FileSystem::list] results.
 pub fn list_schema() -> arrow_schema::SchemaRef {
     use arrow_schema::{DataType, Field, Schema};
@@ -512,6 +592,32 @@ fn pool() -> &'static Pool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn parse_locations() {
+        let loc = |s: &str| Location::parse(s).unwrap();
+        let file = |p: &str| Location {
+            scheme: "file".into(),
+            authority: "".into(),
+            path: p.into(),
+        };
+        assert_eq!(loc(r"C:\data\x.xlsx"), file("C:/data/x.xlsx"));
+        assert_eq!(loc("C:/data/x.xlsx"), file("C:/data/x.xlsx"));
+        assert_eq!(loc("file:///C:/data/x.xlsx"), file("C:/data/x.xlsx"));
+        assert_eq!(loc("/data/x.xlsx"), file("/data/x.xlsx"));
+        assert_eq!(loc("file:///data/x.xlsx"), file("/data/x.xlsx"));
+        assert_eq!(loc("data/x.xlsx"), file("data/x.xlsx"));
+        assert_eq!(
+            loc("S3://bucket/a/b.zip"),
+            Location {
+                scheme: "s3".into(),
+                authority: "bucket".into(),
+                path: "a/b.zip".into()
+            }
+        );
+        assert!(Location::parse("").is_err());
+        assert!(Location::parse("b@d://x").is_err());
+    }
 
     #[test]
     fn resolve_ranges() {

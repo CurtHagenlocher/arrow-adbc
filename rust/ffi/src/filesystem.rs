@@ -48,6 +48,8 @@ use arrow_array::ffi_stream::{ArrowArrayStreamReader, FFI_ArrowArrayStream};
 
 use crate::FFI_AdbcError;
 
+pub mod conformance;
+
 /// `ADBC_FILESYSTEM_VERSION_1`.
 pub const ADBC_FILESYSTEM_VERSION_1: u32 = 1;
 /// `ADBC_FILE_RANGE_SUFFIX`.
