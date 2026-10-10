@@ -16,7 +16,7 @@
 # under the License.
 
 [workspace]
-members = ["core", "driver_manager", "ffi", "driver/*"]
+members = ["core", "driver_manager", "ffi", "ffi_layout_test", "driver/*"]
 resolver = "3"
 
 [workspace.package]

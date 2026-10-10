@@ -19,6 +19,7 @@ use std::collections::{HashMap, HashSet};
 use std::ffi::{CStr, CString};
 use std::hash::Hash;
 use std::os::raw::{c_char, c_int, c_void};
+use std::sync::Arc;
 
 use arrow_array::StructArray;
 use arrow_array::ffi::{FFI_ArrowArray, FFI_ArrowSchema, from_ffi};
@@ -27,10 +28,13 @@ use arrow_schema::DataType;
 
 use super::{
     FFI_AdbcConnection, FFI_AdbcDatabase, FFI_AdbcDriver, FFI_AdbcError, FFI_AdbcErrorDetail,
-    FFI_AdbcPartitions, FFI_AdbcStatement, options::get_opt_name, types::ErrorPrivateData,
+    FFI_AdbcPartitions, FFI_AdbcStatement, filesystem::FFI_AdbcFileSystem,
+    filesystem::import_file_system, options::get_opt_name, types::ErrorPrivateData,
 };
 use adbc_core::constants::ADBC_STATUS_OK;
 use adbc_core::error::{AdbcStatusCode, Error, Result, Status};
+use adbc_core::filesystem::FileSystem;
+use adbc_core::options::AdbcVersion;
 use adbc_core::options::{InfoCode, ObjectDepth, OptionConnection, OptionDatabase, OptionValue};
 use adbc_core::{Connection, Database, Driver, Optionable, Statement};
 
@@ -41,8 +45,11 @@ type StatementType<DriverType> =
     <<<DriverType as Driver>::DatabaseType as Database>::ConnectionType as Connection>::StatementType;
 
 enum ExportedDatabase<DriverType: Driver> {
-    /// Pre-init options
-    Options(HashMap<OptionDatabase, OptionValue>),
+    /// Pre-init options and file system
+    Options(
+        HashMap<OptionDatabase, OptionValue>,
+        Option<Arc<dyn FileSystem>>,
+    ),
     /// Initialized database
     Database(DatabaseType<DriverType>),
 }
@@ -55,7 +62,7 @@ impl<DriverType: Driver> ExportedDatabase<DriverType> {
         Option<&mut DatabaseType<DriverType>>,
     ) {
         match self {
-            Self::Options(options) => (Some(options), None),
+            Self::Options(options, _) => (Some(options), None),
             Self::Database(database) => (None, Some(database)),
         }
     }
@@ -67,8 +74,11 @@ struct InitializedConnection<DriverType: Driver> {
 }
 
 enum ExportedConnection<DriverType: Driver> {
-    /// Pre-init options
-    Options(HashMap<OptionConnection, OptionValue>),
+    /// Pre-init options and file system
+    Options(
+        HashMap<OptionConnection, OptionValue>,
+        Option<Arc<dyn FileSystem>>,
+    ),
     /// Initialized connection
     Connection(InitializedConnection<DriverType>),
 }
@@ -81,7 +91,7 @@ impl<DriverType: Driver> ExportedConnection<DriverType> {
         Option<&mut ConnectionType<DriverType>>,
     ) {
         match self {
-            Self::Options(options) => (Some(options), None),
+            Self::Options(options, _) => (Some(options), None),
             Self::Connection(connection) => (None, Some(&mut connection.connection)),
         }
     }
@@ -177,8 +187,59 @@ impl<DriverType: Driver + Default + 'static> FFIDriver for DriverType {
             StatementSetOptionBytes: Some(statement_set_option_bytes::<DriverType>),
             StatementSetOptionDouble: Some(statement_set_option_double::<DriverType>),
             StatementSetOptionInt: Some(statement_set_option_int::<DriverType>),
+            ErrorGetVendorCode: Some(error_get_vendor_code),
+            DriverGetOptionsList: None,
+            MultiResultSetNext: None,
+            MultiResultSetNextPartitions: None,
+            MultiResultSetRelease: None,
+            ConnectionSetWarningHandler: None,
+            StatementExecuteSchemaMulti: None,
+            StatementExecuteMulti: None,
+            StatementRequestSchema: None,
+            DriverGetInfo: Some(driver_get_info::<DriverType>),
+            DatabaseSetFileSystem: Some(database_set_file_system::<DriverType>),
+            ConnectionSetFileSystem: Some(connection_set_file_system::<DriverType>),
         }
     }
+}
+
+/// Initialize a driver table for an exported Rust driver.
+///
+/// Negotiates the version (the driver's [Driver::MIN_ADBC_VERSION] up to
+/// 1.2.0) and writes only the part of the table that belongs to that
+/// version, so a driver manager that allocated a smaller (older) table is
+/// never overrun.
+///
+/// # Safety
+///
+/// `driver` must point to a table of at least the size for `version`.
+#[doc(hidden)]
+pub unsafe fn init_driver<DriverType: Driver + FFIDriver>(
+    version: c_int,
+    driver: *mut c_void,
+    error: *mut FFI_AdbcError,
+) -> AdbcStatusCode {
+    let version = crate::check_err!(AdbcVersion::try_from(version), error);
+    let minimum = DriverType::MIN_ADBC_VERSION.max(AdbcVersion::V110);
+    if version < minimum {
+        let err = Error::with_message_and_status(
+            format!("Unsupported ADBC version: got={version:?}, minimum={minimum:?}"),
+            Status::NotImplemented,
+        );
+        crate::check_err!(Err(err), error);
+    }
+    crate::check_not_null!(driver, error);
+
+    let ffi_driver = std::mem::ManuallyDrop::new(<DriverType as FFIDriver>::ffi_driver());
+    let size = FFI_AdbcDriver::size_for_version(version);
+    // SAFETY: the table is repr(C) and the caller provides at least `size`
+    // bytes. ManuallyDrop keeps our copy from running the driver's release.
+    std::ptr::copy_nonoverlapping(
+        &*ffi_driver as *const FFI_AdbcDriver as *const u8,
+        driver as *mut u8,
+        size,
+    );
+    ADBC_STATUS_OK
 }
 
 /// Export a Rust driver as a C driver.
@@ -194,7 +255,8 @@ impl<DriverType: Driver + Default + 'static> FFIDriver for DriverType {
 ///     - `adbc_driver_sqlite.dll` -> `AdbcDriverSqliteInit`
 ///     - `proprietary_driver.dll` -> `AdbcProprietaryDriverInit`
 /// - `$driver_type` - Driver's type which must implement [Driver] and [Default].
-///   Currently, the Rust driver is exported as an ADBC 1.1.0 C driver.
+///   The Rust driver is exported as an ADBC 1.1.0 or 1.2.0 C driver, as the
+///   driver manager requests and [Driver::MIN_ADBC_VERSION] allows.
 #[macro_export]
 macro_rules! export_driver {
     ($func_name:ident, $driver_type:ty) => {
@@ -205,26 +267,7 @@ macro_rules! export_driver {
             driver: *mut std::os::raw::c_void,
             error: *mut $crate::FFI_AdbcError,
         ) -> adbc_core::error::AdbcStatusCode {
-            let version =
-                $crate::check_err!(adbc_core::options::AdbcVersion::try_from(version), error);
-            if version != adbc_core::options::AdbcVersion::V110 {
-                let err = adbc_core::error::Error::with_message_and_status(
-                    format!(
-                        "Unsupported ADBC version: got={:?} expected={:?}",
-                        version,
-                        adbc_core::options::AdbcVersion::V110
-                    ),
-                    adbc_core::error::Status::NotImplemented,
-                );
-                $crate::check_err!(Err(err), error);
-            }
-            $crate::check_not_null!(driver, error);
-
-            let ffi_driver = <$driver_type as $crate::FFIDriver>::ffi_driver();
-            unsafe {
-                std::ptr::write_unaligned(driver as *mut $crate::FFI_AdbcDriver, ffi_driver);
-            }
-            adbc_core::constants::ADBC_STATUS_OK
+            unsafe { $crate::driver_exporter::init_driver::<$driver_type>(version, driver, error) }
         }
 
         // Fallback symbol, if the driver manager does not find the init above
@@ -320,6 +363,117 @@ unsafe extern "C" fn release_ffi_driver(
         }
     }
     ADBC_STATUS_OK
+}
+
+// ADBC 1.2.0 and file-driver (PROTOTYPE) entry points
+
+extern "C" fn error_get_vendor_code(error: *const FFI_AdbcError) -> c_int {
+    // The exporter overwrites vendor_code with the 1.1.0 sentinel and does
+    // not keep the original, so only a non-sentinel code can be reported.
+    match unsafe { error.as_ref() } {
+        Some(e) if e.vendor_code != adbc_core::constants::ADBC_ERROR_VENDOR_CODE_PRIVATE_DATA => {
+            e.vendor_code
+        }
+        _ => 0,
+    }
+}
+
+unsafe fn info_codes_from_ffi(codes: *const u32, length: usize) -> Option<HashSet<InfoCode>> {
+    if codes.is_null() {
+        None
+    } else {
+        let codes = std::slice::from_raw_parts(codes, length);
+        Some(codes.iter().map(|c| InfoCode::from(*c)).collect())
+    }
+}
+
+extern "C" fn driver_get_info<DriverType: Driver + Default>(
+    info_codes: *const u32,
+    info_codes_length: usize,
+    out: *mut FFI_ArrowArrayStream,
+    error: *mut FFI_AdbcError,
+) -> AdbcStatusCode {
+    catch_panic(error, || {
+        check_not_null!(out, error);
+        let codes = unsafe { info_codes_from_ffi(info_codes, info_codes_length) };
+        let reader = check_err!(DriverType::default().get_driver_info(codes), error);
+        let reader = FFI_ArrowArrayStream::new(Box::new(reader));
+        unsafe { std::ptr::write_unaligned(out, reader) };
+        ADBC_STATUS_OK
+    })
+}
+
+fn require_file_driver<DriverType: Driver>() -> Result<()> {
+    if DriverType::ACCEPTS_FILE_SYSTEM {
+        Ok(())
+    } else {
+        Err(Error::with_message_and_status(
+            "This driver does not accept a file system",
+            Status::NotImplemented,
+        ))
+    }
+}
+
+extern "C" fn database_set_file_system<DriverType: Driver>(
+    database: *mut FFI_AdbcDatabase,
+    file_system: *mut FFI_AdbcFileSystem,
+    error: *mut FFI_AdbcError,
+) -> AdbcStatusCode {
+    catch_panic(error, || {
+        check_err!(require_file_driver::<DriverType>(), error);
+        let database = pointer_as_mut!(database, error);
+        let exported = check_err!(
+            unsafe { database_private_data::<DriverType>(database) },
+            error
+        );
+        match exported {
+            ExportedDatabase::Options(_, slot) => {
+                *slot = Some(check_err!(
+                    unsafe { import_file_system(file_system) },
+                    error
+                ));
+            }
+            ExportedDatabase::Database(_) => check_err!(
+                Err(Error::with_message_and_status(
+                    "The file system must be set before DatabaseInit",
+                    Status::InvalidState
+                )),
+                error
+            ),
+        }
+        ADBC_STATUS_OK
+    })
+}
+
+extern "C" fn connection_set_file_system<DriverType: Driver>(
+    connection: *mut FFI_AdbcConnection,
+    file_system: *mut FFI_AdbcFileSystem,
+    error: *mut FFI_AdbcError,
+) -> AdbcStatusCode {
+    catch_panic(error, || {
+        check_err!(require_file_driver::<DriverType>(), error);
+        let connection = pointer_as_mut!(connection, error);
+        let exported = check_err!(
+            unsafe { connection_private_data::<DriverType>(connection) },
+            error
+        );
+        match exported {
+            ExportedConnection::Options(_, slot) => {
+                *slot = Some(check_err!(
+                    unsafe { import_file_system(file_system) },
+                    error
+                ));
+            }
+            ExportedConnection::Connection(_) => check_err!(
+                Err(Error::with_message_and_status(
+                    "The file system must be set before ConnectionInit",
+                    Status::InvalidState
+                )),
+                error
+            ),
+        }
+        ADBC_STATUS_OK
+    })
 }
 
 // Option helpers
@@ -568,7 +722,7 @@ unsafe fn database_set_option_impl<DriverType: Driver, Value: Into<OptionValue>>
     let key = check_err!(CStr::from_ptr(key).to_str(), error);
 
     match exported {
-        ExportedDatabase::Options(options) => {
+        ExportedDatabase::Options(options, _) => {
             options.insert(key.into(), value.into());
         }
         ExportedDatabase::Database(database) => {
@@ -585,7 +739,10 @@ extern "C" fn database_new<DriverType: Driver>(
 ) -> AdbcStatusCode {
     catch_panic(error, || {
         let database = pointer_as_mut!(database, error);
-        let exported = Box::new(ExportedDatabase::<DriverType>::Options(HashMap::new()));
+        let exported = Box::new(ExportedDatabase::<DriverType>::Options(
+            HashMap::new(),
+            None,
+        ));
         database.private_data = Box::into_raw(exported) as *mut c_void;
 
         ADBC_STATUS_OK
@@ -604,9 +761,13 @@ extern "C" fn database_init<DriverType: Driver + Default>(
             error
         );
 
-        if let ExportedDatabase::Options(options) = exported {
+        if let ExportedDatabase::Options(options, file_system) = exported {
             let mut driver = DriverType::default();
-            let database = check_err!(driver.new_database_with_opts(options.clone()), error);
+            let database = match file_system.take() {
+                Some(fs) => driver.new_database_with_file_system(options.clone(), fs),
+                None => driver.new_database_with_opts(options.clone()),
+            };
+            let database = check_err!(database, error);
             *exported = ExportedDatabase::Database(database);
         } else {
             check_err!(
@@ -842,7 +1003,7 @@ unsafe fn connection_set_option_impl<DriverType: Driver, Value: Into<OptionValue
     let key = check_err!(CStr::from_ptr(key).to_str(), error);
 
     match exported {
-        ExportedConnection::Options(options) => {
+        ExportedConnection::Options(options, _) => {
             options.insert(key.into(), value.into());
         }
         ExportedConnection::Connection(connection) => {
@@ -863,7 +1024,10 @@ extern "C" fn connection_new<DriverType: Driver>(
     catch_panic(error, || {
         let connection = pointer_as_mut!(connection, error);
 
-        let exported = Box::new(ExportedConnection::<DriverType>::Options(HashMap::new()));
+        let exported = Box::new(ExportedConnection::<DriverType>::Options(
+            HashMap::new(),
+            None,
+        ));
         connection.private_data = Box::into_raw(exported) as *mut c_void;
 
         ADBC_STATUS_OK
@@ -888,11 +1052,12 @@ extern "C" fn connection_init<DriverType: Driver>(
             error
         );
 
-        if let ExportedConnection::Options(options) = exported_connection {
+        if let ExportedConnection::Options(options, file_system) = exported_connection {
             let connection = match exported_database {
-                ExportedDatabase::Database(database) => {
-                    database.new_connection_with_opts(options.clone())
-                }
+                ExportedDatabase::Database(database) => match file_system.take() {
+                    Some(fs) => database.new_connection_with_file_system(options.clone(), fs),
+                    None => database.new_connection_with_opts(options.clone()),
+                },
                 _ => Err(Error::with_message_and_status(
                     "You must call DatabaseInit before ConnectionInit",
                     Status::InvalidState,

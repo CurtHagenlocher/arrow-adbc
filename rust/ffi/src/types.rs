@@ -198,6 +198,54 @@ pub struct FFI_AdbcDriver {
     pub StatementSetOptionBytes: Option<methods::FuncStatementSetOptionBytes>,
     pub StatementSetOptionDouble: Option<methods::FuncStatementSetOptionDouble>,
     pub StatementSetOptionInt: Option<methods::FuncStatementSetOptionInt>,
+    /// Added in ADBC 1.2.0.
+    pub ErrorGetVendorCode: Option<methods::FuncErrorGetVendorCode>,
+    pub DriverGetOptionsList: Option<methods::FuncDriverGetOptionsList>,
+    pub MultiResultSetNext: Option<methods::FuncMultiResultSetNext>,
+    pub MultiResultSetNextPartitions: Option<methods::FuncMultiResultSetNextPartitions>,
+    pub MultiResultSetRelease: Option<methods::FuncMultiResultSetRelease>,
+    pub ConnectionSetWarningHandler: Option<methods::FuncConnectionSetWarningHandler>,
+    pub StatementExecuteSchemaMulti: Option<methods::FuncStatementExecuteSchemaMulti>,
+    pub StatementExecuteMulti: Option<methods::FuncStatementExecuteMulti>,
+    pub StatementRequestSchema: Option<methods::FuncStatementRequestSchema>,
+    /// PROTOTYPE (file-driver proposal): may be renumbered.
+    pub DriverGetInfo: Option<methods::FuncDriverGetInfo>,
+    pub DatabaseSetFileSystem: Option<methods::FuncDatabaseSetFileSystem>,
+    pub ConnectionSetFileSystem: Option<methods::FuncConnectionSetFileSystem>,
+}
+
+/// The size of [FFI_AdbcDriver] in ADBC 1.0.0.
+pub const ADBC_DRIVER_1_0_0_SIZE: usize = std::mem::offset_of!(FFI_AdbcDriver, ErrorGetDetailCount);
+/// The size of [FFI_AdbcDriver] in ADBC 1.1.0.
+pub const ADBC_DRIVER_1_1_0_SIZE: usize = std::mem::offset_of!(FFI_AdbcDriver, ErrorGetVendorCode);
+/// The size of [FFI_AdbcDriver] in ADBC 1.2.0.
+pub const ADBC_DRIVER_1_2_0_SIZE: usize = std::mem::size_of::<FFI_AdbcDriver>();
+
+impl FFI_AdbcDriver {
+    /// The number of bytes of the table a driver initialized at `version`
+    /// may write, and a driver manager may read.
+    pub fn size_for_version(version: adbc_core::options::AdbcVersion) -> usize {
+        use adbc_core::options::AdbcVersion;
+        match version {
+            AdbcVersion::V100 => ADBC_DRIVER_1_0_0_SIZE,
+            AdbcVersion::V110 => ADBC_DRIVER_1_1_0_SIZE,
+            _ => ADBC_DRIVER_1_2_0_SIZE,
+        }
+    }
+}
+
+/// A warning handler (ADBC 1.2.0).
+pub type FFI_AdbcWarningHandler =
+    Option<unsafe extern "C" fn(warning: *const FFI_AdbcError, user_data: *mut c_void)>;
+
+/// A sequence of result sets (ADBC 1.2.0).
+#[repr(C)]
+#[derive(Debug)]
+pub struct FFI_AdbcMultiResultSet {
+    /// Opaque implementation-defined state.
+    pub private_data: *mut c_void,
+    /// The associated driver.
+    pub private_driver: *mut FFI_AdbcDriver,
 }
 
 /// The [FFI_AdbcDriver] carries raw C pointers to the driver manager and private data that rustc
@@ -379,6 +427,18 @@ impl Default for FFI_AdbcDriver {
             StatementSetOptionBytes: None,
             StatementSetOptionDouble: None,
             StatementSetOptionInt: None,
+            ErrorGetVendorCode: None,
+            DriverGetOptionsList: None,
+            MultiResultSetNext: None,
+            MultiResultSetNextPartitions: None,
+            MultiResultSetRelease: None,
+            ConnectionSetWarningHandler: None,
+            StatementExecuteSchemaMulti: None,
+            StatementExecuteMulti: None,
+            StatementRequestSchema: None,
+            DriverGetInfo: None,
+            DatabaseSetFileSystem: None,
+            ConnectionSetFileSystem: None,
         }
     }
 }

@@ -143,7 +143,7 @@ impl TryFrom<&OptionValue> for bool {
 /// ADBC revision versions.
 ///
 /// The [`Default`] implementation returns the latest version.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
 pub enum AdbcVersion {
     /// Version 1.0.0.
@@ -153,6 +153,8 @@ pub enum AdbcVersion {
     /// <https://arrow.apache.org/adbc/current/format/specification.html#version-1-1-0>
     #[default]
     V110,
+    /// Version 1.2.0 (in progress).
+    V120,
 }
 
 impl From<AdbcVersion> for c_int {
@@ -160,6 +162,7 @@ impl From<AdbcVersion> for c_int {
         match value {
             AdbcVersion::V100 => constants::ADBC_VERSION_1_0_0,
             AdbcVersion::V110 => constants::ADBC_VERSION_1_1_0,
+            AdbcVersion::V120 => constants::ADBC_VERSION_1_2_0,
         }
     }
 }
@@ -170,6 +173,7 @@ impl TryFrom<c_int> for AdbcVersion {
         match value {
             constants::ADBC_VERSION_1_0_0 => Ok(AdbcVersion::V100),
             constants::ADBC_VERSION_1_1_0 => Ok(AdbcVersion::V110),
+            constants::ADBC_VERSION_1_2_0 => Ok(AdbcVersion::V120),
             value => Err(Error::with_message_and_status(
                 format!("Unknown ADBC version: {value}"),
                 Status::InvalidArguments,
@@ -185,6 +189,7 @@ impl FromStr for AdbcVersion {
         match s {
             "1.0.0" | "1_0_0" | "100" => Ok(AdbcVersion::V100),
             "1.1.0" | "1_1_0" | "110" => Ok(AdbcVersion::V110),
+            "1.2.0" | "1_2_0" | "120" => Ok(AdbcVersion::V120),
             value => Err(Error::with_message_and_status(
                 format!("Unknown ADBC version: {value}"),
                 Status::InvalidArguments,

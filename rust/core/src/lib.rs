@@ -41,6 +41,7 @@
 
 pub mod constants;
 pub mod error;
+pub mod filesystem;
 pub mod options;
 pub mod schemas;
 pub mod sync;

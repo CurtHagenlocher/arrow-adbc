@@ -53,6 +53,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "adbc_ffi_layout_test"
+version = "0.25.0"
+dependencies = [
+ "adbc_core",
+ "adbc_ffi",
+ "cc",
+]
+
+[[package]]
 name = "ahash"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"

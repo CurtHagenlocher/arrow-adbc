@@ -16,12 +16,14 @@
 // under the License.
 
 use std::collections::HashSet;
+use std::sync::Arc;
 
 use arrow_array::{RecordBatch, RecordBatchReader};
 use arrow_schema::Schema;
 
 use crate::PartitionedResult;
 use crate::error::{Error, Result, Status};
+use crate::filesystem::FileSystem;
 use crate::options::{self, OptionConnection, OptionDatabase, OptionStatement, OptionValue};
 
 /// Ability to configure an object by setting/getting options.
@@ -78,6 +80,64 @@ pub trait Driver {
         &mut self,
         opts: impl IntoIterator<Item = (OptionDatabase, OptionValue)>,
     ) -> Result<Self::DatabaseType>;
+
+    /// The minimum ADBC API version this driver can be exported at.
+    ///
+    /// File drivers set this to [options::AdbcVersion::V120], because an
+    /// older driver manager cannot hand them a file system.
+    const MIN_ADBC_VERSION: options::AdbcVersion = options::AdbcVersion::V110;
+
+    /// Whether this is a file driver: one that reads through a host-provided
+    /// [FileSystem] (see [Driver::new_database_with_file_system] and
+    /// [Database::new_connection_with_file_system]).
+    ///
+    /// PROTOTYPE (file-driver proposal).
+    const ACCEPTS_FILE_SYSTEM: bool = false;
+
+    /// Get metadata about the driver itself, without a database or
+    /// connection.
+    ///
+    /// The result has the same schema as [Connection::get_info]. It must
+    /// be cheap and must not do I/O. Only driver-level codes apply.
+    ///
+    /// PROTOTYPE (file-driver proposal).
+    ///
+    /// # Since
+    ///
+    /// ADBC API revision 1.2.0
+    fn get_driver_info(
+        &self,
+        codes: Option<HashSet<options::InfoCode>>,
+    ) -> Result<Box<dyn RecordBatchReader + Send + 'static>> {
+        let _ = codes;
+        Err(Error::with_message_and_status(
+            "DriverGetInfo is not implemented by this driver",
+            Status::NotImplemented,
+        ))
+    }
+
+    /// Create a database whose connections default to the given file
+    /// system.
+    ///
+    /// Only file drivers implement this; the default returns
+    /// [Status::NotImplemented].
+    ///
+    /// PROTOTYPE (file-driver proposal).
+    ///
+    /// # Since
+    ///
+    /// ADBC API revision 1.2.0
+    fn new_database_with_file_system(
+        &mut self,
+        opts: impl IntoIterator<Item = (OptionDatabase, OptionValue)>,
+        file_system: Arc<dyn FileSystem>,
+    ) -> Result<Self::DatabaseType> {
+        let _ = (opts, file_system);
+        Err(Error::with_message_and_status(
+            "this driver does not accept a file system",
+            Status::NotImplemented,
+        ))
+    }
 }
 
 /// A handle to an ADBC database.
@@ -98,6 +158,30 @@ pub trait Database: Optionable<Option = OptionDatabase> {
         &self,
         opts: impl IntoIterator<Item = (options::OptionConnection, OptionValue)>,
     ) -> Result<Self::ConnectionType>;
+
+    /// Create a connection that reads through the given file system.
+    ///
+    /// Only file drivers implement this; the default returns
+    /// [Status::NotImplemented]. A file driver whose connection gets no
+    /// file system (here or from its database) fails with
+    /// [Status::FileSystemRequired].
+    ///
+    /// PROTOTYPE (file-driver proposal).
+    ///
+    /// # Since
+    ///
+    /// ADBC API revision 1.2.0
+    fn new_connection_with_file_system(
+        &self,
+        opts: impl IntoIterator<Item = (options::OptionConnection, OptionValue)>,
+        file_system: Arc<dyn FileSystem>,
+    ) -> Result<Self::ConnectionType> {
+        let _ = (opts, file_system);
+        Err(Error::with_message_and_status(
+            "this driver does not accept a file system",
+            Status::NotImplemented,
+        ))
+    }
 
     /// Get a handle to cancel operations on this database.
     fn get_cancel_handle(&self) -> Box<dyn CancelHandle> {

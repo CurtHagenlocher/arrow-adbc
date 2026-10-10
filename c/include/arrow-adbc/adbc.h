@@ -262,6 +262,14 @@ typedef uint8_t AdbcStatusCode;
 /// May indicate a database-side error only.
 #define ADBC_STATUS_UNAUTHORIZED 14
 
+/// \brief A file driver was initialized without a file system.
+///
+/// PROTOTYPE (file-driver proposal): name and value are placeholders.
+///
+/// \since ADBC API revision 1.2.0
+/// \see AdbcConnectionSetFileSystem
+#define ADBC_STATUS_FILESYSTEM_REQUIRED 15
+
 /// \brief Inform the driver/driver manager that we are using the extended
 ///   AdbcError struct from ADBC 1.1.0.
 ///
@@ -682,6 +690,38 @@ const struct AdbcError* AdbcErrorFromArrayStream(struct ArrowArrayStream* stream
 /// \see AdbcErrorFromArrayStream
 /// \see ADBC_ERROR_VENDOR_CODE_PRIVATE_DATA
 #define ADBC_INFO_FEATURE_ERROR_METADATA 250
+
+/// \brief Whether the driver accepts a file system (type: bool).
+///
+/// PROTOTYPE (file-driver proposal): name and value are placeholders.
+///
+/// \since ADBC API revision 1.2.0
+/// \see AdbcDriverGetInfo
+/// \see AdbcConnectionSetFileSystem
+#define ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM 300
+/// \brief Whether the driver requires a file system (type: bool).
+///
+/// PROTOTYPE (file-driver proposal): name and value are placeholders.
+///
+/// \since ADBC API revision 1.2.0
+/// \see AdbcDriverGetInfo
+/// \see AdbcConnectionSetFileSystem
+#define ADBC_INFO_DRIVER_REQUIRES_FILESYSTEM 301
+/// \brief File extensions the driver reads, without the leading dot
+///   (type: list<utf8>).
+///
+/// PROTOTYPE (file-driver proposal): name and value are placeholders.
+///
+/// \since ADBC API revision 1.2.0
+/// \see AdbcDriverGetInfo
+#define ADBC_INFO_DRIVER_FILE_EXTENSIONS 302
+/// \brief MIME types the driver reads (type: list<utf8>).
+///
+/// PROTOTYPE (file-driver proposal): name and value are placeholders.
+///
+/// \since ADBC API revision 1.2.0
+/// \see AdbcDriverGetInfo
+#define ADBC_INFO_DRIVER_MIME_TYPES 303
 
 /// \defgroup adbc-catalog-metadata ADBC Catalog Metadata Constants
 /// Constants for catalog metadata.
@@ -1348,6 +1388,12 @@ typedef void (*AdbcWarningHandler)(const struct AdbcError* warning, void* user_d
 /// driver and the driver manager.
 /// @{
 
+/// \brief A file system handed to a file driver.  Defined in
+///   arrow-adbc/adbc_filesystem.h.
+///
+/// PROTOTYPE (file-driver proposal).
+struct AdbcFileSystem;
+
 /// \brief An instance of an initialized database driver.
 ///
 /// This provides a common interface for vendor-specific driver
@@ -1533,6 +1579,14 @@ struct ADBC_EXPORT AdbcDriver {
   AdbcStatusCode (*StatementRequestSchema)(struct AdbcStatement*, struct ArrowSchema*,
                                            struct AdbcError*);
 
+  // PROTOTYPE (file-driver proposal): these members may be renumbered.
+  AdbcStatusCode (*DriverGetInfo)(const uint32_t*, size_t, struct ArrowArrayStream*,
+                                  struct AdbcError*);
+  AdbcStatusCode (*DatabaseSetFileSystem)(struct AdbcDatabase*, struct AdbcFileSystem*,
+                                          struct AdbcError*);
+  AdbcStatusCode (*ConnectionSetFileSystem)(struct AdbcConnection*,
+                                            struct AdbcFileSystem*, struct AdbcError*);
+
   /// @}
 };
 
@@ -1629,6 +1683,29 @@ struct ADBC_EXPORT AdbcDriver {
 ADBC_EXPORT
 AdbcStatusCode AdbcDriverGetOptionsList(uint32_t level, struct ArrowArrayStream* out,
                                         struct AdbcError* error);
+
+/// \brief Get metadata about the driver itself.
+///
+/// This may be called at any time after the driver is initialized,
+/// without a database or connection.  It must be cheap, and must not do
+/// I/O or depend on credentials.
+///
+/// The result has the same schema as AdbcConnectionGetInfo.  Only
+/// driver-level codes apply (ADBC_INFO_DRIVER_*); vendor codes
+/// describe a backend and are omitted.
+///
+/// PROTOTYPE (file-driver proposal).
+///
+/// \param[in] info_codes A list of metadata codes to fetch, or NULL
+///   to fetch all.
+/// \param[in] info_codes_length The length of the info_codes
+///   parameter.  Ignored if info_codes is NULL.
+/// \param[out] out The result set.
+/// \param[out] error Error details, if an error occurs.
+/// \since ADBC API revision 1.2.0
+ADBC_EXPORT
+AdbcStatusCode AdbcDriverGetInfo(const uint32_t* info_codes, size_t info_codes_length,
+                                 struct ArrowArrayStream* out, struct AdbcError* error);
 
 /// @}
 
@@ -1840,6 +1917,25 @@ AdbcStatusCode AdbcDatabaseSetOptionInt(struct AdbcDatabase* database, const cha
 ADBC_EXPORT
 AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError* error);
 
+/// \brief Set the default file system for connections of a file driver.
+///
+/// Connections that do not set their own file system inherit (a clone
+/// of) this one.  Ownership of the file system moves to the callee,
+/// which zeroes the caller's struct on success.
+///
+/// PROTOTYPE (file-driver proposal).
+///
+/// \since ADBC API revision 1.2.0
+/// \param[in] database The database.
+/// \param[in] file_system The file system to move into the database.
+/// \param[out] error An optional location to return an error
+///   message if necessary.
+/// \return ADBC_STATUS_NOT_IMPLEMENTED if the driver is not a file driver.
+ADBC_EXPORT
+AdbcStatusCode AdbcDatabaseSetFileSystem(struct AdbcDatabase* database,
+                                         struct AdbcFileSystem* file_system,
+                                         struct AdbcError* error);
+
 /// \brief Destroy this database. No connections may exist.
 /// \param[in] database The database to release.
 /// \param[out] error An optional location to return an error
@@ -1935,6 +2031,31 @@ AdbcStatusCode AdbcConnectionSetOptionDouble(struct AdbcConnection* connection,
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionInit(struct AdbcConnection* connection,
                                   struct AdbcDatabase* database, struct AdbcError* error);
+
+/// \brief Set the file system for a connection of a file driver.
+///
+/// Must be called after AdbcConnectionNew and before
+/// AdbcConnectionInit.  Ownership of the file system moves to the
+/// callee, which zeroes the caller's struct on success.
+///
+/// If AdbcConnectionInit is called with no file system set on either
+/// the connection or its database, a file driver returns
+/// ADBC_STATUS_FILESYSTEM_REQUIRED.  (A driver manager will normally
+/// supply one first.)
+///
+/// PROTOTYPE (file-driver proposal).
+///
+/// \since ADBC API revision 1.2.0
+/// \param[in] connection The connection.
+/// \param[in] file_system The file system to move into the connection.
+/// \param[out] error An optional location to return an error
+///   message if necessary.
+/// \return ADBC_STATUS_NOT_IMPLEMENTED if the driver is not a file driver,
+///   or ADBC_STATUS_INVALID_STATE if the connection is already initialized.
+ADBC_EXPORT
+AdbcStatusCode AdbcConnectionSetFileSystem(struct AdbcConnection* connection,
+                                           struct AdbcFileSystem* file_system,
+                                           struct AdbcError* error);
 
 /// \brief Destroy this connection.
 ///

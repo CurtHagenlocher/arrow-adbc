@@ -41,12 +41,15 @@
 //! [export_driver] macro.
 
 pub mod driver_exporter;
+pub mod filesystem;
 pub mod options;
 #[doc(hidden)]
 pub use driver_exporter::FFIDriver;
 pub mod methods;
 pub(crate) mod types;
+pub use types::{ADBC_DRIVER_1_0_0_SIZE, ADBC_DRIVER_1_1_0_SIZE, ADBC_DRIVER_1_2_0_SIZE};
 pub use types::{
     FFI_AdbcConnection, FFI_AdbcDatabase, FFI_AdbcDriver, FFI_AdbcDriverInitFunc, FFI_AdbcError,
-    FFI_AdbcErrorDetail, FFI_AdbcPartitions, FFI_AdbcStatement, export_error,
+    FFI_AdbcErrorDetail, FFI_AdbcMultiResultSet, FFI_AdbcPartitions, FFI_AdbcStatement,
+    FFI_AdbcWarningHandler, export_error,
 };

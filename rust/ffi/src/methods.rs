@@ -17,15 +17,16 @@
 
 #![allow(non_camel_case_types, non_snake_case)]
 
-use std::os::raw::{c_char, c_int};
+use std::os::raw::{c_char, c_int, c_void};
 
 use adbc_core::{constants::ADBC_STATUS_NOT_IMPLEMENTED, error::AdbcStatusCode};
 use arrow_array::ffi::{FFI_ArrowArray, FFI_ArrowSchema};
 use arrow_array::ffi_stream::FFI_ArrowArrayStream;
 
 use super::{
-    FFI_AdbcConnection, FFI_AdbcDatabase, FFI_AdbcError, FFI_AdbcErrorDetail, FFI_AdbcPartitions,
-    FFI_AdbcStatement,
+    FFI_AdbcConnection, FFI_AdbcDatabase, FFI_AdbcError, FFI_AdbcErrorDetail,
+    FFI_AdbcMultiResultSet, FFI_AdbcPartitions, FFI_AdbcStatement, FFI_AdbcWarningHandler,
+    filesystem::FFI_AdbcFileSystem,
 };
 
 macro_rules! method {
@@ -95,3 +96,18 @@ method!(StatementGetOptionInt ; FuncStatementGetOptionInt ; AdbcStatusCode ; ADB
 method!(StatementSetOptionBytes ; FuncStatementSetOptionBytes ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcStatement, *const c_char, *const u8, usize, *mut FFI_AdbcError);
 method!(StatementSetOptionDouble ; FuncStatementSetOptionDouble ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcStatement, *const c_char, f64, *mut FFI_AdbcError);
 method!(StatementSetOptionInt ; FuncStatementSetOptionInt ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcStatement, *const c_char, i64, *mut FFI_AdbcError);
+
+// ADBC 1.2.0
+method!(ErrorGetVendorCode ; FuncErrorGetVendorCode ; c_int ; 0 ; *const FFI_AdbcError);
+method!(DriverGetOptionsList ; FuncDriverGetOptionsList ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; u32, *mut FFI_ArrowArrayStream, *mut FFI_AdbcError);
+method!(MultiResultSetNext ; FuncMultiResultSetNext ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcMultiResultSet, *mut FFI_ArrowArrayStream, *mut i64, *mut FFI_AdbcError);
+method!(MultiResultSetNextPartitions ; FuncMultiResultSetNextPartitions ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcMultiResultSet, *mut FFI_ArrowSchema, *mut FFI_AdbcPartitions, *mut i64, *mut FFI_AdbcError);
+method!(MultiResultSetRelease ; FuncMultiResultSetRelease ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcMultiResultSet, *mut FFI_AdbcError);
+method!(ConnectionSetWarningHandler ; FuncConnectionSetWarningHandler ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcConnection, FFI_AdbcWarningHandler, *mut c_void, *mut FFI_AdbcError);
+method!(StatementExecuteSchemaMulti ; FuncStatementExecuteSchemaMulti ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcStatement, *mut FFI_AdbcMultiResultSet, *mut FFI_AdbcError);
+method!(StatementExecuteMulti ; FuncStatementExecuteMulti ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcStatement, *mut FFI_AdbcMultiResultSet, *mut FFI_AdbcError);
+method!(StatementRequestSchema ; FuncStatementRequestSchema ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcStatement, *mut FFI_ArrowSchema, *mut FFI_AdbcError);
+// PROTOTYPE (file-driver proposal)
+method!(DriverGetInfo ; FuncDriverGetInfo ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *const u32, usize, *mut FFI_ArrowArrayStream, *mut FFI_AdbcError);
+method!(DatabaseSetFileSystem ; FuncDatabaseSetFileSystem ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcDatabase, *mut FFI_AdbcFileSystem, *mut FFI_AdbcError);
+method!(ConnectionSetFileSystem ; FuncConnectionSetFileSystem ; AdbcStatusCode ; ADBC_STATUS_NOT_IMPLEMENTED ; *mut FFI_AdbcConnection, *mut FFI_AdbcFileSystem, *mut FFI_AdbcError);

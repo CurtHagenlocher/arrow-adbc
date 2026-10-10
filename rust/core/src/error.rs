@@ -67,6 +67,10 @@ pub enum Status {
     Unauthenticated,
     /// The client is not authorized to perform the given operation.
     Unauthorized,
+    /// A file driver was initialized without a file system.
+    ///
+    /// PROTOTYPE (file-driver proposal).
+    FileSystemRequired,
 }
 
 /// An ADBC error.
@@ -195,6 +199,7 @@ impl TryFrom<AdbcStatusCode> for Status {
             constants::ADBC_STATUS_TIMEOUT => Ok(Status::Timeout),
             constants::ADBC_STATUS_UNAUTHENTICATED => Ok(Status::Unauthenticated),
             constants::ADBC_STATUS_UNAUTHORIZED => Ok(Status::Unauthorized),
+            constants::ADBC_STATUS_FILESYSTEM_REQUIRED => Ok(Status::FileSystemRequired),
             v => Err(Error::with_message_and_status(
                 format!("Unknown status code: {v}"),
                 Status::InvalidData,
@@ -221,6 +226,7 @@ impl From<Status> for AdbcStatusCode {
             Status::Timeout => constants::ADBC_STATUS_TIMEOUT,
             Status::Unauthenticated => constants::ADBC_STATUS_UNAUTHENTICATED,
             Status::Unauthorized => constants::ADBC_STATUS_UNAUTHORIZED,
+            Status::FileSystemRequired => constants::ADBC_STATUS_FILESYSTEM_REQUIRED,
         }
     }
 }

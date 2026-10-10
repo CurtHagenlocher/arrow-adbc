@@ -36,9 +36,13 @@ pub const ADBC_STATUS_CANCELLED: AdbcStatusCode = 11;
 pub const ADBC_STATUS_TIMEOUT: AdbcStatusCode = 12;
 pub const ADBC_STATUS_UNAUTHENTICATED: AdbcStatusCode = 13;
 pub const ADBC_STATUS_UNAUTHORIZED: AdbcStatusCode = 14;
+/// PROTOTYPE (file-driver proposal): a file driver was initialized without
+/// a file system. Name and value are placeholders.
+pub const ADBC_STATUS_FILESYSTEM_REQUIRED: AdbcStatusCode = 15;
 
 pub const ADBC_VERSION_1_0_0: c_int = 1_000_000;
 pub const ADBC_VERSION_1_1_0: c_int = 1_001_000;
+pub const ADBC_VERSION_1_2_0: c_int = 1_002_000;
 
 pub const ADBC_INFO_VENDOR_NAME: u32 = 0;
 pub const ADBC_INFO_VENDOR_VERSION: u32 = 1;
@@ -51,6 +55,11 @@ pub const ADBC_INFO_DRIVER_NAME: u32 = 100;
 pub const ADBC_INFO_DRIVER_VERSION: u32 = 101;
 pub const ADBC_INFO_DRIVER_ARROW_VERSION: u32 = 102;
 pub const ADBC_INFO_DRIVER_ADBC_VERSION: u32 = 103;
+// PROTOTYPE (file-driver proposal): names and values are placeholders.
+pub const ADBC_INFO_DRIVER_ACCEPTS_FILESYSTEM: u32 = 300;
+pub const ADBC_INFO_DRIVER_REQUIRES_FILESYSTEM: u32 = 301;
+pub const ADBC_INFO_DRIVER_FILE_EXTENSIONS: u32 = 302;
+pub const ADBC_INFO_DRIVER_MIME_TYPES: u32 = 303;
 
 pub const ADBC_OBJECT_DEPTH_ALL: c_int = 0;
 pub const ADBC_OBJECT_DEPTH_CATALOGS: c_int = 1;
