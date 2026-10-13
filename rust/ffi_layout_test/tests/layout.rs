@@ -18,6 +18,7 @@
 use std::mem::{offset_of, size_of};
 
 use adbc_core::constants;
+use adbc_ffi::filesystem::provider::FFI_AdbcFileSystemProvider;
 use adbc_ffi::filesystem::{
     self, FFI_AdbcFile, FFI_AdbcFileInfo, FFI_AdbcFileRange, FFI_AdbcFileSystem,
 };
@@ -106,6 +107,33 @@ fn rust_layout() -> Vec<(&'static str, u64)> {
         offset!("AdbcFileSystem", FFI_AdbcFileSystem, get_extension),
         offset!("AdbcFileSystem", FFI_AdbcFileSystem, clone),
         offset!("AdbcFileSystem", FFI_AdbcFileSystem, release),
+        size!("AdbcFileSystemProvider", FFI_AdbcFileSystemProvider),
+        offset!(
+            "AdbcFileSystemProvider",
+            FFI_AdbcFileSystemProvider,
+            struct_size
+        ),
+        offset!(
+            "AdbcFileSystemProvider",
+            FFI_AdbcFileSystemProvider,
+            version
+        ),
+        offset!(
+            "AdbcFileSystemProvider",
+            FFI_AdbcFileSystemProvider,
+            private_data
+        ),
+        offset!(
+            "AdbcFileSystemProvider",
+            FFI_AdbcFileSystemProvider,
+            set_option
+        ),
+        offset!("AdbcFileSystemProvider", FFI_AdbcFileSystemProvider, open),
+        offset!(
+            "AdbcFileSystemProvider",
+            FFI_AdbcFileSystemProvider,
+            release
+        ),
         size!("AdbcFile", FFI_AdbcFile),
         offset!("AdbcFile", FFI_AdbcFile, struct_size),
         offset!("AdbcFile", FFI_AdbcFile, version),
@@ -118,6 +146,10 @@ fn rust_layout() -> Vec<(&'static str, u64)> {
         value!(
             "ADBC_FILESYSTEM_VERSION_1",
             filesystem::ADBC_FILESYSTEM_VERSION_1
+        ),
+        value!(
+            "ADBC_FILESYSTEM_PROVIDER_VERSION_1",
+            filesystem::provider::ADBC_FILESYSTEM_PROVIDER_VERSION_1
         ),
         value!("ADBC_FILE_RANGE_SUFFIX", filesystem::ADBC_FILE_RANGE_SUFFIX),
         value!("ADBC_FILE_RANGE_UP_TO", filesystem::ADBC_FILE_RANGE_UP_TO),

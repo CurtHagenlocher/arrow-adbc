@@ -771,7 +771,7 @@ impl<'a> DriverLibrary<'a> {
     }
 }
 
-const fn arch_triplet() -> (&'static str, &'static str, &'static str) {
+pub(crate) const fn arch_triplet() -> (&'static str, &'static str, &'static str) {
     #[cfg(target_arch = "x86_64")]
     const ARCH: &str = "amd64";
     #[cfg(all(target_arch = "aarch64", target_endian = "big"))]

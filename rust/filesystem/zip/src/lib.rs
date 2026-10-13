@@ -29,8 +29,11 @@
 //! - `list` returns the immediate children of a directory, with directories
 //!   that are only implied by entry names included.
 //!
-//! Use [factory] to register the `zip` scheme with a driver manager:
-//! `zip:<archive location>!/<path in archive>`.
+//! Locations look like `zip:<archive location>!/<path in archive>`. The
+//! crate is also a provider library: a driver manager loads it from a
+//! manifest (entrypoint `AdbcFileSystemProviderInit`, `layered = true`) and
+//! hands [ZipProvider] the store holding the archive. In-process, [factory]
+//! registers the scheme directly.
 
 use std::collections::BTreeMap;
 use std::io::Read;
@@ -42,9 +45,33 @@ use zip::{CompressionMethod, ZipArchive};
 
 use adbc_core::error::{Error, Result, Status};
 use adbc_core::filesystem::{
-    self, AsyncRead, File, FileInfo, FileReader, FileSystem, Location, OPEN_RANDOM, ReadCallback,
-    ReadRange, ReadRequest, list_schema,
+    self, AsyncRead, File, FileInfo, FileReader, FileSystem, FileSystemProvider, Location,
+    OPEN_RANDOM, ReadCallback, ReadRange, ReadRequest, list_schema,
 };
+
+/// The `zip` provider, as loaded from a provider library: the driver
+/// manager resolves the archive's location and passes its store.
+#[derive(Default)]
+pub struct ZipProvider;
+
+impl FileSystemProvider for ZipProvider {
+    fn open(
+        &self,
+        _scheme: &str,
+        _authority: &str,
+        parent: Option<(Arc<dyn FileSystem>, String)>,
+    ) -> Result<Arc<dyn FileSystem>> {
+        let (parent, name) = parent.ok_or_else(|| {
+            Error::with_message_and_status(
+                "zip is a layered provider: it needs the store holding the archive",
+                Status::InvalidArguments,
+            )
+        })?;
+        Ok(Arc::new(ZipFileSystem::open(parent.as_ref(), &name)?))
+    }
+}
+
+adbc_ffi::export_file_system_provider!(AdbcFileSystemProviderInit, ZipProvider);
 
 /// Creates `zip` stores for a driver manager's registry. `resolve` finds the
 /// file system holding the archive (typically the registry itself, so that

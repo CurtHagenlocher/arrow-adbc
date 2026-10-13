@@ -23,10 +23,35 @@
 //! When a file driver's connection is created without a file system, and its
 //! database has none either, the driver manager parses the database `uri`
 //! into a [Location] and asks the registry for a provider for its scheme.
-//! Only `file` is registered by default; other providers are registered at
-//! run time with [register_scheme].
+//! Only `file` is built in. Other providers are shared libraries described
+//! by *provider manifests* and loaded with [load_provider_manifest] or
+//! [register_providers_in]; a scheme that is not registered yet is also
+//! looked up in the directories of `ADBC_FILESYSTEM_PROVIDER_PATH`. In-process
+//! providers can be registered directly with [register_scheme].
+//!
+//! A provider manifest:
+//!
+//! ```toml
+//! manifest_version = 1
+//! name = "ADBC S3 provider"
+//!
+//! [ADBC.filesystem]
+//! schemes = ["s3"]
+//! # true for archive-style providers (`zip:<inner location>!/<path>`): the
+//! # driver manager resolves the inner location and hands it over.
+//! layered = false
+//!
+//! [Provider]
+//! # A path (relative to the manifest), or a table keyed by platform.
+//! shared = "adbc_filesystem_object_store.dll"
+//! entrypoint = "AdbcFileSystemProviderInit"  # the default
+//!
+//! [options]  # provider configuration
+//! aws_region = "us-east-1"
+//! ```
 
 use std::collections::HashMap;
+use std::ffi::OsStr;
 use std::path::{Component, Path, PathBuf};
 use std::sync::{Arc, LazyLock, RwLock};
 use std::time::UNIX_EPOCH;
@@ -35,7 +60,14 @@ use arrow_array::builder::{BooleanBuilder, StringBuilder, UInt64Builder};
 use arrow_array::{RecordBatch, RecordBatchIterator, RecordBatchReader};
 
 use adbc_core::error::{Error, Result, Status};
-use adbc_core::filesystem::{File, FileInfo, FileSystem, Location, ReadRequest, list_schema};
+use adbc_core::filesystem::{
+    File, FileInfo, FileSystem, FileSystemProvider, Location, ReadRequest, list_schema,
+};
+use adbc_ffi::filesystem::provider::{FFI_AdbcFileSystemProviderInitFunc, import_provider};
+use toml::de::{DeTable, DeValue};
+
+use crate::error::libloading_error_to_adbc_error;
+use crate::search::DriverLibrary;
 
 /// Creates a provider for a [Location]'s store (its scheme and authority).
 pub type FileSystemFactory = Arc<dyn Fn(&Location) -> Result<Arc<dyn FileSystem>> + Send + Sync>;
@@ -70,21 +102,255 @@ pub fn register_scheme(scheme: &str, factory: FileSystemFactory) {
 
 /// Resolve a provider for a location through the registry.
 pub fn resolve(location: &Location) -> Result<Arc<dyn FileSystem>> {
-    let factory = REGISTRY
-        .read()
-        .unwrap()
-        .get(&location.scheme)
-        .cloned()
-        .ok_or_else(|| {
-            Error::with_message_and_status(
-                format!(
-                    "No file system is registered for scheme '{}'",
-                    location.scheme
-                ),
-                Status::NotFound,
-            )
-        })?;
+    let registered = || REGISTRY.read().unwrap().get(&location.scheme).cloned();
+    let factory = match registered() {
+        Some(factory) => factory,
+        None => {
+            find_provider_on_path(&location.scheme)?;
+            registered().ok_or_else(|| {
+                Error::with_message_and_status(
+                    format!(
+                        "No file system is registered for scheme '{}' (and no provider \
+                         manifest for it was found on {PROVIDER_PATH_ENV})",
+                        location.scheme
+                    ),
+                    Status::NotFound,
+                )
+            })?
+        }
+    };
     factory(location)
+}
+
+/// Directories searched for provider manifests when a scheme is not
+/// registered (a path list, like `PATH`).
+pub const PROVIDER_PATH_ENV: &str = "ADBC_FILESYSTEM_PROVIDER_PATH";
+
+const DEFAULT_PROVIDER_ENTRYPOINT: &[u8] = b"AdbcFileSystemProviderInit";
+
+/// Load a provider library, configure it, and register it for `schemes`.
+///
+/// `layered` providers (archives) receive the store of the inner location
+/// of a nested `scheme:<inner location>!/<path>` location, resolved through
+/// this registry, so they compose with every other provider.
+///
+/// The library stays loaded for the life of the process: file systems it
+/// opened may outlive any registration.
+pub fn load_provider(
+    library: impl AsRef<OsStr>,
+    entrypoint: Option<&[u8]>,
+    schemes: &[String],
+    layered: bool,
+    options: &[(String, String)],
+) -> Result<()> {
+    let library = DriverLibrary::load_library(library)?;
+    let entrypoint = entrypoint.unwrap_or(DEFAULT_PROVIDER_ENTRYPOINT);
+    let init: FFI_AdbcFileSystemProviderInitFunc = unsafe {
+        *library
+            .get::<FFI_AdbcFileSystemProviderInitFunc>(entrypoint)
+            .map_err(libloading_error_to_adbc_error)?
+    };
+    std::mem::forget(library);
+    let mut provider = unsafe { import_provider(init)? };
+    for (key, value) in options {
+        provider.set_option(key, value)?;
+    }
+    let provider = Arc::new(provider);
+    for scheme in schemes {
+        let provider = provider.clone();
+        register_scheme(
+            scheme,
+            Arc::new(move |location: &Location| {
+                let parent = if layered {
+                    if location.authority.is_empty() {
+                        return Err(Error::with_message_and_status(
+                            format!(
+                                "a '{0}' location names an inner location: \
+                                 {0}:<location>!/<path>",
+                                location.scheme
+                            ),
+                            Status::InvalidArguments,
+                        ));
+                    }
+                    let inner = Location::parse(&location.authority)?;
+                    Some((resolve(&inner)?, inner.path))
+                } else {
+                    None
+                };
+                provider.open(&location.scheme, &location.authority, parent)
+            }),
+        );
+    }
+    Ok(())
+}
+
+/// A parsed provider manifest.
+#[derive(Clone, Debug)]
+struct ProviderManifest {
+    library: PathBuf,
+    entrypoint: Option<Vec<u8>>,
+    schemes: Vec<String>,
+    layered: bool,
+    options: Vec<(String, String)>,
+}
+
+fn manifest_error(path: &Path, message: impl std::fmt::Display) -> Error {
+    Error::with_message_and_status(
+        format!("Provider manifest '{}': {message}", path.display()),
+        Status::InvalidArguments,
+    )
+}
+
+fn read_provider_manifest(path: &Path) -> Result<ProviderManifest> {
+    let contents = std::fs::read_to_string(path).map_err(|e| manifest_error(path, e))?;
+    let manifest = DeTable::parse(&contents).map_err(|e| manifest_error(path, e))?;
+    let manifest = manifest.get_ref();
+    let table = |key: &str| manifest.get(key).and_then(|v| v.get_ref().as_table());
+
+    let provider = table("Provider").ok_or_else(|| manifest_error(path, "no [Provider]"))?;
+    let library = match provider.get("shared").map(|v| v.get_ref()) {
+        Some(DeValue::String(s)) => PathBuf::from(s.as_ref()),
+        Some(DeValue::Table(by_platform)) => {
+            let (os, arch, extra) = crate::search::arch_triplet();
+            let key = format!("{os}_{arch}{extra}");
+            by_platform
+                .get(key.as_str())
+                .and_then(|v| v.get_ref().as_str())
+                .map(PathBuf::from)
+                .ok_or_else(|| manifest_error(path, format!("no Provider.shared.{key}")))?
+        }
+        _ => {
+            return Err(manifest_error(
+                path,
+                "Provider.shared must be a string or a table",
+            ));
+        }
+    };
+    // Relative library paths are relative to the manifest.
+    let library = if library.is_relative() {
+        path.parent().unwrap_or(Path::new(".")).join(library)
+    } else {
+        library
+    };
+    let entrypoint = provider
+        .get("entrypoint")
+        .and_then(|v| v.get_ref().as_str())
+        .map(|s| s.as_bytes().to_vec());
+
+    let filesystem = table("ADBC")
+        .and_then(|adbc| adbc.get("filesystem"))
+        .and_then(|v| v.get_ref().as_table())
+        .ok_or_else(|| manifest_error(path, "no [ADBC.filesystem]"))?;
+    let schemes: Vec<String> = filesystem
+        .get("schemes")
+        .and_then(|v| v.get_ref().as_array())
+        .map(|a| {
+            a.iter()
+                .filter_map(|v| v.get_ref().as_str())
+                .map(str::to_ascii_lowercase)
+                .collect()
+        })
+        .unwrap_or_default();
+    if schemes.is_empty() {
+        return Err(manifest_error(
+            path,
+            "ADBC.filesystem.schemes names no scheme",
+        ));
+    }
+    let layered = filesystem
+        .get("layered")
+        .and_then(|v| v.get_ref().as_bool())
+        .unwrap_or(false);
+
+    let mut options = Vec::new();
+    if let Some(table) = table("options") {
+        for (key, value) in table.iter() {
+            let value = match value.get_ref() {
+                DeValue::String(s) => s.to_string(),
+                DeValue::Integer(i) => i.as_str().to_string(),
+                DeValue::Boolean(b) => b.to_string(),
+                _ => {
+                    return Err(manifest_error(
+                        path,
+                        format!("option '{}' must be a scalar", key.get_ref()),
+                    ));
+                }
+            };
+            options.push((key.get_ref().to_string(), value));
+        }
+    }
+    Ok(ProviderManifest {
+        library,
+        entrypoint,
+        schemes,
+        layered,
+        options,
+    })
+}
+
+/// Load the provider a manifest describes and register its schemes.
+/// `options` are applied after the manifest's own `[options]`, so a host
+/// can override or add configuration (endpoints, credentials). Returns the
+/// schemes registered.
+pub fn load_provider_manifest(
+    manifest: impl AsRef<Path>,
+    options: &[(String, String)],
+) -> Result<Vec<String>> {
+    let mut parsed = read_provider_manifest(manifest.as_ref())?;
+    parsed.options.extend(options.iter().cloned());
+    load_provider(
+        &parsed.library,
+        parsed.entrypoint.as_deref(),
+        &parsed.schemes,
+        parsed.layered,
+        &parsed.options,
+    )?;
+    Ok(parsed.schemes)
+}
+
+/// Load every provider manifest (a `*.toml` with a `[Provider]` table) in a
+/// directory. Returns the schemes registered.
+pub fn register_providers_in(dir: impl AsRef<Path>) -> Result<Vec<String>> {
+    let mut schemes = Vec::new();
+    for manifest in provider_manifests_in(dir.as_ref())? {
+        schemes.extend(load_provider_manifest(&manifest, &[])?);
+    }
+    Ok(schemes)
+}
+
+fn provider_manifests_in(dir: &Path) -> Result<Vec<PathBuf>> {
+    let mut manifests: Vec<PathBuf> = std::fs::read_dir(dir)
+        .map_err(|e| io_error(dir, e))?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.extension().is_some_and(|e| e == "toml"))
+        .filter(|p| {
+            std::fs::read_to_string(p).ok().is_some_and(|c| {
+                DeTable::parse(&c).is_ok_and(|t| t.get_ref().contains_key("Provider"))
+            })
+        })
+        .collect();
+    manifests.sort();
+    Ok(manifests)
+}
+
+/// Find and load a provider for `scheme` on [PROVIDER_PATH_ENV], if any.
+fn find_provider_on_path(scheme: &str) -> Result<()> {
+    let Some(path) = std::env::var_os(PROVIDER_PATH_ENV) else {
+        return Ok(());
+    };
+    for dir in std::env::split_paths(&path) {
+        let Ok(manifests) = provider_manifests_in(&dir) else {
+            continue;
+        };
+        for manifest in manifests {
+            let parsed = read_provider_manifest(&manifest)?;
+            if parsed.schemes.iter().any(|s| s == scheme) {
+                load_provider_manifest(&manifest, &[])?;
+                return Ok(());
+            }
+        }
+    }
+    Ok(())
 }
 
 /// The built-in local file system.

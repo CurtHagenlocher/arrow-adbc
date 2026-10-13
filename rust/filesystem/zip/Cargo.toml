@@ -25,14 +25,18 @@ rust-version.workspace = true
 license.workspace = true
 publish = false
 
+[lib]
+# Also a provider library the driver manager can load from a manifest.
+crate-type = ["lib", "cdylib"]
+
 [dependencies]
 adbc_core.workspace = true
+adbc_ffi.workspace = true
 arrow-array.workspace = true
 # The same configuration calamine uses, so the build gains no new crates.
 zip = { version = "8.6", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
 adbc_driver_manager.workspace = true
-adbc_ffi.workspace = true
 arrow-schema.workspace = true
 tempfile = "3.27"

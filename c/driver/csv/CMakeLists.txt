@@ -22,6 +22,7 @@
 add_arrow_lib(adbc_driver_csv
               SOURCES
               csv.cc
+              substrait_filter.cc
               OUTPUTS
               ADBC_LIBRARIES
               SHARED_LINK_FLAGS

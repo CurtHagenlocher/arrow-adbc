@@ -232,6 +232,36 @@ pub trait FileSystem: Send + Sync {
     }
 }
 
+/// A storage provider: creates the file systems of one or more URI schemes.
+///
+/// A provider library exports one through the C ABI (see
+/// `adbc_ffi::filesystem::provider`), and a driver manager loads it from a
+/// provider manifest, configures it, and registers it for its schemes.
+/// Configuration and credentials belong to the provider, not to the read
+/// ABI.
+pub trait FileSystemProvider: Send + Sync {
+    /// Set a provider-specific option (endpoint, region, credentials...).
+    /// Called before the first [open](Self::open).
+    fn set_option(&mut self, key: &str, value: &str) -> Result<()> {
+        let _ = value;
+        Err(Error::with_message_and_status(
+            format!("unknown provider option '{key}'"),
+            Status::NotImplemented,
+        ))
+    }
+
+    /// Open the file system of one store: a [Location]'s scheme and
+    /// authority. For a nested location (`zip:<inner>!/<path>`) the
+    /// authority is the inner location; the driver manager resolves it
+    /// first and passes its store and path as `parent`.
+    fn open(
+        &self,
+        scheme: &str,
+        authority: &str,
+        parent: Option<(Arc<dyn FileSystem>, String)>,
+    ) -> Result<Arc<dyn FileSystem>>;
+}
+
 /// Where a file driver's data lives: a store, identified by a scheme and an
 /// authority, and a path within it.
 ///

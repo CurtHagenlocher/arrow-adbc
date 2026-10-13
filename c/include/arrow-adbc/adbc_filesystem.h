@@ -244,6 +244,69 @@ struct AdbcFile {
   AdbcStatusCode (*close)(struct AdbcFile* self);
 };
 
+/// \brief The provider table version for this header.
+#define ADBC_FILESYSTEM_PROVIDER_VERSION_1 1
+
+/// \brief A storage provider: a factory for the file systems of one or
+///   more URI schemes, loaded dynamically by a driver manager.
+///
+/// A driver manager loads a provider from a shared library named by a
+/// provider manifest, calls its entrypoint (an
+/// AdbcFileSystemProviderInitFunc), configures it with set_option, and
+/// then opens one file system per store (scheme and authority) it needs.
+/// Configuration and credentials belong here, not in the read ABI.
+///
+/// A location splits into scheme, authority, and path; names in the
+/// opened file system are paths.  For a nested location
+/// (`zip:<inner location>!/<path>`) the authority is the inner location:
+/// the driver manager resolves it first (with whatever provider handles
+/// its scheme) and hands the result to this provider as `parent`, with
+/// the inner location's path as `parent_name`.  This is how archive
+/// providers layer over any other provider without knowing about it.
+struct AdbcFileSystemProvider {
+  /// \brief The size of this structure as known to the provider.
+  uint32_t struct_size;
+  /// \brief The table version, e.g. ADBC_FILESYSTEM_PROVIDER_VERSION_1.
+  uint32_t version;
+  /// \brief Opaque provider state.
+  void* private_data;
+
+  /// \brief Set a provider-specific option (endpoint, region,
+  ///   credentials...).  Must be called before the first open.
+  ///
+  /// \return ADBC_STATUS_NOT_IMPLEMENTED for an unknown key.
+  AdbcStatusCode (*set_option)(struct AdbcFileSystemProvider* self, const char* key,
+                               const char* value, struct AdbcError* error);
+
+  /// \brief Open the file system of one store.  Blocking.
+  ///
+  /// \param[in] scheme The location's scheme, lowercase.
+  /// \param[in] authority The location's authority (a bucket, a host);
+  ///   for a nested location, the inner location.  May be empty.
+  /// \param[in] parent For a nested location, the file system holding
+  ///   `parent_name`; otherwise NULL.  Ownership moves to the provider
+  ///   whether or not open succeeds (the caller's struct is zeroed), so
+  ///   a failed open releases it.
+  /// \param[in] parent_name For a nested location, the inner location's
+  ///   path in `parent`; otherwise NULL.
+  /// \param[out] out The new file system.
+  AdbcStatusCode (*open)(struct AdbcFileSystemProvider* self, const char* scheme,
+                         const char* authority, struct AdbcFileSystem* parent,
+                         const char* parent_name, struct AdbcFileSystem* out,
+                         struct AdbcError* error);
+
+  /// \brief Release the provider.  File systems it opened stay valid
+  ///   until they are released.  Sets release to NULL.
+  void (*release)(struct AdbcFileSystemProvider* self);
+};
+
+/// \brief The entrypoint of a provider library.
+///
+/// \param[in] version The provider table version the caller understands.
+/// \param[out] out The provider table to fill in.
+typedef AdbcStatusCode (*AdbcFileSystemProviderInitFunc)(
+    int version, struct AdbcFileSystemProvider* out, struct AdbcError* error);
+
 /// @}
 
 #ifdef __cplusplus

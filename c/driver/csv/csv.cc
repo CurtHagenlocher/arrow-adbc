@@ -31,7 +31,11 @@
 //   - `adbc.file.limit`: the maximum number of rows (per partition when
 //     executed as partitions);
 //   - `adbc.file.header`: whether the first row holds column names
-//     (default true).
+//     (default true);
+//   - `adbc.file.filter` (bytes): a Substrait ExtendedExpression whose
+//     referred expressions are the conjuncts of a filter.  Reading back
+//     `adbc.file.filter.pushdown` gives, per conjunct, "exact" (the driver
+//     applies it) or "unsupported" (the engine must), as a JSON array.
 // - ExecutePartitions returns one partition per file; the column types are
 //   inferred across all files and carried in the partitions, so partitions
 //   read in parallel agree on the schema.
@@ -55,6 +59,7 @@
 #include "driver/framework/objects.h"
 #include "driver/framework/status.h"
 #include "driver/framework/utility.h"
+#include "substrait_filter.h"
 
 // Like UNWRAP_RESULT, but usable to declare: CSV_ASSIGN_OR_RETURN(auto x, f()).
 #define CSV_CONCAT_IMPL(x, y) x##y
@@ -80,6 +85,8 @@ constexpr std::string_view kOptionTarget = "adbc.file.target";
 constexpr std::string_view kOptionColumns = "adbc.file.columns";
 constexpr std::string_view kOptionLimit = "adbc.file.limit";
 constexpr std::string_view kOptionHeader = "adbc.file.header";
+constexpr std::string_view kOptionFilter = "adbc.file.filter";
+constexpr std::string_view kOptionFilterPushdown = "adbc.file.filter.pushdown";
 constexpr std::string_view kTableTypeFile = "FILE";
 constexpr std::string_view kTableTypeDirectory = "DIRECTORY";
 
@@ -452,10 +459,48 @@ Status MakeSchema(const Layout& layout, const std::vector<size_t>& selected,
   return status::Ok();
 }
 
-/// Build one batch from a file's data rows.
+ValueType ValueTypeOf(Kind kind) {
+  switch (kind) {
+    case Kind::kInt:
+      return ValueType::kInt;
+    case Kind::kFloat:
+      return ValueType::kFloat;
+    case Kind::kBool:
+      return ValueType::kBool;
+    default:
+      return ValueType::kString;
+  }
+}
+
+/// A cell as a typed value, for filters.
+Value CellValue(const Layout& layout, const Row& row, size_t col) {
+  if (col >= row.size() || row[col].empty()) return std::monostate{};
+  const std::string& cell = row[col];
+  switch (layout.kinds[col]) {
+    case Kind::kInt:
+      return *ParseInt(cell);
+    case Kind::kFloat:
+      return *ParseDouble(cell);
+    case Kind::kBool:
+      return *ParseBool(cell);
+    default:
+      return cell;
+  }
+}
+
+/// Resolve a filter's columns against a layout.
+Status BindFilter(Filter* filter, const Layout& layout) {
+  std::vector<ValueType> types;
+  for (Kind k : layout.kinds) types.push_back(ValueTypeOf(k));
+  return filter->Bind(layout.names, types);
+}
+
+/// Build one batch from a file's data rows: those that pass the (bound)
+/// filter, up to the limit.
 Status MakeBatch(const Layout& layout, const std::vector<size_t>& selected,
                  const std::vector<Row>& rows, size_t first, std::optional<int64_t> limit,
-                 struct ArrowSchema* schema, struct ArrowArray* out) {
+                 const Filter* filter, struct ArrowSchema* schema,
+                 struct ArrowArray* out) {
   struct ArrowError na_error = {};
   if (ArrowArrayInitFromSchema(out, schema, &na_error) != 0) {
     return status::Internal("[CSV] ", na_error.message);
@@ -464,6 +509,10 @@ Status MakeBatch(const Layout& layout, const std::vector<size_t>& selected,
   int64_t count = 0;
   for (size_t r = first; r < rows.size(); r++) {
     if (limit && count >= *limit) break;
+    if (filter &&
+        !filter->Matches([&](size_t col) { return CellValue(layout, rows[r], col); })) {
+      continue;
+    }
     for (size_t i = 0; i < selected.size(); i++) {
       size_t col = selected[i];
       struct ArrowArray* child = out->children[i];
@@ -620,7 +669,35 @@ struct ScanOptions {
   bool header = true;
   std::optional<std::vector<std::string>> columns;
   std::optional<int64_t> limit;
+  std::shared_ptr<Filter> filter;
 };
+
+std::string ToHex(std::string_view bytes) {
+  static const char* digits = "0123456789abcdef";
+  std::string out;
+  out.reserve(bytes.size() * 2);
+  for (unsigned char c : bytes) {
+    out.push_back(digits[c >> 4]);
+    out.push_back(digits[c & 15]);
+  }
+  return out;
+}
+
+std::optional<std::string> FromHex(std::string_view hex) {
+  if (hex.size() % 2) return std::nullopt;
+  auto nibble = [](char c) -> int {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    return -1;
+  };
+  std::string out;
+  for (size_t i = 0; i < hex.size(); i += 2) {
+    int hi = nibble(hex[i]), lo = nibble(hex[i + 1]);
+    if (hi < 0 || lo < 0) return std::nullopt;
+    out.push_back(static_cast<char>(hi * 16 + lo));
+  }
+  return out;
+}
 
 /// The selected column indices, or an error naming the unknown column.
 Result<std::vector<size_t>> Select(const Layout& layout, const ScanOptions& options) {
@@ -647,9 +724,10 @@ struct Partition {
   std::string kinds;               // one Kind char per column
   std::optional<std::vector<std::string>> columns;
   std::optional<int64_t> limit;
+  std::string filter;  // a serialized ExtendedExpression, or empty
 
   std::string Encode() const {
-    std::string out = "csv-scan-1";
+    std::string out = "csv-scan-2";
     auto field = [&](std::string_view f) {
       out.push_back('\0');
       out.append(f);
@@ -660,6 +738,7 @@ struct Partition {
     field(kinds);
     field(columns ? EncodeJsonStrings(*columns) : "");
     field(limit ? std::to_string(*limit) : "");
+    field(ToHex(filter));
     return out;
   }
 
@@ -672,7 +751,7 @@ struct Partition {
       if (nul == std::string_view::npos) break;
       start = nul + 1;
     }
-    if (fields.size() != 7 || fields[0] != "csv-scan-1") {
+    if (fields.size() != 8 || fields[0] != "csv-scan-2") {
       return status::InvalidArgument("[CSV] not a partition of the CSV driver");
     }
     Partition p;
@@ -692,6 +771,9 @@ struct Partition {
       if (!limit) return status::InvalidArgument("[CSV] corrupt partition");
       p.limit = *limit;
     }
+    auto filter = FromHex(fields[7]);
+    if (!filter) return status::InvalidArgument("[CSV] corrupt partition");
+    p.filter = std::move(*filter);
     return p;
   }
 };
@@ -826,14 +908,21 @@ class CsvConnection : public driver::BaseConnection<CsvConnection> {
         }
       }
     }
-    ScanOptions options{partition.header, partition.columns, partition.limit};
+    ScanOptions options{partition.header, partition.columns, partition.limit, nullptr};
     CSV_ASSIGN_OR_RETURN(auto selected, Select(layout, options));
+    std::optional<Filter> filter;
+    if (!partition.filter.empty()) {
+      auto parsed = Filter::Parse(partition.filter);
+      if (!parsed.has_value()) return std::move(parsed).status();
+      filter.emplace(std::move(parsed.value()));
+      UNWRAP_STATUS(BindFilter(&*filter, layout));
+    }
     auto stream = std::make_unique<BatchStream>();
     UNWRAP_STATUS(MakeSchema(layout, selected, stream->schema.get()));
     stream->batches.emplace_back();
     UNWRAP_STATUS(MakeBatch(layout, selected, rows, partition.header ? 1 : 0,
-                            partition.limit, stream->schema.get(),
-                            stream->batches.back().get()));
+                            partition.limit, filter ? &*filter : nullptr,
+                            stream->schema.get(), stream->batches.back().get()));
     BatchStream::Export(std::move(stream), out);
     return status::Ok();
   }
@@ -1079,10 +1168,42 @@ class CsvStatement : public driver::BaseStatement<CsvStatement> {
       options_.limit = limit;
     } else if (key == kOptionHeader) {
       CSV_ASSIGN_OR_RETURN(options_.header, value.AsBool());
+    } else if (key == kOptionFilter) {
+      std::string bytes;
+      if (const auto* b = std::get_if<std::vector<uint8_t>>(&value.value())) {
+        bytes.assign(b->begin(), b->end());
+      } else if (const auto* str = std::get_if<std::string>(&value.value())) {
+        bytes = *str;
+      } else if (!std::holds_alternative<Option::Unset>(value.value())) {
+        return status::InvalidArgument("[CSV] '", kOptionFilter,
+                                       "' must be a serialized Substrait "
+                                       "ExtendedExpression");
+      }
+      if (bytes.empty()) {
+        options_.filter.reset();
+      } else {
+        auto parsed = Filter::Parse(bytes);
+        if (!parsed.has_value()) return std::move(parsed).status();
+        options_.filter = std::make_shared<Filter>(std::move(parsed.value()));
+      }
     } else {
       return Base::SetOptionImpl(key, std::move(value));
     }
     return status::Ok();
+  }
+
+  Result<Option> GetOption(std::string_view key) override {
+    if (key == kOptionFilterPushdown) {
+      // Decided from the expressions alone: no I/O.
+      std::vector<std::string> support;
+      if (options_.filter) {
+        for (bool s : options_.filter->supported()) {
+          support.push_back(s ? "exact" : "unsupported");
+        }
+      }
+      return Option(EncodeJsonStrings(support));
+    }
+    return Base::GetOption(key);
   }
 
   Status SetSqlQueryImpl(std::string_view) {
@@ -1101,6 +1222,7 @@ class CsvStatement : public driver::BaseStatement<CsvStatement> {
   Result<int64_t> ExecuteQueryImpl(struct ArrowArrayStream* out) {
     CSV_ASSIGN_OR_RETURN(auto plan, Plan());
     CSV_ASSIGN_OR_RETURN(auto selected, Select(plan.layout, options_));
+    if (options_.filter) UNWRAP_STATUS(BindFilter(options_.filter.get(), plan.layout));
     auto stream = std::make_unique<BatchStream>();
     UNWRAP_STATUS(MakeSchema(plan.layout, selected, stream->schema.get()));
     std::optional<int64_t> remaining = options_.limit;
@@ -1108,7 +1230,7 @@ class CsvStatement : public driver::BaseStatement<CsvStatement> {
       if (remaining && *remaining <= 0) break;
       stream->batches.emplace_back();
       UNWRAP_STATUS(MakeBatch(plan.layout, selected, rows, options_.header ? 1 : 0,
-                              remaining, stream->schema.get(),
+                              remaining, options_.filter.get(), stream->schema.get(),
                               stream->batches.back().get()));
       if (remaining) *remaining -= stream->batches.back()->length;
     }
@@ -1159,13 +1281,20 @@ class CsvStatement : public driver::BaseStatement<CsvStatement> {
                                struct AdbcPartitions* partitions) {
     CSV_ASSIGN_OR_RETURN(auto plan, Plan());
     CSV_ASSIGN_OR_RETURN(auto selected, Select(plan.layout, options_));
+    // Fail now, not in every partition, if the filter does not fit.
+    if (options_.filter) UNWRAP_STATUS(BindFilter(options_.filter.get(), plan.layout));
     std::string kinds;
     for (Kind k : plan.layout.kinds) kinds.push_back(static_cast<char>(k));
 
     auto data = std::make_unique<PartitionsData>();
     for (const auto& file : plan.files) {
-      Partition p{file,  options_.header,  plan.layout.names,
-                  kinds, options_.columns, options_.limit};
+      Partition p{file,
+                  options_.header,
+                  plan.layout.names,
+                  kinds,
+                  options_.columns,
+                  options_.limit,
+                  options_.filter ? options_.filter->serialized() : std::string()};
       data->encoded.push_back(p.Encode());
     }
     for (const auto& e : data->encoded) {

@@ -418,6 +418,7 @@ impl ManagedDriver {
             driver: self.inner.clone(),
             uri,
             has_file_system,
+            resolved_file_system: std::sync::OnceLock::new(),
         });
         Ok(ManagedDatabase { inner })
     }
@@ -488,6 +489,10 @@ struct ManagedDatabaseInner {
     uri: Option<String>,
     /// Whether a file system was set on the database itself.
     has_file_system: bool,
+    /// The default file system resolved from `uri`, shared by every
+    /// connection (resolving can be costly: an archive's directory, a
+    /// remote store's client).
+    resolved_file_system: std::sync::OnceLock<Arc<dyn FileSystem>>,
 }
 
 impl Drop for ManagedDatabaseInner {
@@ -933,8 +938,17 @@ impl ManagedDatabase {
         if !self.inner.driver.accepts_file_system || self.inner.has_file_system {
             return Ok(None);
         }
+        if let Some(fs) = self.inner.resolved_file_system.get() {
+            return Ok(Some(fs.clone()));
+        }
         match &self.inner.uri {
-            Some(uri) => filesystem::resolve(&Location::parse(uri)?).map(Some),
+            Some(uri) => {
+                let fs = filesystem::resolve(&Location::parse(uri)?)?;
+                // A race resolves twice; both results are equivalent.
+                Ok(Some(
+                    self.inner.resolved_file_system.get_or_init(|| fs).clone(),
+                ))
+            }
             // The driver reports FILESYSTEM_REQUIRED if it needs one.
             None => Ok(None),
         }
