@@ -19,7 +19,12 @@ use adbc_core::error::Status;
 
 pub(crate) fn libloading_error_to_adbc_error(e: libloading::Error) -> adbc_core::error::Error {
     adbc_core::error::Error {
-        message: format!("Error with dynamic library: {e}"),
+        // The OS error (e.g. "%1 is not a valid Win32 application") is the
+        // source, not part of the message.
+        message: match std::error::Error::source(&e) {
+            Some(source) => format!("Error with dynamic library: {e}: {source}"),
+            None => format!("Error with dynamic library: {e}"),
+        },
         status: Status::Internal,
         vendor_code: 0,
         sqlstate: [0; 5],

@@ -373,6 +373,18 @@ impl<'a> DriverLibrary<'a> {
     }
 
     pub fn load_library(filename: impl AsRef<OsStr>) -> Result<libloading::Library> {
+        // Name the library: the loader's own message does not.
+        Self::load_library_impl(filename.as_ref()).map_err(|mut e| {
+            e.message = format!(
+                "{} (loading '{}')",
+                e.message,
+                Path::new(filename.as_ref()).display()
+            );
+            e
+        })
+    }
+
+    fn load_library_impl(filename: impl AsRef<OsStr>) -> Result<libloading::Library> {
         // By default, go builds the libraries with '-Wl -z nodelete' which does not
         // unload the go runtime. This isn't respected on mac ( https://github.com/golang/go/issues/11100#issuecomment-932638093 )
         // so we need to explicitly load the library with RTLD_NODELETE( which prevents unloading )
